@@ -58,7 +58,7 @@ namespace ROVER2
         if (_sonar.hayObjetoCerca(d) == true) return FRONT;
 
         //2.-
-        if (dl < dr) return (_sonarL.hayObjetoCerca(dl) == true) ? LEFT : NONE;
+        if (dl < dr) return (_sonarL.hayObjetoCerca(dl) == true) ? LEFT  : NONE;
         else         return (_sonarR.hayObjetoCerca(dr) == true) ? RIGHT : NONE;
       }
   };

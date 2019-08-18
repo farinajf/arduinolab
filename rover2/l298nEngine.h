@@ -24,7 +24,7 @@ namespace ROVER2
        * void _backward()
        */
       void _backward() const {
-        analogWrite (_pinEnable, _speed);
+        analogWrite (_pinEnable, -1 * _speed);
         digitalWrite(_pinIN1,    LOW);
         digitalWrite(_pinIN2,    HIGH);
       }

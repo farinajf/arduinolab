@@ -9,9 +9,11 @@
 namespace ROVER2
 {
 enum state_t {
+  INITIAL,
   STOPPED,
-  MOVING,
-  TURNING
+  FORWARD,
+  TURNING,
+  REVERSE
 };
 
 class CarRobot {
@@ -21,12 +23,19 @@ class CarRobot {
     state_t            _state;
 
     bool _isStopped() const {return _state == STOPPED;}
-    
+
+    void _stop() {
+      _driver.stop();
+      delay(10);
+    }
+
     /**
      * Gira el robot
      */
     void _backward() {
-      _state = TURNING;
+      _stop();
+      
+      _state = REVERSE;
       _driver.backward();
     }
 
@@ -36,6 +45,8 @@ class CarRobot {
      *  Gira el robot
      */
     void _turnRight() {
+      //_stop();
+      
       _state = TURNING;
       _driver.right();
     }
@@ -46,6 +57,8 @@ class CarRobot {
      * Gira el robot
      */
     void _turnLeft() {
+      //_stop();
+      
       _state = TURNING;
       _driver.left();
     }
@@ -56,7 +69,7 @@ class CarRobot {
      * Mueve hacia adelante el Robot.
      */
     void _move() {
-      _state = MOVING;
+      _state = FORWARD;
       _driver.forward();
     }
 
@@ -76,7 +89,10 @@ class CarRobot {
         case RIGHT: _turnLeft();  return;
         case LEFT:  _turnRight(); return;
         case FRONT: _backward();  return;
-        default:    _move();      return;
+        
+        default:
+          if (_state != FORWARD) _move();
+          return;
       }
     }
 
@@ -93,7 +109,7 @@ class CarRobot {
      * Inicializa el objeto.
      */
     void init() {
-      _state = MOVING;
+      _state = INITIAL;
 
       _detector.init();
       _driver.init();

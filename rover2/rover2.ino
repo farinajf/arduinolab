@@ -25,7 +25,7 @@ const unsigned int minDistanceL =   15;
 const unsigned int maxDistance  =  200;
 const short        speedA       =  130; //Left
 const short        speedB       =  150; //Right
-const short        speedTurn    = 1000; //Giro
+const short        speedTurn    =  200; //Giro
 const int          delayTurnMax =  200; // Milisegundos de giro
 
 ROVER2::DistanceSensor     sonar   (PIN_ECHO_SONAR_FRONT, PIN_TRIG_SONAR_FRONT, minDistance,  maxDistance);
@@ -64,6 +64,6 @@ void loop() {
     switch (state)
     {
       case ROVER2::TURNING: _randomDelay(); break;
-      default:              delay(50);      break;
+      default:              delay(10);      break;
     }
 }

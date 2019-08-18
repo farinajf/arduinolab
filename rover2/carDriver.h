@@ -38,6 +38,7 @@ namespace ROVER2
       void forward() {
         _engineR.setSpeed(_speedR);
         _engineL.setSpeed(_speedL);
+        Serial.println("Fordward...");
       }
       
       /**
@@ -46,6 +47,7 @@ namespace ROVER2
       void backward() {
         _engineR.setSpeed(-1 * _speedR);
         _engineL.setSpeed(-1 * _speedL);
+        Serial.println("Backward...");
       }
       
       /**
@@ -54,6 +56,7 @@ namespace ROVER2
       void left() {
         _engineR.setSpeed(_speedTurn);
         _engineL.setSpeed(-1 * _speedTurn);
+        Serial.println("Left...");
       }
       
       /**
@@ -62,6 +65,7 @@ namespace ROVER2
       void right() {
         _engineR.setSpeed(-1 * _speedTurn);
         _engineL.setSpeed(_speedTurn);
+        Serial.println("Right...");
       }
       
       /**
