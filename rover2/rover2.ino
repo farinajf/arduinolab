@@ -5,14 +5,12 @@
 #include "carDriver.h"
 #include "carRobot.h"
 
-#define PIN_TrigSonar  12
-#define PIN_EchoSonar  11
-
-#define PIN_TrigSonarR  6
-#define PIN_EchoSonarR  7
-
-#define PIN_TrigSonarL  9
-#define PIN_EchoSonarL  8
+#define PIN_TRIG_SONAR_FRONT 12
+#define PIN_ECHO_SONAR_FRONT 11
+#define PIN_TRIG_SONAR_RIGHT  6
+#define PIN_ECHO_SONAR_RIGHT  7
+#define PIN_TRIG_SONAR_LEFT   9
+#define PIN_ECHO_SONAR_LEFT   8
 
 #define PIN_EN_A       10
 #define PIN_IN1_A      A5
@@ -21,33 +19,51 @@
 #define PIN_IN1_B      A2
 #define PIN_IN2_B      A3
 
-const unsigned int minDistance  =  25;
-const unsigned int maxDistance  = 200;
-const short        speedA       = 130; //Left
-const short        speedB       = 150; //Right
-const short        speedTurn    = 300; //Giro
-const int          delayTurnMax = 200;
-const int          runtime      = 180;
+const unsigned int minDistance  =   20;
+const unsigned int minDistanceR =   15;
+const unsigned int minDistanceL =   15;
+const unsigned int maxDistance  =  200;
+const short        speedA       =  130; //Left
+const short        speedB       =  150; //Right
+const short        speedTurn    = 1000; //Giro
+const int          delayTurnMax =  200; // Milisegundos de giro
 
-ROVER2::DistanceSensor     sonar   (maxDistance, PIN_EchoSonar,  PIN_TrigSonar);
-ROVER2::DistanceSensor     sonarR  (maxDistance, PIN_EchoSonarR, PIN_TrigSonarR);
-ROVER2::DistanceSensor     sonarL  (maxDistance, PIN_EchoSonarL, PIN_TrigSonarL);
-ROVER2::CarDriver          driver  (PIN_EN_A,    PIN_IN1_A,      PIN_IN2_A, speedA,
-                                    PIN_EN_B,    PIN_IN1_B,      PIN_IN2_B, speedB,
-                                    speedTurn);
-ROVER2::DetectorObstaculos detector(sonar,       sonarL,         sonarR,    minDistance, maxDistance);
-ROVER2::CarRobot           robot   (driver,      detector,       runtime,   delayTurnMax);
+ROVER2::DistanceSensor     sonar   (PIN_ECHO_SONAR_FRONT, PIN_TRIG_SONAR_FRONT, minDistance,  maxDistance);
+ROVER2::DistanceSensor     sonarR  (PIN_ECHO_SONAR_RIGHT, PIN_TRIG_SONAR_RIGHT, minDistanceR, maxDistance);
+ROVER2::DistanceSensor     sonarL  (PIN_ECHO_SONAR_LEFT,  PIN_TRIG_SONAR_LEFT,  minDistanceL, maxDistance);
+ROVER2::DetectorObstaculos detector(sonar,                sonarL,               sonarR);
+ROVER2::CarDriver          driver  (PIN_EN_A,             PIN_IN1_A,            PIN_IN2_A,    speedA,
+                                    PIN_EN_B,             PIN_IN1_B,            PIN_IN2_B,    speedB,      speedTurn);
+ROVER2::CarRobot           robot   (driver,               detector);
 
-void setup() {
-    robot.init();
+/**
+ * Establece un retardo aleatorio.
+ */
+void _randomDelay() {
+  int x = random(50, delayTurnMax);
+
+  Serial.print("Random: "); Serial.println(x);
+  
+  delay(x);
 }
 
+/**
+ * 
+ */
+void setup() {
+  randomSeed(analogRead(0));
+  robot.init();
+}
+
+/**
+ * 
+ */
 void loop() {
     ROVER2::state_t state = robot.run();
     
     switch (state)
     {
-      case ROVER2::TURNING: delay( 1); break;
-      default:              delay(50); break;
+      case ROVER2::TURNING: _randomDelay(); break;
+      default:              delay(50);      break;
     }
 }
