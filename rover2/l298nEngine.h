@@ -6,10 +6,10 @@ namespace ROVER2
   class L298NEngine
   {
     private:
-      const short _pinEnable;
-      const short _pinIN1;
-      const short _pinIN2;
-      short       _speed;
+      const int _pinEnable;
+      const int _pinIN1;
+      const int _pinIN2;
+      short     _speed;
       
       /**
        * void _forward()
@@ -39,7 +39,7 @@ namespace ROVER2
       }
     
     public:
-      L298NEngine(const short pinEnable, const short pinIN1, const short pinIN2) : _pinEnable(pinEnable), _pinIN1(pinIN1), _pinIN2(pinIN2), _speed(0) {}
+      L298NEngine(const int pinEnable, const int pinIN1, const int pinIN2) : _pinEnable(pinEnable), _pinIN1(pinIN1), _pinIN2(pinIN2), _speed(0) {}
       
       /**
        * void init()

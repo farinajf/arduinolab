@@ -15,13 +15,13 @@ namespace ROVER2
       const short _speedTurn;
     
     public:
-      CarDriver(const short pinEN_A, const short pinIN1_A, const short pinIN2_A, const short speedA,
-                const short pinEN_B, const short pinIN1_B, const short pinIN2_B, const short speedB) :
-                _engineR(pinEN_A, pinIN1_A, pinIN2_A),
-                _speedR (speedA),
-                _engineL(pinEN_B, pinIN1_B, pinIN2_B),
-                _speedL (speedB),
-                _speedTurn(150)
+      CarDriver(const int pinEN_A, const int pinIN1_A, const int pinIN2_A, const short speedA,
+                const int pinEN_B, const int pinIN1_B, const int pinIN2_B, const short speedB, const short speedTurn) :
+                _engineR  (pinEN_A, pinIN1_A, pinIN2_A),
+                _speedR   (speedA),
+                _engineL  (pinEN_B, pinIN1_B, pinIN2_B),
+                _speedL   (speedB),
+                _speedTurn(speedTurn)
                 {}
       
       /**
@@ -44,8 +44,8 @@ namespace ROVER2
        * void backward()
        */
       void backward() {
-        _engineR.setSpeed(-1 * _speedTurn);
-        _engineL.setSpeed(-1 * _speedTurn);
+        _engineR.setSpeed(-1 * _speedR);
+        _engineL.setSpeed(-1 * _speedL);
       }
       
       /**
