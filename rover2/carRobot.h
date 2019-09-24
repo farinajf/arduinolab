@@ -1,4 +1,3 @@
-#include "movingAverage.h"
 #include "distanceSensor.h"
 #include "detectorObstaculos.h"
 #include "carDriver.h"
@@ -13,7 +12,8 @@ enum state_t {
   STOPPED,
   FORWARD,
   TURNING,
-  REVERSE
+  REVERSE_RIGHT,
+  REVERSE_LEFT
 };
 
 class CarRobot {
@@ -32,10 +32,20 @@ class CarRobot {
     /**
      * Gira el robot
      */
-    void _backward() {
+    void _backwardRight() {
       _stop();
       
-      _state = REVERSE;
+      _state = REVERSE_RIGHT;
+      _driver.backward();
+    }
+
+    /**
+     * Gira el robot
+     */
+    void _backwardLeft() {
+      _stop();
+      
+      _state = REVERSE_LEFT;
       _driver.backward();
     }
 
@@ -83,16 +93,24 @@ class CarRobot {
       if (_isStopped() == true) return;
 
       //2.- Comprobamos si existe un obstaculo
-      positionObstacle_t position = _detector.turn();
-      switch (position)
+      switch (_detector.turn())
       {
-        case RIGHT: _turnLeft();  return;
-        case LEFT:  _turnRight(); return;
-        case FRONT: _backward();  return;
-        
+        case RIGHT:       _turnLeft();      return;
+        case LEFT:        _turnRight();     return;
+        case FRONT_LEFT:  _backwardRight(); return;
+        case FRONT_RIGHT: _backwardLeft();  return;
+
+        //No hay objeto
         default:
-          if (_state != FORWARD) _move();
-          return;
+          switch (_state)
+          {
+            case REVERSE_RIGHT: _turnRight(); return;
+            case REVERSE_LEFT:  _turnLeft();  return;
+            case INITIAL:       _move();      return;
+            case STOPPED:       _move();      return;
+            case TURNING:       _move();      return;
+            case FORWARD:       return;
+          }
       }
     }
 

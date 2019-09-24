@@ -18,7 +18,7 @@
 #define PIN_IN1_B      A2 //Left
 #define PIN_IN2_B      A3 //Left
 
-const unsigned int minDistance  =   25;
+const unsigned int minDistance  =   30;
 const unsigned int minDistanceR =   25;
 const unsigned int minDistanceL =   25;
 const unsigned int maxDistance  =  200;

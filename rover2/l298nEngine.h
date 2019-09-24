@@ -6,15 +6,17 @@ namespace ROVER2
   class L298NEngine
   {
     private:
-      const int _pinEnable;
-      const int _pinIN1;
-      const int _pinIN2;
-      short     _speed;
+      const int  _pinEnable;
+      const int  _pinIN1;
+      const int  _pinIN2;
+      short      _speed;
+      const char _nombre;
       
       /**
        * void _forward()
        */
       void _forward() const {
+        Serial.print("L298NEngine._forward(");Serial.print(_nombre);Serial.print("): ");Serial.println(_speed);
         analogWrite (_pinEnable, _speed);
         digitalWrite(_pinIN1,    HIGH);
         digitalWrite(_pinIN2,    LOW);
@@ -24,6 +26,7 @@ namespace ROVER2
        * void _backward()
        */
       void _backward() const {
+        Serial.print("L298NEngine._backward(");Serial.print(_nombre);Serial.print("): ");Serial.println(_speed);
         analogWrite (_pinEnable, -1 * _speed);
         digitalWrite(_pinIN1,    LOW);
         digitalWrite(_pinIN2,    HIGH);
@@ -39,7 +42,7 @@ namespace ROVER2
       }
     
     public:
-      L298NEngine(const int pinEnable, const int pinIN1, const int pinIN2) : _pinEnable(pinEnable), _pinIN1(pinIN1), _pinIN2(pinIN2), _speed(0) {}
+      L298NEngine(const int pinEnable, const int pinIN1, const int pinIN2, const char n) : _pinEnable(pinEnable), _pinIN1(pinIN1), _pinIN2(pinIN2), _speed(0), _nombre(n) {}
       
       /**
        * void init()

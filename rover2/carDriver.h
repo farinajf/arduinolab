@@ -17,9 +17,9 @@ namespace ROVER2
     public:
       CarDriver(const int pinEN_A, const int pinIN1_A, const int pinIN2_A, const short speedA,
                 const int pinEN_B, const int pinIN1_B, const int pinIN2_B, const short speedB, const short speedTurn) :
-                _engineR  (pinEN_A, pinIN1_A, pinIN2_A),
+                _engineR  (pinEN_A, pinIN1_A, pinIN2_A, 'R'),
                 _speedR   (speedA),
-                _engineL  (pinEN_B, pinIN1_B, pinIN2_B),
+                _engineL  (pinEN_B, pinIN1_B, pinIN2_B, 'L'),
                 _speedL   (speedB),
                 _speedTurn(speedTurn)
                 {}

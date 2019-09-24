@@ -32,7 +32,7 @@ class DistanceSensor
     unsigned int getDistancia() {
       unsigned int result = 0;
 
-      if ((result = _sonar.convert_cm(_sonar.ping_median(5))) == 0) return _distanciaMax;
+      if ((result = _sonar.convert_cm(_sonar.ping_median(3))) == 0) return _distanciaMax;
 
       return result;
     }

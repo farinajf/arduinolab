@@ -74,7 +74,11 @@ class CarRobot {
 
       //3.- Comprobamos a la derecha
       dr = _sonarR.getDistancia();
-      if (_sonarR.hayObjetoCerca(dr) == true) return RIGHT;
+      if (_sonarR.hayObjetoCerca(dr) == true)
+      {
+        detener();
+        return RIGHT;
+      }
 
       //4.- Fin
       return NONE;
