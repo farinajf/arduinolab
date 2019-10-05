@@ -1,0 +1,19 @@
+#ifndef WD4_GLOBALS_H
+#define WD4_GLOBALS_H
+
+#define VOLTAGE_UMBRAL 6.5
+
+/**
+ * 
+ */
+enum MOTION_MODE_ENUM {
+  STANDBY,
+  FORWARD,
+  BACKWARD,
+  TURNLEFT,
+  TURNRIGHT,
+  STOP,
+  START
+};
+
+#endif
