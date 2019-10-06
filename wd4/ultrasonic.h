@@ -22,7 +22,7 @@ void _measureDistance() {
   if (_measureFlag == 0)
   {
     _measurePrevTime = micros();
-    attachPinChangeInterrupt(PIN_CENTER_ECHO, _measureDistance, FALLING);
+    attachPinChangeInterrupt(PIN_ECHO_CENTER, _measureDistance, FALLING);
     _measureFlag = 1;
   }
   else if (_measureFlag == 1)
@@ -39,7 +39,7 @@ void _measureDistanceRight() {
   if (_measureRightFlag == 0)
   {
     _measureRightPrevTime = micros();
-    attachPinChangeInterrupt(PIN_RIGHT_ECHO, _measureDistanceRight, FALLING);
+    attachPinChangeInterrupt(PIN_ECHO_RIGHT, _measureDistanceRight, FALLING);
     _measureRightFlag = 1;
   }
   else if (_measureRightFlag == 1)
@@ -56,7 +56,7 @@ void _measureDistanceLeft() {
   if (_measureLeftFlag == 0)
   {
     _measureLeftPrevTime = micros();
-    attachPinChangeInterrupt(PIN_LEFT_ECHO, _measureDistanceLeft, FALLING);
+    attachPinChangeInterrupt(PIN_ECHO_LEFT, _measureDistanceLeft, FALLING);
     _measureLeftFlag = 1;
   }
   else if (_measureLeftFlag == 1)
@@ -73,14 +73,14 @@ void _measureDistanceLeft() {
  * 
  */
 void ultrasonicInit() {
-  pinMode(PIN_CENTER_TRIGGER, OUTPUT);
-  pinMode(PIN_CENTER_ECHO,    INPUT);
+  pinMode(PIN_TRIGGER_CENTER, OUTPUT);
+  pinMode(PIN_ECHO_CENTER,    INPUT);
 
-  pinMode(PIN_RIGHT_TRIGGER,  OUTPUT);
-  pinMode(PIN_RIGHT_ECHO,     INPUT);
+  pinMode(PIN_TRIGGER_RIGHT,  OUTPUT);
+  pinMode(PIN_ECHO_RIGHT,     INPUT);
 
-  pinMode(PIN_LEFT_TRIGGER,   OUTPUT);
-  pinMode(PIN_LEFT_ECHO,      INPUT);
+  pinMode(PIN_TRIGGER_LEFT,   OUTPUT);
+  pinMode(PIN_ECHO_LEFT,      INPUT);
 
   //pinMode(PIN_IR_LEFT,        INPUT);
   //pinMode(PIN_IR_RIGHT,       INPUT);
@@ -98,13 +98,13 @@ void getDistance() {
   _distancePrevTime = millis();
 
   _measureFlag = 0;
-  attachPinChangeInterrupt(PIN_CENTER_ECHO, _measureDistance, RISING);
+  attachPinChangeInterrupt(PIN_ECHO_CENTER, _measureDistance, RISING);
 
-  digitalWrite     (PIN_CENTER_TRIGGER, LOW);
+  digitalWrite     (PIN_TRIGGER_CENTER, LOW);
   delayMicroseconds(2);
-  digitalWrite     (PIN_CENTER_TRIGGER, HIGH);
+  digitalWrite     (PIN_TRIGGER_CENTER, HIGH);
   delayMicroseconds(10);
-  digitalWrite     (PIN_CENTER_TRIGGER, LOW);
+  digitalWrite     (PIN_TRIGGER_CENTER, LOW);
 }
 
 /**
@@ -119,13 +119,13 @@ void getDistanceRight() {
   _distanceRightPrevTime = millis();
 
   _measureRightFlag = 0;
-  attachPinChangeInterrupt(PIN_RIGHT_ECHO, _measureDistanceRight, RISING);
+  attachPinChangeInterrupt(PIN_ECHO_RIGHT, _measureDistanceRight, RISING);
 
-  digitalWrite     (PIN_RIGHT_TRIGGER, LOW);
+  digitalWrite     (PIN_TRIGGER_RIGHT, LOW);
   delayMicroseconds(2);
-  digitalWrite     (PIN_RIGHT_TRIGGER, HIGH);
+  digitalWrite     (PIN_TRIGGER_RIGHT, HIGH);
   delayMicroseconds(10);
-  digitalWrite     (PIN_RIGHT_TRIGGER, LOW);
+  digitalWrite     (PIN_TRIGGER_RIGHT, LOW);
 }
 
 /**
@@ -140,11 +140,11 @@ void getDistanceLeft() {
   _distanceLeftPrevTime = millis();
 
   _measureLeftFlag = 0;
-  attachPinChangeInterrupt(PIN_LEFT_ECHO, _measureDistanceLeft, RISING);
+  attachPinChangeInterrupt(PIN_ECHO_LEFT, _measureDistanceLeft, RISING);
 
-  digitalWrite     (PIN_LEFT_TRIGGER, LOW);
+  digitalWrite     (PIN_TRIGGER_LEFT, LOW);
   delayMicroseconds(2);
-  digitalWrite     (PIN_LEFT_TRIGGER, HIGH);
+  digitalWrite     (PIN_TRIGGER_LEFT, HIGH);
   delayMicroseconds(10);
-  digitalWrite     (PIN_LEFT_TRIGGER, LOW);
+  digitalWrite     (PIN_TRIGGER_LEFT, LOW);
 }
