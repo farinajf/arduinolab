@@ -8,9 +8,15 @@ volatile char          _measureFlag          = 0;
 unsigned long _distanceRightPrevTime = 0;
 unsigned long _distanceLeftPrevTime  = 0;
 unsigned long _distancePrevTime      = 0;
+unsigned long _leftCountTime         = 0;
+unsigned long _rightCountTime        = 0;
+
+//Public
 double        distanceRight          = 0;
 double        distanceLeft           = 0;
 double        distance               = 0;
+bool          isObstacleLeft         = false;
+bool          isObstacleRight        = false;
 
 ////////////////////////////////////////////////////////////////////
 //Private
@@ -82,14 +88,14 @@ void ultrasonicInit() {
   pinMode(PIN_TRIGGER_LEFT,   OUTPUT);
   pinMode(PIN_ECHO_LEFT,      INPUT);
 
-  //pinMode(PIN_IR_LEFT,        INPUT);
-  //pinMode(PIN_IR_RIGHT,       INPUT);
+  pinMode(PIN_IR_LEFT,        INPUT);
+  pinMode(PIN_IR_RIGHT,       INPUT);
 }
 
 /**
  * void getDistance()
  * 
- * Calcula la distancia al frente.
+ * Calcula la distancia a la izquierda.
  * 
  */
 void getDistance() {
@@ -110,7 +116,7 @@ void getDistance() {
 /**
  * void getDistanceRight()
  * 
- * Calcula la distancia al frente.
+ * Calcula la distancia a la derecha.
  * 
  */
 void getDistanceRight() {
@@ -147,4 +153,25 @@ void getDistanceLeft() {
   digitalWrite     (PIN_TRIGGER_LEFT, HIGH);
   delayMicroseconds(10);
   digitalWrite     (PIN_TRIGGER_LEFT, LOW);
+}
+
+/**
+ * void checkIRObstacle()
+ * 
+ * Chequea si hay objetos laterales
+ */
+void checkIRObstacle() {
+  if (millis() - _leftCountTime > 50)
+  {
+    isObstacleLeft = (digitalRead(PIN_IR_LEFT) == HIGH) ? false : true;
+
+    _leftCountTime = millis();
+  }
+
+  if (millis() - _rightCountTime > 50)
+  {
+    isObstacleRight = (digitalRead(PIN_IR_RIGHT) == HIGH) ? false : true;
+
+    _rightCountTime = millis();
+  }
 }

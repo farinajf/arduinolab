@@ -15,6 +15,8 @@ void _printDistance() {
   Serial.print("Distance: "); Serial.print(distance);
   Serial.print("  Distance right: "); Serial.print(distanceRight);
   Serial.print("  Distance left: ");  Serial.print(distanceLeft);
+  Serial.print("  Obstacle right: "); Serial.print(isObstacleRight);
+  Serial.print("  Obstacle left: ");  Serial.print(isObstacleLeft);
   
   Serial.println(); 
 }
@@ -47,9 +49,15 @@ void loop() {
   getDistanceLeft();
   getDistanceRight();
 
-  //3.- Mover el coche
-  wd4car.drive();
+  //3.- Activamos infrarrojos
+  checkIRObstacle();
 
   //4.- Modo evitar obstaculos
-  wd4car.obstacleAvoidanceMode(distance, distanceLeft, distanceRight);
+  wd4car.obstacleAvoidanceMode(distance, distanceLeft, distanceRight, isObstacleLeft, isObstacleRight);
+
+  //5.- Mover el coche
+  wd4car.drive();
+
+  //delay(500);
+  //_printDistance();
 }
