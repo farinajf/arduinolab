@@ -1,6 +1,7 @@
 #include "wd4Globals.h"
 #include "pins.h"
 #include "l298nEngine.h"
+#include "wd4algorithm.h"
 
 #ifndef WD4CAR_H
 #define WD4CAR_H
@@ -223,12 +224,14 @@ namespace WD4
        * 
        ****************************************************************/
       void obstacleAvoidanceMode(int d, int dl, int dr, bool iol, bool ior) {
-        bool dl_low = dl < DISTANCE_MIN_LATERAL;
-        bool dr_low = dr < DISTANCE_MIN_LATERAL;
+        //bool dl_low = dl < DISTANCE_MIN_LATERAL;
+        //bool dr_low = dr < DISTANCE_MIN_LATERAL;
         
-        if      (iol    || ior)    _lateralObstacleIR(d, iol,    ior);
-        else if (dl_low || dr_low) _lateralObstacle  (d, dl_low, dr_low);
-        else                       _frontObstacle    (d);
+        //if      (iol    || ior)    _lateralObstacleIR(d, iol,    ior);
+        //else if (dl_low || dr_low) _lateralObstacle  (d, dl_low, dr_low);
+        //else                       _frontObstacle    (d);
+
+        _motionMode = getMotionMode(d, dl, dr, iol, ior);
       }
   };
 }
