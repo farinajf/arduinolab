@@ -59,5 +59,5 @@ void loop() {
   wd4car.drive();
 
   //delay(500);
-  //_printDistance();
+  _printDistance();
 }
