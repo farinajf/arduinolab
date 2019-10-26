@@ -1,0 +1,19 @@
+#ifndef ROVER4_GLOBALS_H
+#define ROVER4_GLOBALS_H
+
+bool MODO_PRUEBAS = false;
+
+/**
+ * 
+ */
+enum MOTION_MODE_ENUM {
+  STANDBY,
+  FORWARD,
+  BACKWARD,
+  TURNLEFT,
+  TURNRIGHT,
+  STOP,
+  START
+};
+
+#endif
