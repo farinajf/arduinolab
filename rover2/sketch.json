@@ -1,1 +1,0 @@
-{"cpu":{"fqbn":"arduino:avr:nano:cpu=atmega328old","name":"Arduino Nano","port":""},"included_libs":[{"name":"NewPing","version":"1.9.1"}],"secrets":[]}
