@@ -30,16 +30,16 @@ namespace ROVER4
        * 
        */
       void forward() const {
-        digitalWrite(_pinIN1, LOW);
-        digitalWrite(_pinIN2, HIGH);
+        digitalWrite(_pinIN1, HIGH);
+        digitalWrite(_pinIN2, LOW);
       }
 
       /**
        * 
        */
       void backward() const {
-        digitalWrite(_pinIN1, HIGH);
-        digitalWrite(_pinIN2, LOW);
+        digitalWrite(_pinIN1, LOW);
+        digitalWrite(_pinIN2, HIGH);
       }
 
       /**

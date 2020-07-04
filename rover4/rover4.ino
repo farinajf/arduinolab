@@ -3,17 +3,9 @@
  */
 #include "globals.h"
 #include "pins.h"
-
 #include "rover4.h"
 
 ROVER4::Rover4 rover4;
-
-/**
- * Print distance values.
- */
-void _printDistance() {
-  
-}
 
 /**
  * void init()
@@ -21,6 +13,7 @@ void _printDistance() {
 void setup() {
   Serial.begin(9600);
 
+  ultrasonicInit();
   rover4.init();
 }
 

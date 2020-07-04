@@ -10,14 +10,14 @@ namespace WD4
 {
   class WD4Car {
     private:
-      enum MOTION_MODE_ENUM _motionMode;
-      L298NEngine           _rightEngine;
-      L298NEngine           _leftEngine;
-      long int              _turnCount = 0;
-      int                   _forwardSpeed;    // velocidad es 100x(_velocidad/255)%
-      int                   _backwardSpeed;
-      int                   _turnSpeed;
-      char                  _obstacleAvoidanceFlag = 0;
+      MOTION_MODE_ENUM _motionMode;
+      L298NEngine      _rightEngine;
+      L298NEngine      _leftEngine;
+      long int         _turnCount = 0;
+      int              _forwardSpeed;    // velocidad es 100x(_velocidad/255)%
+      int              _backwardSpeed;
+      int              _turnSpeed;
+      char             _obstacleAvoidanceFlag = 0;
 
 
     // PUBLIC
