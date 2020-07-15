@@ -4,8 +4,8 @@
 //unsigned int DISTANCE_SUPER_MAX         = 400;
 //unsigned int DISTANCE_MAX               =  30;
 unsigned int DISTANCE_MIN               =  35;
-//unsigned int DISTANCE_MIN_LATERAL       =  20;
-//unsigned int DISTANCE_SUPER_MIN         =   3;
+//unsigned int DISTANCE_MIN_LATERAL       =  30;
+unsigned int DISTANCE_SUPER_MIN         =   5;
 //unsigned int DISTANCE_SUPER_MIN_LATERAL =   5;
 float        VOLTAGE_UMBRAL             = 6.5;
 int          FORWARD_SPEED              = 150;

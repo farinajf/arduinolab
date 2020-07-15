@@ -9,10 +9,11 @@ namespace WD5
 {
   class WD5CAR {
     private:
+      AlertSensorEnum _alertSensor;
       MotionModeEnum  _motionMode;
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
-      bool            _alert;
+      bool            _alert = false;;
       int             _forwardSpeed;    //velocidad es 100x(_velocidad/255)%
       int             _backwardSpeed;
       int             _turnSpeed;
@@ -37,6 +38,25 @@ namespace WD5
       }
 
       /****************************************************************
+       * MotionModeEnum _setMotionModeInAlert()
+       * 
+       ****************************************************************/
+      MotionModeEnum _setMotionModeInAlert(Sensors sensors) {
+        //1.- Todo OK
+        if (sensors.isOK() == true)
+        {
+          _alert = false;
+          return _motionMode = FORWARD;
+        }
+
+        //2.- Colission
+        if (sensors.alertColission() == true) return _motionMode = BACKWARD;
+
+        //TODO
+        return _motionMode = BACKWARD;
+      }
+
+      /****************************************************************
        * MotionModeEnum _setMotionMode()
        * 
        ****************************************************************/
@@ -47,10 +67,10 @@ namespace WD5
         //2.- Todo es OK
         if (sensors.isOK() == true) return _motionMode = FORWARD;
 
-        //TODO
-        
         //3.- Entramos en modo alerta
-        _alert = true;
+        _alert       = true;
+        _alertSensor = sensors.getAlertSensor();
+                           
         return _motionMode = ALERT;
       }
       
@@ -144,8 +164,9 @@ namespace WD5
         if (_isStopped() == true) return;
 
         //2.- Obtenemos el estado en funcion de la info de los sensores
-        _setMotionMode(sensors);
-
+        if (_alert == false) _setMotionMode       (sensors);
+        else                 _setMotionModeInAlert(sensors);
+        
         if (DEBUG == true)
         {
           Serial.print("Motion mode: ");  Serial.println(_motionMode2char());

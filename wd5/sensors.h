@@ -18,7 +18,18 @@ namespace WD5
     public:
       Sensors() {}
 
-      double getSensorDistance() const {return HCSR04distance;}
+      double getSensorDistanceRight() const {return HCSR04distanceRight;}
+      double getSensorDistanceLeft()  const {return HCSR04distanceLeft;}
+      double getSensorDistance()      const {return HCSR04distance;}
+
+      /****************************************************************
+       * AlertSensorEnum getAlertSensor()
+       ****************************************************************/
+      AlertSensorEnum getAlertSensor() {
+        return (getSensorDistance() <= getSensorDistanceRight()) ?
+                  (getSensorDistance() <= getSensorDistanceLeft()) ? SENSOR_FORWARD : SENSOR_LEFT
+                      : (getSensorDistanceRight() <= getSensorDistanceLeft()) ? SENSOR_RIGHT : SENSOR_LEFT;
+      }
 
       /****************************************************************
        * void init()
@@ -53,28 +64,53 @@ namespace WD5
        * void isRightOK()
        ****************************************************************/
       boolean isRightOK() const {
-        //TODO
-        return true;
+        return (HCSR04distanceRight > DISTANCE_MIN) ? true: false;
       }
 
       /****************************************************************
        * void isLeftOK()
        ****************************************************************/
       boolean isLeftOK() const {
-        //TODO
-        return true;
+        return (HCSR04distanceLeft > DISTANCE_MIN) ? true: false;
       }
 
+      /****************************************************************
+       * void alertColission()
+       ****************************************************************/
+      boolean alertColission() const {
+        return alertColissionForward() || alertColissionRight() || alertColissionLeft();
+      }
 
+      /****************************************************************
+       * void alertColissionForward()
+       ****************************************************************/
+      boolean alertColissionForward() const {
+        return (HCSR04distance <= DISTANCE_SUPER_MIN) ? true: false;
+      }
+
+      /****************************************************************
+       * void alertColissionRight()
+       ****************************************************************/
+      boolean alertColissionRight() const {
+        return (HCSR04distanceRight <= DISTANCE_SUPER_MIN) ? true: false;
+      }
+
+      /****************************************************************
+       * void alertColissionLeft()
+       ****************************************************************/
+      boolean alertColissionLeft() const {
+        return (HCSR04distanceLeft <= DISTANCE_SUPER_MIN) ? true: false;
+      }
+      
       /****************************************************************
        * void calculate()
        ****************************************************************/
       void calculate() {
         getDistance();
 
-        //getDistanceLeft();
+        getDistanceLeft();
 
-        //getDistanceRight();
+        getDistanceRight();
 
         _voltage.calculate();
       }
