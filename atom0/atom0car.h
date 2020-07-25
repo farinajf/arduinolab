@@ -1,16 +1,15 @@
 #include "pins.h"
-#include "wd5globals.h"
+#include "atom0globals.h"
 #include "l298nEngine.h"
 
-#ifndef WD5_CAR_H
-#define WD5_CAR_H
+#ifndef ATOM0CAR_H
+#define ATOM0CAR_H
 
-namespace WD5
-{
-  class WD5CAR {
+namespace ATOM0 {
+
+  class ATOM0CAR {
     private:
       unsigned long   _printPrevTime = 0;
-      AlertSensorEnum _alertSensor;
       MotionModeEnum  _motionMode;
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
@@ -53,20 +52,9 @@ namespace WD5
         //2.- Colission
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
-        //3.- Izquierda o Derecha OK
-        if ((sensors.isLeftOK() == true) || (sensors.isRightOK() == true))
-        {
-          _motionMode = (sensors.getSensorDistanceLeft() > sensors.getSensorDistanceRight()) ? TURN_LEFT : TURN_RIGHT;
-          return _motionMode;
-        }
-
-        //4.- Izquierda FAIL && Derecha FAIL
-        if (_alertSensor == SENSOR_FORWARD) return _motionMode = BACKWARD;
-        if (sensors.isForwardOK() == false) return _motionMode = BACKWARD;
-
         //5-. Todo OK
-        _alert = false;
-        return _motionMode = FORWARD;
+        _alert = true;
+        return _motionMode = TURN_RIGHT;
       }
 
       /****************************************************************
@@ -74,26 +62,23 @@ namespace WD5
        * 
        ****************************************************************/
       MotionModeEnum _setMotionMode(Sensors sensors) {
-        //1.- Comprobamos bateria
-        if (sensors.isBatteryOK() == false) return _motionMode = STOP;
-
-        //2.- Todo es OK
+        //1.- Todo es OK
         if (sensors.isOK() == true) return _motionMode = FORWARD;
 
-        //3.- Entramos en modo alerta
-        _alert       = true;
-        _alertSensor = sensors.getAlertSensor();
-                           
+        //2.- Entramos en modo alerta
+        _alert = true;
+
+        //3.- Fin
         return _motionMode = ALERT;
       }
       
     public:
-      WD5CAR() : _rightEngine  (PIN_EN_D, PIN_IN1_D, PIN_IN2_D),
-                 _leftEngine   (PIN_EN_I, PIN_IN1_I, PIN_IN2_I),
-                 _forwardSpeed (FORWARD_SPEED),
-                 _backwardSpeed(BACKWARD_SPEED),
-                 _turnSpeed    (TURN_SPEED)
-                 {}
+      ATOM0CAR() : _rightEngine  (PIN_EN_D, PIN_IN1_D, PIN_IN2_D),
+                   _leftEngine   (PIN_EN_I, PIN_IN1_I, PIN_IN2_I),
+                   _forwardSpeed (FORWARD_SPEED),
+                   _backwardSpeed(BACKWARD_SPEED),
+                   _turnSpeed    (TURN_SPEED)
+                   {}
 
       /****************************************************************
        * void init()
@@ -127,6 +112,9 @@ namespace WD5
       void turnLeft() {
         _rightEngine.forward(_turnSpeed);
         _leftEngine.backward(_turnSpeed);
+
+        delay(100);
+        stopCar();
       }
 
       /****************************************************************
@@ -135,6 +123,9 @@ namespace WD5
       void turnRight() {
         _rightEngine.backward(_turnSpeed);
         _leftEngine.forward  (_turnSpeed);
+
+        delay(100);
+        stopCar();
       }
 
       /****************************************************************
@@ -185,9 +176,7 @@ namespace WD5
           _printPrevTime = millis();
           
           Serial.print("Motion mode: ");  Serial.println(_motionMode2char());
-          Serial.print("Left: ");   Serial.print(sensors.getSensorDistanceLeft());  Serial.print("cm. ");
           Serial.print("Center: "); Serial.print(sensors.getSensorDistance());      Serial.print("cm. ");
-          Serial.print("Right: ");  Serial.print(sensors.getSensorDistanceRight()); Serial.print("cm. ");
           Serial.println();
           Serial.println();
         }

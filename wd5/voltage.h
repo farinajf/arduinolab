@@ -57,7 +57,6 @@ namespace WD5
         _measureTime = millis();
 
         double voltage = (analogRead(VOL_MEASURE_PIN) * 5.0 / 1024.0) * _multiplier;
-        //Serial.print("voltage: "); Serial.println(voltage);
 
         if (voltage < VOLTAGE_UMBRAL) _batteryLow();
         else                          _batteryOK();

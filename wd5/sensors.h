@@ -18,9 +18,9 @@ namespace WD5
     public:
       Sensors() {}
 
-      double getSensorDistanceRight() const {return HCSR04distanceRight;}
-      double getSensorDistanceLeft()  const {return HCSR04distanceLeft;}
-      double getSensorDistance()      const {return HCSR04distance;}
+      double getSensorDistanceRight() const {return (HCSR04distanceRight > 0) ? HCSR04distanceRight : DISTANCE_MAX;}
+      double getSensorDistanceLeft()  const {return (HCSR04distanceLeft  > 0) ? HCSR04distanceLeft  : DISTANCE_MAX;}
+      double getSensorDistance()      const {return (HCSR04distance      > 0) ? HCSR04distance      : DISTANCE_MAX;}
 
       /****************************************************************
        * AlertSensorEnum getAlertSensor()
@@ -64,14 +64,14 @@ namespace WD5
        * void isRightOK()
        ****************************************************************/
       boolean isRightOK() const {
-        return (HCSR04distanceRight > DISTANCE_MIN) ? true: false;
+        return (HCSR04distanceRight > DISTANCE_MIN_LATERAL) ? true: false;
       }
 
       /****************************************************************
        * void isLeftOK()
        ****************************************************************/
       boolean isLeftOK() const {
-        return (HCSR04distanceLeft > DISTANCE_MIN) ? true: false;
+        return (HCSR04distanceLeft > DISTANCE_MIN_LATERAL) ? true: false;
       }
 
       /****************************************************************
