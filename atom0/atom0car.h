@@ -53,8 +53,9 @@ namespace ATOM0 {
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
         //5-. Todo OK
-        _alert = true;
-        return _motionMode = TURN_RIGHT;
+        if      (sensors.isRightOK() == true) return _motionMode = TURN_RIGHT;
+        else if (sensors.isLeftOK()  == true) return _motionMode = TURN_LEFT;
+        else                                  return _motionMode = BACKWARD;
       }
 
       /****************************************************************
@@ -147,7 +148,7 @@ namespace ATOM0 {
         {
           case STOP:       stopCar();   break;
           case ALERT:      stopCar();   break;
-          case FORWARD:    forward();   break;
+          case FORWARD:    stopCar();   break;
           case BACKWARD:   backward();  break;
           case TURN_LEFT:  turnLeft();  break;
           case TURN_RIGHT: turnRight(); break;

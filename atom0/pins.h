@@ -15,4 +15,8 @@
 #define PIN_TRIGGER_CENTER  5
 #define PIN_ECHO_CENTER    A3
 
+//INFRARED
+#define PIN_IR_LEFT        12
+#define PIN_IR_RIGHT       11
+
 #endif
