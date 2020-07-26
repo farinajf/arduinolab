@@ -2,6 +2,7 @@
 #include "pins.h"
 #include "hcsr04sensor.h"
 #include "voltage.h"
+#include "infrarrojos.h"
 
 #ifndef WD5_SENSORS_H
 #define WD5_SENSORS_H
@@ -9,11 +10,25 @@
 /**
  * 
  */
-namespace WD5
-{
+namespace WD5 {
   class Sensors {
     private:
       Voltage _voltage;
+      IR      _ir;
+
+      /****************************************************************
+       * void _isDistanceRightOK()
+       ****************************************************************/
+      boolean _isDistanceRightOK() const {
+        return (HCSR04distanceRight > DISTANCE_MIN_LATERAL) ? true: false;
+      }
+
+      /****************************************************************
+       * void _isDistanceLeftOK()
+       ****************************************************************/
+      boolean _isDistanceLeftOK() const {
+        return (HCSR04distanceLeft > DISTANCE_MIN_LATERAL) ? true: false;
+      }
 
     public:
       Sensors() {}
@@ -23,20 +38,12 @@ namespace WD5
       double getSensorDistance()      const {return (HCSR04distance      > 0) ? HCSR04distance      : DISTANCE_MAX;}
 
       /****************************************************************
-       * AlertSensorEnum getAlertSensor()
-       ****************************************************************/
-      AlertSensorEnum getAlertSensor() {
-        return (getSensorDistance() <= getSensorDistanceRight()) ?
-                  (getSensorDistance() <= getSensorDistanceLeft()) ? SENSOR_FORWARD : SENSOR_LEFT
-                      : (getSensorDistanceRight() <= getSensorDistanceLeft()) ? SENSOR_RIGHT : SENSOR_LEFT;
-      }
-
-      /****************************************************************
        * void init()
        ****************************************************************/
       void init() {
         ultrasonicInit();
         _voltage.init();
+        _ir.init();
       }
 
       /****************************************************************
@@ -64,14 +71,14 @@ namespace WD5
        * void isRightOK()
        ****************************************************************/
       boolean isRightOK() const {
-        return (HCSR04distanceRight > DISTANCE_MIN_LATERAL) ? true: false;
+        return _isDistanceRightOK() && _ir.isRightOK();
       }
 
       /****************************************************************
        * void isLeftOK()
        ****************************************************************/
       boolean isLeftOK() const {
-        return (HCSR04distanceLeft > DISTANCE_MIN_LATERAL) ? true: false;
+        return _isDistanceLeftOK() && _ir.isLeftOK();
       }
 
       /****************************************************************
@@ -113,6 +120,8 @@ namespace WD5
         getDistanceRight();
 
         _voltage.calculate();
+
+        _ir.checkIRObstacle();
       }
   };
 }

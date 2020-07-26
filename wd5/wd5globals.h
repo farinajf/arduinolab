@@ -19,6 +19,7 @@ enum MotionModeEnum {
   START,
   STOP,
   ALERT,
+  ALERT_FLIP,
   FORWARD,
   BACKWARD,
   TURN_LEFT,
