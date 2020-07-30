@@ -5,12 +5,10 @@
 #ifndef WD5_CAR_H
 #define WD5_CAR_H
 
-namespace WD5
-{
+namespace WD5 {
   class WD5CAR {
     private:
       unsigned long   _printPrevTime = 0;
-      AlertSensorEnum _alertSensor   = SENSOR_NONE;
       MotionModeEnum  _motionMode    = START;
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;

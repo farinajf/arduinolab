@@ -6,8 +6,7 @@
 
 #define TIME_MIN 50
 
-namespace WD5
-{
+namespace WD5 {
   volatile unsigned long _measureRightPrevTime  = 0;
   volatile char          _measureRightFlag      = 0;
   unsigned long          _distanceRightPrevTime = 0;
