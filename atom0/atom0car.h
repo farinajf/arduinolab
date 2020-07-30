@@ -148,7 +148,7 @@ namespace ATOM0 {
         {
           case STOP:       stopCar();   break;
           case ALERT:      stopCar();   break;
-          case FORWARD:    stopCar();   break;
+          case FORWARD:    forward();   break;
           case BACKWARD:   backward();  break;
           case TURN_LEFT:  turnLeft();  break;
           case TURN_RIGHT: turnRight(); break;
