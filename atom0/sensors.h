@@ -1,6 +1,7 @@
 #ifndef ATOM0_SENSORS_H
 #define ATOM0_SENSORS_H
 
+#include "atom0globals.h"
 #include "ultrasonic.h"
 #include "infrarrojos.h"
 
@@ -11,19 +12,18 @@
 namespace ATOM0 {
   class Sensors {
     private:
-      Sonars _sonars;
-      IR     _ir;
+      IR _ir;
 
     public:
       Sensors() {}
 
-      double getSensorDistance() const {return _sonars.getDistanceFront();}
+      double getSensorDistance() const {return (HCSR04distance > 0) ? HCSR04distance : DISTANCE_MAX;}
 
       /****************************************************************
        * void init()
        ****************************************************************/
       void init() {
-        _sonars.init();
+        ultrasonicInit();
         _ir.init();
       }
 
@@ -38,7 +38,7 @@ namespace ATOM0 {
        * void isForwardOK()
        ****************************************************************/
       boolean isForwardOK() const {
-        return (_sonars.getDistanceFront() > DISTANCE_MIN) ? true: false;
+        return (HCSR04distance > DISTANCE_MIN) ? true: false;
       }
 
       /****************************************************************
@@ -68,14 +68,14 @@ namespace ATOM0 {
        * void alertColissionForward()
        ****************************************************************/
       boolean alertColissionForward() const {
-        return (_sonars.getDistanceFront() <= DISTANCE_SUPER_MIN) ? true: false;
+        return (HCSR04distance <= DISTANCE_SUPER_MIN) ? true: false;
       }
 
       /****************************************************************
        * void calculate()
        ****************************************************************/
       void calculate() {
-        _sonars.checkDistanceFront();
+        getDistance();
 
         _ir.checkIRObstacle();
       }

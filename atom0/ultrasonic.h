@@ -1,53 +1,80 @@
+#include "pinChangeInt.h"
 #include "pins.h"
-#include "atom0globals.h"
-#include <NewPing.h>
 
 #ifndef ATOM0_ULTRASONIC_H
 #define ATOM0_ULTRASONIC_H
 
+#define TIME_MIN 50
+
 namespace ATOM0 {
-  class Sonars {
-    private:
-      NewPing       _sonar;
-      unsigned long _distancePrevTime = 0;
-      double        _distance         = 0;
+  volatile unsigned long _measurePrevTime  = 0;
+  volatile char          _measureFlag      = 0;
+  unsigned long          _distancePrevTime = 0;
+  double                 HCSR04distance    = 0;
 
-      /**
-       * double _calculateDistanceFront()
-       */
-      double _calculateDistanceFront() {
-        double result = _sonar.convert_cm(_sonar.ping_median(3));
-        
-        return (result > 0) ? result : DISTANCE_MAX;
-      }
-      
-    public:
-      Sonars() : _sonar (PIN_TRIGGER_CENTER, PIN_ECHO_CENTER, DISTANCE_MAX),
-                 _distancePrevTime(0),
-                 _distance(0)
-                 {}
-                 
-      double getDistanceFront() const {return _distance;}
-      
-      /****************************************************************
-       * void init()
-       ****************************************************************/
-      void init() {}
+  ////////////////////////////////////////////////////////////////////
+  //Private
+  ////////////////////////////////////////////////////////////////////
+  /**
+   * void _measureDistance()
+   */
+  void _measureDistance() {
+    if (_measureFlag == 0)
+    {
+      _measurePrevTime = micros();
+      attachPinChangeInterrupt(PIN_ECHO_CENTER, _measureDistance, FALLING);
+      _measureFlag = 1;
+    }
+    else if (_measureFlag == 1)
+    {
+      HCSR04distance = (micros() - _measurePrevTime) * 0.017;
+      _measureFlag = 2;
+    }
+  }
 
-      /**
-       * double checkDistanceFront()
-       * 
-       * Calcula la distancia a la izquierda.
-       * 
-       */
-      double checkDistanceFront() {
-        if (millis() - _distancePrevTime <= PING_INTERVAL) return _distance;
+  /**
+   * void _sendPulse(int pinTrigger)
+   * 
+   * Se envía una señal (pulso alto de 5 V) de al menos 10 us por el pin TRIGGER del modulo HC-SR04.
+   * Se excita el transductor emisor 8 veces, generando así un tren de 8 pulsos ultrasónicos a 40 KHz.
+   * 
+   * Se establece el pin ECHO del módulo de ultrasonidos en un nivel alto (5V),
+   * y se pondrá en un nivel bajo (0V) cuando se reciba el echo.
+   */
+  void _sendPulse(int pinTrigger) {
+    digitalWrite     (pinTrigger, LOW);
+    delayMicroseconds(2);
+    digitalWrite     (pinTrigger, HIGH);
+    delayMicroseconds(10);
+    digitalWrite     (pinTrigger, LOW);
+  }
 
-        _distance         = _calculateDistanceFront();
-        _distancePrevTime = millis();
-        
-        return _distance;
-      }
-  };
+  ////////////////////////////////////////////////////////////////////
+  // Public
+  ////////////////////////////////////////////////////////////////////
+  /**
+   * void ultrasonicInit()
+   */
+  void ultrasonicInit() {
+    pinMode(PIN_TRIGGER_CENTER, OUTPUT);
+    pinMode(PIN_ECHO_CENTER,    INPUT);
+  }
+
+  /**
+   * void getDistance()
+   * 
+   * Calcula la distancia a la izquierda.
+   * 
+   */
+  void getDistance() {
+    if (millis() - _distancePrevTime < TIME_MIN) return;
+
+    _distancePrevTime = millis();
+
+    _measureFlag = 0;
+    attachPinChangeInterrupt(PIN_ECHO_CENTER, _measureDistance, RISING);
+
+    _sendPulse(PIN_TRIGGER_CENTER);
+  }
 }
 #endif

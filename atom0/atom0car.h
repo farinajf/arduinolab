@@ -17,6 +17,7 @@ namespace ATOM0 {
       int             _forwardSpeed;    //velocidad es 100x(_velocidad/255)%
       int             _backwardSpeed;
       int             _turnSpeed;
+      int             _turnsInAlert  = 0;
 
       bool _isStopped() const {return _motionMode == STOP;}
 
@@ -52,10 +53,20 @@ namespace ATOM0 {
         //2.- Colission
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
-        //5-. Todo OK
-        if      (sensors.isRightOK() == true) return _motionMode = TURN_RIGHT;
-        else if (sensors.isLeftOK()  == true) return _motionMode = TURN_LEFT;
-        else                                  return _motionMode = BACKWARD;
+        //3.- Izquierda OK
+        if ((sensors.isLeftOK() == true) && (_turnsInAlert <= 0)) return _motionMode = TURN_LEFT;
+  
+        //4.- Derecha OK
+        if ((sensors.isRightOK() == true) && (_turnsInAlert >= 0)) return _motionMode = TURN_RIGHT;
+
+        //5.- Izquierda OK
+        if (_turnsInAlert < 0) return _motionMode = TURN_LEFT;
+  
+        //6.- Derecha OK
+        if (_turnsInAlert > 0) return _motionMode = TURN_RIGHT;
+
+        //7-. Fin
+        return _motionMode = BACKWARD;
       }
 
       /****************************************************************
@@ -113,9 +124,6 @@ namespace ATOM0 {
       void turnLeft() {
         _rightEngine.forward(_turnSpeed);
         _leftEngine.backward(_turnSpeed);
-
-        delay(100);
-        stopCar();
       }
 
       /****************************************************************
@@ -124,9 +132,6 @@ namespace ATOM0 {
       void turnRight() {
         _rightEngine.backward(_turnSpeed);
         _leftEngine.forward  (_turnSpeed);
-
-        delay(100);
-        stopCar();
       }
 
       /****************************************************************
@@ -146,12 +151,12 @@ namespace ATOM0 {
       void drive() {
         switch(_motionMode)
         {
-          case STOP:       stopCar();   break;
+          case STOP:       stopCar();   _turnsInAlert = 0; break;
           case ALERT:      stopCar();   break;
-          case FORWARD:    forward();   break;
+          case FORWARD:    forward();   _turnsInAlert = 0; break;
           case BACKWARD:   backward();  break;
-          case TURN_LEFT:  turnLeft();  break;
-          case TURN_RIGHT: turnRight(); break;
+          case TURN_LEFT:  turnLeft();  _turnsInAlert--;  break;
+          case TURN_RIGHT: turnRight(); _turnsInAlert++;  break;
           case START:      break;
           default:         break;
         }
