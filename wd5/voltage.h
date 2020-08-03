@@ -4,8 +4,7 @@
 #ifndef WD5_VOLTAGE_H
 #define WD5_VOLTAGE_H
 
-namespace WD5
-{
+namespace WD5 {
   class Voltage {
     private:
       const    float _multiplier  = (4.68 + 4.69) / 4.69;
