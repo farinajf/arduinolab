@@ -12,7 +12,8 @@ namespace WD5 {
       MotionModeEnum  _motionMode    = START;
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
-      bool            _alert = false;
+      bool            _alert    = false;
+      bool            _backward = false;
       int             _forwardSpeed;    //velocidad es 100x(_velocidad/255)%
       int             _backwardSpeed;
       int             _turnSpeed;
@@ -88,6 +89,60 @@ namespace WD5 {
       }
 
       /****************************************************************
+       * MotionModeEnum _setMotionModeInAlert2()
+       * 
+       ****************************************************************/
+      MotionModeEnum _setMotionModeInAlert2(Sensors sensors) {
+        //1.- Todo OK
+        if (sensors.isOK() == true)
+        {
+          _setAlert(false);
+
+          return _motionMode = FORWARD;
+        }
+
+        //2.- Colission
+        if (sensors.alertColission() == true) return _motionMode = BACKWARD;
+
+        //3.- Lateral OK
+        if (sensors.isLateralOK() == true)
+        {
+          //3.1.- Seguir girando a derechas
+          if (_turnsInAlert > 0) return _motionMode = TURN_RIGHT;
+
+          //3.2.- Seguir girando a izquierdas
+          if (_turnsInAlert < 0) return _motionMode = TURN_LEFT;
+
+          //3.3.- Seleccionar sentido de giro
+          if (_turnsInAlert == 0) return _motionMode = (sensors.getSensorDistanceLeft() > sensors.getSensorDistanceRight()) ? TURN_LEFT : TURN_RIGHT;
+        }
+
+        //4.- Lateral Derecha OK
+        if (sensors.isLateralRightOK() == true)
+        {
+          if ((sensors.isDistanceRightOK() == true) && (_turnsInAlert >= 0)) return _motionMode = TURN_RIGHT;
+
+          return _motionMode = BACKWARD;
+        }
+
+        //5.- Lateral Izquierda OK
+        if (sensors.isLateralLeftOK() == true)
+        {
+          if ((sensors.isDistanceLeftOK() == true) && (_turnsInAlert <= 0)) return _motionMode = TURN_LEFT;
+
+          return _motionMode = BACKWARD;
+        }
+
+        //6.- Lateral Derecha & Izquierda FAIL
+        if (sensors.isDistanceRightOK() == false) return _motionMode = BACKWARD;
+        if (sensors.isDistanceLeftOK()  == false) return _motionMode = BACKWARD;
+        if (sensors.isForwardOK()       == false) return _motionMode = BACKWARD;
+        if (_backward                   == true)  return _motionMode = BACKWARD;
+
+        return _motionMode = FORWARD;
+      }
+
+      /****************************************************************
        * MotionModeEnum _setMotionMode()
        * 
        ****************************************************************/
@@ -95,13 +150,23 @@ namespace WD5 {
         //1.- Comprobamos bateria
         if (sensors.isBatteryOK() == false) return _motionMode = STOP;
 
-        //2.- Todo es OK
+        //2.- Estamos modo alerta
+        if (_alert == true)
+        {
+          _setMotionModeInAlert2(sensors);
+          
+          if ((_backward == true) && (_motionMode != BACKWARD)) return _motionMode = ALERT_FLIP;
+
+          return _motionMode;
+        }
+
+        //3.- Todo es OK
         if (sensors.isOK() == true) return _motionMode = FORWARD;
 
-        //3.- Entramos en modo alerta
+        //4.- Entramos en modo alerta
         _setAlert(true);
 
-        //4.- Fin
+        //5.- Fin
         return _motionMode = ALERT;
       }
       
@@ -135,6 +200,8 @@ namespace WD5 {
        * void backward()
        ****************************************************************/
       void backward() {
+        _backward = true;
+        
         _rightEngine.backward(_backwardSpeed);
         _leftEngine.backward (_backwardSpeed);
       }
@@ -159,6 +226,8 @@ namespace WD5 {
        * void flip()
        ****************************************************************/
       void flip() {
+        _backward = false;
+        
         _rightEngine.backward(_turnSpeed);
         _leftEngine.forward  (_turnSpeed);
 
@@ -206,8 +275,7 @@ namespace WD5 {
         if (_isStopped() == true) return;
 
         //2.- Obtenemos el estado en funcion de la info de los sensores
-        if (_alert == false) _setMotionMode       (sensors);
-        else                 _setMotionModeInAlert(sensors);
+        _setMotionMode(sensors);
 
         if ((DEBUG == true) && ((millis() - _printPrevTime) > 500))
         {

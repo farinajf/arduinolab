@@ -17,25 +17,32 @@ namespace WD5 {
       IR      _ir;
 
       /****************************************************************
-       * void _isDistanceRightOK()
+       * boolean _alertColissionForward()
        ****************************************************************/
-      boolean _isDistanceRightOK() const {
-        return (HCSR04distanceRight > DISTANCE_MIN_LATERAL) ? true: false;
+      boolean _alertColissionForward() const {
+        return (HCSR04distance <= DISTANCE_SUPER_MIN) ? true: false;
       }
 
       /****************************************************************
-       * void _isDistanceLeftOK()
+       * boolean _alertColissionRight()
        ****************************************************************/
-      boolean _isDistanceLeftOK() const {
-        return (HCSR04distanceLeft > DISTANCE_MIN_LATERAL) ? true: false;
+      boolean _alertColissionRight() const {
+        return (HCSR04distanceRight <= DISTANCE_SUPER_MIN) ? true: false;
+      }
+
+      /****************************************************************
+       * boolean _alertColissionLeft()
+       ****************************************************************/
+      boolean _alertColissionLeft() const {
+        return (HCSR04distanceLeft <= DISTANCE_SUPER_MIN) ? true: false;
       }
 
     public:
       Sensors() {}
 
-      double getSensorDistanceRight() const {return (HCSR04distanceRight > 0) ? HCSR04distanceRight : DISTANCE_MAX;}
-      double getSensorDistanceLeft()  const {return (HCSR04distanceLeft  > 0) ? HCSR04distanceLeft  : DISTANCE_MAX;}
-      double getSensorDistance()      const {return (HCSR04distance      > 0) ? HCSR04distance      : DISTANCE_MAX;}
+      double getSensorDistanceRight() const {return (HCSR04distanceRight >= 0) ? HCSR04distanceRight : DISTANCE_MAX;}
+      double getSensorDistanceLeft()  const {return (HCSR04distanceLeft  >= 0) ? HCSR04distanceLeft  : DISTANCE_MAX;}
+      double getSensorDistance()      const {return (HCSR04distance      >= 0) ? HCSR04distance      : DISTANCE_MAX;}
 
       /****************************************************************
        * void init()
@@ -47,66 +54,80 @@ namespace WD5 {
       }
 
       /****************************************************************
-       * void isBatteryOK()
+       * boolean isBatteryOK()
        ****************************************************************/
       boolean isBatteryOK() const {
         return _voltage.isVoltageHigh();
       }
 
       /****************************************************************
-       * void isOK()
+       * boolean isOK()
        ****************************************************************/
       boolean isOK() const {
         return isForwardOK() && isRightOK() && isLeftOK();
       }
 
       /****************************************************************
-       * void isForwardOK()
+       * boolean alertColission()
+       ****************************************************************/
+      boolean alertColission() const {
+        return _alertColissionForward() || _alertColissionRight() || _alertColissionLeft();
+      }
+
+      /****************************************************************
+       * boolean isLateralOK()
+       ****************************************************************/
+      boolean isLateralOK() const {
+        return isLateralRightOK() && isLateralLeftOK();
+      }
+      
+      /****************************************************************
+       * boolean isForwardOK()
        ****************************************************************/
       boolean isForwardOK() const {
         return (HCSR04distance > DISTANCE_MIN) ? true: false;
       }
 
       /****************************************************************
-       * void isRightOK()
+       * boolean isRightOK()
        ****************************************************************/
       boolean isRightOK() const {
-        return _isDistanceRightOK() && _ir.isRightOK();
+        return isDistanceRightOK() && isLateralRightOK();
       }
 
       /****************************************************************
-       * void isLeftOK()
+       * boolean isDistanceRightOK()
+       ****************************************************************/
+      boolean isDistanceRightOK() const {
+        return (HCSR04distanceRight > DISTANCE_MIN_LATERAL) ? true: false;
+      }
+      
+      /****************************************************************
+       * boolean isLateralRightOK()
+       ****************************************************************/
+      boolean isLateralRightOK() const {
+        return _ir.isRightOK();
+      }
+
+      /****************************************************************
+       * boolean isLeftOK()
        ****************************************************************/
       boolean isLeftOK() const {
-        return _isDistanceLeftOK() && _ir.isLeftOK();
+        return isDistanceLeftOK() && isLateralLeftOK();
       }
 
       /****************************************************************
-       * void alertColission()
+       * boolean isDistanceLeftOK()
        ****************************************************************/
-      boolean alertColission() const {
-        return alertColissionForward() || alertColissionRight() || alertColissionLeft();
+      boolean isDistanceLeftOK() const {
+        return (HCSR04distanceLeft > DISTANCE_MIN_LATERAL) ? true: false;
       }
 
       /****************************************************************
-       * void alertColissionForward()
+       * boolean isLateralLeftOK()
        ****************************************************************/
-      boolean alertColissionForward() const {
-        return (HCSR04distance <= DISTANCE_SUPER_MIN) ? true: false;
-      }
-
-      /****************************************************************
-       * void alertColissionRight()
-       ****************************************************************/
-      boolean alertColissionRight() const {
-        return (HCSR04distanceRight <= DISTANCE_SUPER_MIN) ? true: false;
-      }
-
-      /****************************************************************
-       * void alertColissionLeft()
-       ****************************************************************/
-      boolean alertColissionLeft() const {
-        return (HCSR04distanceLeft <= DISTANCE_SUPER_MIN) ? true: false;
+      boolean isLateralLeftOK() const {
+        return _ir.isLeftOK();
       }
       
       /****************************************************************
