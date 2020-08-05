@@ -17,7 +17,7 @@ namespace ATOM0 {
     public:
       Sensors() {}
 
-      double getSensorDistance() const {return (HCSR04distance > 0) ? HCSR04distance : DISTANCE_MAX;}
+      double getSensorDistance() const {return (HCSR04distance >= 0) ? HCSR04distance : DISTANCE_MAX;}
 
       /****************************************************************
        * void init()

@@ -14,9 +14,9 @@ namespace ATOM0 {
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
       bool            _alert = false;
-      int             _forwardSpeed;    //velocidad es 100x(_velocidad/255)%
-      int             _backwardSpeed;
-      int             _turnSpeed;
+      int             _forwardSpeed  = FORWARD_SPEED_FAST; //velocidad es 100x(_velocidad/255)%
+      int             _backwardSpeed = BACKWARD_SPEED;
+      int             _turnSpeed     = TURN_SPEED;
       int             _turnsInAlert  = 0;
 
       bool _isStopped() const {return _motionMode == STOP;}
@@ -39,14 +39,24 @@ namespace ATOM0 {
       }
 
       /****************************************************************
+       * void _setAlert(bool x)
+       * 
+       ****************************************************************/
+      void _setAlert(const bool x) {
+        _alert = x;
+
+        digitalWrite(PIN_LED_ALERT, (_alert == true) ? HIGH : LOW);
+      }
+
+      /****************************************************************
        * MotionModeEnum _setMotionModeInAlert()
        * 
        ****************************************************************/
-      MotionModeEnum _setMotionModeInAlert(Sensors sensors) {
+      MotionModeEnum _setMotionModeInAlert(const Sensors sensors) {
         //1.- Todo OK
         if (sensors.isOK() == true)
         {
-          _alert = false;
+          _setAlert(false);
           return _motionMode = FORWARD;
         }
 
@@ -54,10 +64,10 @@ namespace ATOM0 {
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
         //3.- Izquierda OK
-        if ((sensors.isLeftOK() == true) && (_turnsInAlert <= 0)) return _motionMode = TURN_LEFT;
+        if ((sensors.isLeftOK() == true) && (_turnsInAlert == 0)) return _motionMode = TURN_LEFT;
   
         //4.- Derecha OK
-        if ((sensors.isRightOK() == true) && (_turnsInAlert >= 0)) return _motionMode = TURN_RIGHT;
+        if ((sensors.isRightOK() == true) && (_turnsInAlert == 0)) return _motionMode = TURN_RIGHT;
 
         //5.- Izquierda OK
         if (_turnsInAlert < 0) return _motionMode = TURN_LEFT;
@@ -73,23 +83,23 @@ namespace ATOM0 {
        * MotionModeEnum _setMotionMode()
        * 
        ****************************************************************/
-      MotionModeEnum _setMotionMode(Sensors sensors) {
-        //1.- Todo es OK
+      MotionModeEnum _setMotionMode(const Sensors sensors) {
+        //1.- Estamos modo alerta
+        if (_alert == true) return _setMotionModeInAlert(sensors);
+        
+        //2.- Todo es OK
         if (sensors.isOK() == true) return _motionMode = FORWARD;
 
-        //2.- Entramos en modo alerta
-        _alert = true;
+        //3.- Entramos en modo alerta
+        _setAlert(true);
 
-        //3.- Fin
+        //4.- Fin
         return _motionMode = ALERT;
       }
       
     public:
-      ATOM0CAR() : _rightEngine  (PIN_EN_D, PIN_IN1_D, PIN_IN2_D),
-                   _leftEngine   (PIN_EN_I, PIN_IN1_I, PIN_IN2_I),
-                   _forwardSpeed (FORWARD_SPEED),
-                   _backwardSpeed(BACKWARD_SPEED),
-                   _turnSpeed    (TURN_SPEED)
+      ATOM0CAR() : _rightEngine(PIN_EN_D, PIN_IN1_D, PIN_IN2_D),
+                   _leftEngine (PIN_EN_I, PIN_IN1_I, PIN_IN2_I)
                    {}
 
       /****************************************************************
@@ -100,6 +110,8 @@ namespace ATOM0 {
 
         _rightEngine.init();
         _leftEngine.init();
+
+        pinMode(PIN_LED_ALERT, OUTPUT);
       }
 
       /****************************************************************
@@ -124,6 +136,10 @@ namespace ATOM0 {
       void turnLeft() {
         _rightEngine.forward(_turnSpeed);
         _leftEngine.backward(_turnSpeed);
+
+        delay(30);
+        stopCar();
+        delay(20);
       }
 
       /****************************************************************
@@ -132,6 +148,10 @@ namespace ATOM0 {
       void turnRight() {
         _rightEngine.backward(_turnSpeed);
         _leftEngine.forward  (_turnSpeed);
+        
+        delay(30);
+        stopCar();
+        delay(20);
       }
 
       /****************************************************************
@@ -151,13 +171,13 @@ namespace ATOM0 {
       void drive() {
         switch(_motionMode)
         {
-          case STOP:       stopCar();   _turnsInAlert = 0; break;
-          case ALERT:      stopCar();   break;
-          case FORWARD:    forward();   _turnsInAlert = 0; break;
-          case BACKWARD:   backward();  break;
-          case TURN_LEFT:  turnLeft();  _turnsInAlert--;  break;
-          case TURN_RIGHT: turnRight(); _turnsInAlert++;  break;
-          case START:      break;
+          case STOP:       _turnsInAlert = 0; stopCar();   break;
+          case ALERT:      _turnsInAlert = 0; stopCar();   break;
+          case FORWARD:    _turnsInAlert = 0; forward();   break;
+          case BACKWARD:   _turnsInAlert = 0; backward();  break;
+          case TURN_LEFT:  _turnsInAlert--;   turnLeft();  break;
+          case TURN_RIGHT: _turnsInAlert++;   turnRight(); break;
+          case START:      _turnsInAlert = 0; break;
           default:         break;
         }
       }
@@ -169,25 +189,27 @@ namespace ATOM0 {
        * sensors.
        * 
        ****************************************************************/
-      MotionModeEnum setMotionMode(Sensors sensors) {
+      MotionModeEnum setMotionMode(const Sensors sensors) {
         //1.- Si esta parado nos vamos...
         if (_isStopped() == true) return;
 
         //2.- Obtenemos el estado en funcion de la info de los sensores
-        if (_alert == false) _setMotionMode       (sensors);
-        else                 _setMotionModeInAlert(sensors);
+        _setMotionMode(sensors);
         
         if ((DEBUG == true) && ((millis() - _printPrevTime) > 500))
         {
           _printPrevTime = millis();
           
           Serial.print("Motion mode: ");  Serial.println(_motionMode2char());
-          Serial.print("Center: "); Serial.print(sensors.getSensorDistance());      Serial.print("cm. ");
+          Serial.print("Center: "); Serial.print(sensors.getSensorDistance()); Serial.print("cm. ");
           Serial.println();
           Serial.println();
         }
 
-        //3.- Fin.
+        //3.- Velocidad
+        if (_motionMode == FORWARD) _forwardSpeed = (sensors.getSensorDistance() > DISTANCE_MIN_FAST) ? FORWARD_SPEED_FAST : FORWARD_SPEEP_SLOW;
+
+        //4.- Fin.
         return _motionMode;
       }
   };
