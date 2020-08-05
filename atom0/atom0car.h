@@ -137,9 +137,9 @@ namespace ATOM0 {
         _rightEngine.forward(_turnSpeed);
         _leftEngine.backward(_turnSpeed);
 
-        delay(30);
-        stopCar();
         delay(20);
+        stopCar();
+        delay(30);
       }
 
       /****************************************************************
@@ -149,9 +149,9 @@ namespace ATOM0 {
         _rightEngine.backward(_turnSpeed);
         _leftEngine.forward  (_turnSpeed);
         
-        delay(30);
-        stopCar();
         delay(20);
+        stopCar();
+        delay(30);
       }
 
       /****************************************************************
