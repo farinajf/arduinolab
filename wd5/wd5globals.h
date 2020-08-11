@@ -17,9 +17,9 @@ int          BACKWARD_SPEED             = 0;
 int          TURN_SPEED                 = 0;
 #else
 bool         DEBUG                      = false;
-int          FORWARD_SPEED              = 150;
-int          BACKWARD_SPEED             = 150;
-int          TURN_SPEED                 = 150;
+int          FORWARD_SPEED              = 250;
+int          BACKWARD_SPEED             = 200;
+int          TURN_SPEED                 = 200;
 #endif
 /**
  * 
