@@ -9,15 +9,16 @@ namespace ATOM0 {
 
   class ATOM0CAR {
     private:
-      unsigned long   _printPrevTime = 0;
+      unsigned long   _printPrevTime   = 0;
       MotionModeEnum  _motionMode;
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
-      bool            _alert = false;
-      int             _forwardSpeed  = FORWARD_SPEED_FAST; //velocidad es 100x(_velocidad/255)%
-      int             _backwardSpeed = BACKWARD_SPEED;
-      int             _turnSpeed     = TURN_SPEED;
-      int             _turnsInAlert  = 0;
+      bool            _alert           = false;
+      int             _forwardSpeed    = FORWARD_SPEED_FAST; //velocidad es 100x(_velocidad/255)%
+      int             _backwardSpeed   = BACKWARD_SPEED;
+      int             _turnSpeed       = TURN_SPEED;
+      int             _turnsCounter    = 0;
+      int             _backwardCounter = 0;
 
       bool _isStopped() const {return _motionMode == STOP;}
 
@@ -64,19 +65,23 @@ namespace ATOM0 {
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
         //3.- Izquierda OK
-        if ((sensors.isLeftOK() == true) && (_turnsInAlert == 0)) return _motionMode = TURN_LEFT;
+        if ((sensors.isLeftOK() == true) && (_turnsCounter == 0)) return _motionMode = TURN_LEFT;
   
         //4.- Derecha OK
-        if ((sensors.isRightOK() == true) && (_turnsInAlert == 0)) return _motionMode = TURN_RIGHT;
+        if ((sensors.isRightOK() == true) && (_turnsCounter == 0)) return _motionMode = TURN_RIGHT;
 
-        //5.- Izquierda OK
-        if (_turnsInAlert < 0) return _motionMode = TURN_LEFT;
+        //5.- Ya esta girando a Izquierda
+        if (_turnsCounter < 0) return _motionMode = TURN_LEFT;
   
-        //6.- Derecha OK
-        if (_turnsInAlert > 0) return _motionMode = TURN_RIGHT;
+        //6.- Ya esta girando a Derecha
+        if (_turnsCounter > 0) return _motionMode = TURN_RIGHT;
+
+        //6.- Lateral Derecha & Izquierda FAIL
+        if (sensors.isForwardOK()       == false) return _motionMode = BACKWARD;
+        if (_backwardCounter            > 0)      return _motionMode = BACKWARD;
 
         //7-. Fin
-        return _motionMode = BACKWARD;
+        return _motionMode = FORWARD;
       }
 
       /****************************************************************
@@ -95,6 +100,46 @@ namespace ATOM0 {
 
         //4.- Fin
         return _motionMode = ALERT;
+      }
+
+      /****************************************************************
+       * void _forward()
+       ****************************************************************/
+      void _forward() {
+        _rightEngine.forward(_forwardSpeed);
+        _leftEngine.forward (_forwardSpeed);
+      }
+
+      /****************************************************************
+       * void _backward()
+       ****************************************************************/
+      void _backward() {
+        _rightEngine.backward(_backwardSpeed);
+        _leftEngine.backward (_backwardSpeed);
+      }
+
+      /****************************************************************
+       * void _turnLeft()
+       ****************************************************************/
+      void _turnLeft() {
+        _rightEngine.forward(_turnSpeed);
+        _leftEngine.backward(_turnSpeed);
+      }
+
+      /****************************************************************
+       * void _turnRight()
+       ****************************************************************/
+      void _turnRight() {
+        _rightEngine.backward(_turnSpeed);
+        _leftEngine.forward  (_turnSpeed);
+      }
+
+      /****************************************************************
+       * void _stopCar()
+       ****************************************************************/
+      void _stopCar() {
+        _rightEngine.stop();
+        _leftEngine.stop ();
       }
       
     public:
@@ -115,54 +160,6 @@ namespace ATOM0 {
       }
 
       /****************************************************************
-       * void forward()
-       ****************************************************************/
-      void forward() {
-        _rightEngine.forward(_forwardSpeed);
-        _leftEngine.forward (_forwardSpeed);
-      }
-
-      /****************************************************************
-       * void backward()
-       ****************************************************************/
-      void backward() {
-        _rightEngine.backward(_backwardSpeed);
-        _leftEngine.backward (_backwardSpeed);
-      }
-
-      /****************************************************************
-       * void turnLeft()
-       ****************************************************************/
-      void turnLeft() {
-        _rightEngine.forward(_turnSpeed);
-        _leftEngine.backward(_turnSpeed);
-
-        delay(20);
-        stopCar();
-        delay(30);
-      }
-
-      /****************************************************************
-       * void turnRight()
-       ****************************************************************/
-      void turnRight() {
-        _rightEngine.backward(_turnSpeed);
-        _leftEngine.forward  (_turnSpeed);
-        
-        delay(20);
-        stopCar();
-        delay(30);
-      }
-
-      /****************************************************************
-       * void stopCar()
-       ****************************************************************/
-      void stopCar() {
-        _rightEngine.stop();
-        _leftEngine.stop ();
-      }
-
-      /****************************************************************
        * void drive()
        * 
        * Rotate the engines based on the motion state of the car.
@@ -171,14 +168,16 @@ namespace ATOM0 {
       void drive() {
         switch(_motionMode)
         {
-          case STOP:       _turnsInAlert = 0; stopCar();   break;
-          case ALERT:      _turnsInAlert = 0; stopCar();   break;
-          case FORWARD:    _turnsInAlert = 0; forward();   break;
-          case BACKWARD:   _turnsInAlert = 0; backward();  break;
-          case TURN_LEFT:  _turnsInAlert--;   turnLeft();  break;
-          case TURN_RIGHT: _turnsInAlert++;   turnRight(); break;
-          case START:      _turnsInAlert = 0; break;
-          default:         break;
+          case STOP:       _turnsCounter = 0; _backwardCounter = 0; _stopCar();   break;
+          case ALERT:      _turnsCounter = 0; _backwardCounter = 0; _stopCar();   break;
+          case FORWARD:    _turnsCounter = 0; _backwardCounter = 0; _forward();   break;
+          case BACKWARD:   _turnsCounter = 0; _backwardCounter++;   _backward();  break;
+          case TURN_LEFT:  _turnsCounter--;   _backwardCounter = 0; _turnLeft();  break;
+          case TURN_RIGHT: _turnsCounter++;   _backwardCounter = 0; _turnRight(); break;
+          //case FLIP_LEFT:  _turnsCounter = 0; _backwardCounter = 0; flipLeft();  break;
+          //case FLIP_RIGHT: _turnsCounter = 0; _backwardCounter = 0; flipRight(); break;
+          case START:      _turnsCounter = 0; _backwardCounter = 0; break;
+          default:         _turnsCounter = 0; _backwardCounter = 0; break;
         }
       }
 
@@ -203,11 +202,10 @@ namespace ATOM0 {
           Serial.print("Motion mode: ");  Serial.println(_motionMode2char());
           Serial.print("Center: "); Serial.print(sensors.getSensorDistance()); Serial.print("cm. ");
           Serial.println();
-          Serial.println();
         }
 
         //3.- Velocidad
-        if (_motionMode == FORWARD) _forwardSpeed = (sensors.getSensorDistance() > DISTANCE_MIN_FAST) ? FORWARD_SPEED_FAST : FORWARD_SPEEP_SLOW;
+        if (sensors.isOK() == true) _forwardSpeed = (sensors.getSensorDistance() > DISTANCE_MIN_FAST) ? FORWARD_SPEED_FAST : FORWARD_SPEEP_SLOW;
 
         //4.- Fin.
         return _motionMode;
