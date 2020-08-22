@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "l298nEngine.h"
+#include "bocina.h"
 
 namespace KM0CAR {
   class KM0CAR {
@@ -11,6 +12,7 @@ namespace KM0CAR {
       MotionModeEnum  _motionMode;
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
+      Bocina          _bocina;
       bool            _alert = false;
       int             _forwardSpeed    = FORWARD_SPEED_FAST; //velocidad es 100x(_velocidad/255)%
       int             _backwardSpeed   = BACKWARD_SPEED;
@@ -66,10 +68,13 @@ namespace KM0CAR {
           return _motionMode = FORWARD;
         }
 
-        //2.- Colission
+        //2- No se detecta superficie
+        if (sensors.isTrackingLineOK() == false) return _motionMode = ALERT;
+
+        //3.- Colission
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
-        //3.- Lateral OK
+        //4.- Lateral OK
         return _motionMode = ALERT;
       }
 
@@ -123,6 +128,8 @@ namespace KM0CAR {
       void _backward() {
         _rightEngine.backward(_backwardSpeed);
         _leftEngine.backward (_backwardSpeed);
+
+        _bocina.beep(100);
       }
 
       /****************************************************************
@@ -165,6 +172,8 @@ namespace KM0CAR {
       void _stopCar() {
         _rightEngine.stop();
         _leftEngine.stop ();
+
+        _bocina.beep(2, 100);
       }
 
     public:
@@ -180,6 +189,7 @@ namespace KM0CAR {
 
         _rightEngine.init();
         _leftEngine.init();
+        _bocina.init();
       }
       
       /****************************************************************

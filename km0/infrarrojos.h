@@ -6,6 +6,8 @@
 namespace KM0CAR {
   class IR {
     private:
+      const    int  _PIN_LEFT           = PIN_IR_LEFT;
+      const    int  _PIN_RIGHT          = PIN_IR_RIGHT;
       unsigned long _checkRightPrevTime = 0;
       unsigned long _checkLeftPrevTime  = 0;
       bool          _rightOK            = true;
@@ -19,8 +21,8 @@ namespace KM0CAR {
        * void init()
        ****************************************************************/
       void init() {
-        pinMode(PIN_IR_LEFT,  INPUT);
-        pinMode(PIN_IR_RIGHT, INPUT);
+        pinMode(_PIN_LEFT,  INPUT);
+        pinMode(_PIN_RIGHT, INPUT);
       }
 
       /****************************************************************
@@ -30,7 +32,7 @@ namespace KM0CAR {
         //1.- Right
         if (millis() - _checkRightPrevTime > 50)
         {
-          _rightOK = (digitalRead(PIN_IR_RIGHT) == HIGH) ? true : false;
+          _rightOK = (digitalRead(_PIN_RIGHT) == HIGH) ? true : false;
 
           _checkRightPrevTime = millis();
         }
@@ -38,7 +40,7 @@ namespace KM0CAR {
         //2.- Left
         if (millis() - _checkLeftPrevTime > 50)
         {
-          _leftOK = (digitalRead(PIN_IR_LEFT) == HIGH) ? true : false;
+          _leftOK = (digitalRead(_PIN_LEFT) == HIGH) ? true : false;
         
           _checkLeftPrevTime = millis();
         }

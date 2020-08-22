@@ -2,6 +2,7 @@
 #define SENSORS_H
 
 #include "infrarrojos.h"
+#include "trackingline.h"
 #include "ultrasonic.h"
 
 /**
@@ -39,7 +40,7 @@ namespace KM0CAR {
        * boolean isOK()
        ****************************************************************/
       boolean isOK() const {
-        return isForwardOK() && _ir.isRightOK() && _ir.isLeftOK() && _tl.isRightOK() && _tl.isLeftOK();
+        return isForwardOK() && isTrackingLineOK() && _ir.isRightOK() && _ir.isLeftOK();
       }
 
       /****************************************************************
@@ -54,6 +55,13 @@ namespace KM0CAR {
        ****************************************************************/
       boolean isForwardOK() const {
         return (_sonar.getDistanceForward() > DISTANCE_MIN) ? true: false;
+      }
+
+      /****************************************************************
+       * boolean isTrackingLineOK()
+       ****************************************************************/
+      boolean isTrackingLineOK() const {
+        return _tl.isRightOK() && _tl.isLeftOK();
       }
 
       /****************************************************************
