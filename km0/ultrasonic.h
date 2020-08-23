@@ -21,7 +21,11 @@ namespace KM0CAR {
       
       ServoMotor    _servo;
       NewPing       _sonar;
-      double        _distance = 0;
+      double        _distance            = 0;
+      double        _distanceMiddleRight = 0;
+      double        _distanceMiddleLeft  = 0;
+      double        _distanceRight       = 0;
+      double        _distanceLeft        = 0;
 
       /****************************************************************
        * double _calculate(const int position)
@@ -40,6 +44,8 @@ namespace KM0CAR {
                      {}
 
       double getDistanceForward() const {return _distance;}
+      double getDistanceRight()   const {return _distanceRight;}
+      double getDistanceLeft()    const {return _distanceLeft;}
       
       /****************************************************************
        * void init()
@@ -50,10 +56,26 @@ namespace KM0CAR {
       }
 
       /****************************************************************
-       * void init()
+       * void calculate()
        ****************************************************************/
       void calculate() {
         _distance = _calculate(_FORWARD_POSITION);
+      }
+
+      /****************************************************************
+       * void calculateRight()
+       ****************************************************************/
+      void calculateRight() {
+        _distanceMiddleRight = _calculate(_MIDDLE_RIGHT_POSITION);
+        _distanceRight       = _calculate(_RIGHT_POSITION);
+      }
+
+      /****************************************************************
+       * void calculateLeft()
+       ****************************************************************/
+      void calculateLeft() {
+        _distanceMiddleLeft = _calculate(_MIDDLE_LEFT_POSITION);
+        _distanceLeft       = _calculate(_LEFT_POSITION);
       }
   };
 }

@@ -50,7 +50,7 @@ namespace KM0CAR {
       }
 
       /****************************************************************
-       * MotionModeEnum _setMotionModeInAlert2(Sensors sensors)
+       * MotionModeEnum _setMotionModeInAlert(Sensors sensors)
        * 
        * return:
        *  - FORWARD
@@ -59,7 +59,7 @@ namespace KM0CAR {
        *  - TURN_LEFT
        *  
        ****************************************************************/
-      MotionModeEnum _setMotionModeInAlert2(Sensors sensors) {
+      MotionModeEnum _setMotionModeInAlert(Sensors sensors) {
         //1.- Todo OK
         if (sensors.isOK() == true)
         {
@@ -74,8 +74,19 @@ namespace KM0CAR {
         //3.- Colission
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
-        //4.- Lateral OK
-        return _motionMode = ALERT;
+        //4.- En caso de giro se mantiene la direccion del movimiento
+        if      (_turnsCounter > 0) return _motionMode = TURN_RIGHT;
+        else if (_turnsCounter < 0) return _motionMode = TURN_LEFT;
+
+        //5.- Eleccion del sentido de giro
+        sensors.calculateLateral();
+        if (sensors.isLateralOK() == true)
+        {
+          return _motionMode = (sensors.getSensorDistanceLeft() > sensors.getSensorDistanceRight()) ? TURN_LEFT : TURN_RIGHT;
+        }
+
+        //6.- Backward
+        return _motionMode = BACKWARD;
       }
 
       /****************************************************************
@@ -95,7 +106,7 @@ namespace KM0CAR {
         if (_alert == true)
         {
           //1.1.- Modo alerta
-          _setMotionModeInAlert2(sensors);
+          _setMotionModeInAlert(sensors);
 
           //1.2.- Varios ciclos en modo BACKWARD => FLIP MODE
           //if ((_backwardCounter > 0) && (_motionMode != BACKWARD)) _motionMode = _getFlipMode(sensors);

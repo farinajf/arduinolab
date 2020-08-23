@@ -25,7 +25,9 @@ namespace KM0CAR {
     public:
       Sensors() {}
 
-      double getSensorDistance() const {return _sonar.getDistanceForward();}
+      double getSensorDistance()      const {return _sonar.getDistanceForward();}
+      double getSensorDistanceLeft()  const {return _sonar.getDistanceLeft();}
+      double getSensorDistanceRight() const {return _sonar.getDistanceRight();}
       
       /****************************************************************
        * void init()
@@ -44,6 +46,13 @@ namespace KM0CAR {
       }
 
       /****************************************************************
+       * boolean isLateralOK()
+       ****************************************************************/
+      boolean isLateralOK() const {
+        return isLateralRightOK() || isLateralLeftOK();
+      }
+
+      /****************************************************************
        * boolean alertColission()
        ****************************************************************/
       boolean alertColission() const {
@@ -55,6 +64,20 @@ namespace KM0CAR {
        ****************************************************************/
       boolean isForwardOK() const {
         return (_sonar.getDistanceForward() > DISTANCE_MIN) ? true: false;
+      }
+
+      /****************************************************************
+       * boolean isLateralRightOK()
+       ****************************************************************/
+      boolean isLateralRightOK() const {
+        return (_sonar.getDistanceRight() > DISTANCE_MIN_LATERAL) ? true: false;
+      }
+
+      /****************************************************************
+       * boolean isLateralLeftOK()
+       ****************************************************************/
+      boolean isLateralLeftOK() const {
+        return (_sonar.getDistanceLeft() > DISTANCE_MIN_LATERAL) ? true: false;
       }
 
       /****************************************************************
@@ -72,6 +95,14 @@ namespace KM0CAR {
         
         _ir.checkIRObstacle();
         _tl.checkLine();
+      }
+
+      /****************************************************************
+       * void calculateLateral()
+       ****************************************************************/
+      void calculateLateral() const {
+        _sonar.calculateRight();
+        _sonar.calculateLeft();
       }
   };
 }
