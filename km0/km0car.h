@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "l298nEngine.h"
 #include "bocina.h"
+#include "luces.h"
 
 namespace KM0CAR {
   class KM0CAR {
@@ -13,6 +14,7 @@ namespace KM0CAR {
       L298NEngine     _rightEngine;
       L298NEngine     _leftEngine;
       Bocina          _bocina;
+      Luces           _luces;
       bool            _alert = false;
       int             _forwardSpeed    = FORWARD_SPEED_FAST; //velocidad es 100x(_velocidad/255)%
       int             _backwardSpeed   = BACKWARD_SPEED;
@@ -84,6 +86,8 @@ namespace KM0CAR {
         {
           return _motionMode = (sensors.getSensorDistanceLeft() > sensors.getSensorDistanceRight()) ? TURN_LEFT : TURN_RIGHT;
         }
+        else if (sensors.isLateralRightOK() == true) return _motionMode = TURN_RIGHT;
+        else if (sensors.isLateralLeftOK()  == true) return _motionMode = TURN_LEFT;
 
         //6.- Backward
         return _motionMode = BACKWARD;
@@ -131,6 +135,8 @@ namespace KM0CAR {
       void _forward() {
         _rightEngine.forward(_forwardSpeed);
         _leftEngine.forward (_forwardSpeed);
+
+        _luces.switchOff();
       }
 
       /****************************************************************
@@ -140,6 +146,7 @@ namespace KM0CAR {
         _rightEngine.backward(_backwardSpeed);
         _leftEngine.backward (_backwardSpeed);
 
+        _luces.switchOn();
         _bocina.beep(100);
       }
 
@@ -149,6 +156,8 @@ namespace KM0CAR {
       void _turnLeft() {
         _rightEngine.forward(_turnSpeed);
         _leftEngine.backward(_turnSpeed);
+
+        _luces.switchLeft();
       }
 
       /****************************************************************
@@ -157,6 +166,8 @@ namespace KM0CAR {
       void _turnRight() {
         _rightEngine.backward(_turnSpeed);
         _leftEngine.forward  (_turnSpeed);
+
+        _luces.switchRight();
       }
 
       /****************************************************************
@@ -184,7 +195,8 @@ namespace KM0CAR {
         _rightEngine.stop();
         _leftEngine.stop ();
 
-        _bocina.beep(2, 100);
+        _luces.switchOn();
+        //_bocina.beep(2, 100);
       }
 
     public:
@@ -201,6 +213,7 @@ namespace KM0CAR {
         _rightEngine.init();
         _leftEngine.init();
         _bocina.init();
+        _luces.init();
       }
       
       /****************************************************************

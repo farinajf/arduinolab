@@ -6,9 +6,9 @@
 #include <NewPing.h>
 #include "servomotor.h"
 
-#define _SERVO_DELAY 15
-#define _TIME_MIN    50
-#define _PING_NUMBER  3
+#define _SERVO_DELAY 200
+#define _TIME_MIN     50
+#define _PING_NUMBER   3
 
 namespace KM0CAR {
   class Ultrasonic {
@@ -16,7 +16,7 @@ namespace KM0CAR {
       const int     _LEFT_POSITION         = 180;
       const int     _MIDDLE_LEFT_POSITION  = 135;
       const int     _FORWARD_POSITION      =  90;
-      const int     _MIDDLE_RIGHT_POSITION = 45;
+      const int     _MIDDLE_RIGHT_POSITION =  45;
       const int     _RIGHT_POSITION        =  0;
       
       ServoMotor    _servo;
@@ -43,9 +43,11 @@ namespace KM0CAR {
                      _servo(PIN_SERVO)
                      {}
 
-      double getDistanceForward() const {return _distance;}
-      double getDistanceRight()   const {return _distanceRight;}
-      double getDistanceLeft()    const {return _distanceLeft;}
+      double getDistanceForward()     const {return _distance;}
+      double getDistanceMiddleRight() const {return _distanceMiddleRight;}
+      double getDistanceRight()       const {return _distanceRight;}
+      double getDistanceMiddleLeft()  const {return _distanceMiddleLeft;}
+      double getDistanceLeft()        const {return _distanceLeft;}
       
       /****************************************************************
        * void init()

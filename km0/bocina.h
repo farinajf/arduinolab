@@ -23,9 +23,9 @@ namespace KM0CAR {
        * 
        ****************************************************************/
       void beep(int d) const {
-//        digitalWrite(PIN_BUZZER, HIGH);
-//        delay(d);
-//        digitalWrite(PIN_BUZZER, LOW);
+        digitalWrite(PIN_BUZZER, HIGH);
+        delay(d);
+        digitalWrite(PIN_BUZZER, LOW);
       }
 
       /****************************************************************
@@ -36,13 +36,13 @@ namespace KM0CAR {
        * 
        ****************************************************************/
       void beep(int n, int d) const {
-//        for (int i = 0; i < n; i++)
-//        {
-//          digitalWrite(PIN_BUZZER, HIGH);
-//          delay(d);
-//          digitalWrite(PIN_BUZZER, LOW);
-//          delay(d);
-//        }
+        for (int i = 0; i < n; i++)
+        {
+          digitalWrite(PIN_BUZZER, HIGH);
+          delay(d);
+          digitalWrite(PIN_BUZZER, LOW);
+          delay(d);
+        }
       }
   };
 }

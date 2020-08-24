@@ -25,9 +25,11 @@ namespace KM0CAR {
     public:
       Sensors() {}
 
-      double getSensorDistance()      const {return _sonar.getDistanceForward();}
-      double getSensorDistanceLeft()  const {return _sonar.getDistanceLeft();}
-      double getSensorDistanceRight() const {return _sonar.getDistanceRight();}
+      double getSensorDistance()            const {return _sonar.getDistanceForward();}
+      double getSensorDistanceMiddleRight() const {return _sonar.getDistanceMiddleRight();}
+      double getSensorDistanceMiddleLeft()  const {return _sonar.getDistanceMiddleLeft();}
+      double getSensorDistanceRight()       const {return _sonar.getDistanceRight();}
+      double getSensorDistanceLeft()        const {return _sonar.getDistanceLeft();}
       
       /****************************************************************
        * void init()
@@ -49,7 +51,7 @@ namespace KM0CAR {
        * boolean isLateralOK()
        ****************************************************************/
       boolean isLateralOK() const {
-        return isLateralRightOK() || isLateralLeftOK();
+        return isLateralRightOK() && isLateralLeftOK();
       }
 
       /****************************************************************
@@ -70,14 +72,28 @@ namespace KM0CAR {
        * boolean isLateralRightOK()
        ****************************************************************/
       boolean isLateralRightOK() const {
-        return (_sonar.getDistanceRight() > DISTANCE_MIN_LATERAL) ? true: false;
+        return isDistanceLateralRightOK();
       }
 
       /****************************************************************
-       * boolean isLateralLeftOK()
+       * boolean isLateralOK()
        ****************************************************************/
       boolean isLateralLeftOK() const {
-        return (_sonar.getDistanceLeft() > DISTANCE_MIN_LATERAL) ? true: false;
+        return isDistanceLateralLeftOK();
+      }
+
+      /****************************************************************
+       * boolean isDistanceLateralRightOK()
+       ****************************************************************/
+      boolean isDistanceLateralRightOK() const {
+        return (_sonar.getDistanceMiddleRight() > DISTANCE_MIN_LATERAL) && (_sonar.getDistanceRight() > DISTANCE_MIN_LATERAL);
+      }
+
+      /****************************************************************
+       * boolean isDistanceLateralLeftOK()
+       ****************************************************************/
+      boolean isDistanceLateralLeftOK() const {
+        return (_sonar.getDistanceMiddleLeft() > DISTANCE_MIN_LATERAL) && (_sonar.getDistanceLeft() > DISTANCE_MIN_LATERAL);
       }
 
       /****************************************************************
