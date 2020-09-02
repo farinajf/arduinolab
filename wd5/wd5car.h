@@ -61,47 +61,6 @@ namespace WD5 {
       }
 
       /****************************************************************
-       * MotionModeEnum _setMotionModeInAlert()
-       * 
-       * @deprecated
-       * 
-       ****************************************************************/
-      MotionModeEnum _setMotionModeInAlert(Sensors sensors) {
-        //1.- Todo OK
-        if (sensors.isOK() == true)
-        {
-          _setAlert(false);
-          return _motionMode = FORWARD;
-        }
-
-        //2.- Colission
-        if (sensors.alertColission() == true) return _motionMode = BACKWARD;
-
-        //3.- Izquierda o Derecha OK
-        if ((sensors.isLeftOK() == true) || (sensors.isRightOK() == true))
-        {
-          //3.1- Izquierda OK
-          if ((sensors.isLeftOK() == true) && (_turnsCounter < 0)) return _motionMode = TURN_LEFT;
-  
-          //3.2.- Derecha OK
-          if ((sensors.isRightOK() == true) && (_turnsCounter > 0)) return _motionMode = TURN_RIGHT;
-
-          //3.3.- Giros alternados
-          if ((_turnsCounter < 0) && (sensors.getSensorDistanceRight() > sensors.getSensorDistanceLeft()))  return _motionMode = BACKWARD;
-          if ((_turnsCounter > 0) && (sensors.getSensorDistanceLeft()  > sensors.getSensorDistanceRight())) return _motionMode = BACKWARD;
-
-          //3.4.- Mejor opcion
-          return _motionMode = (sensors.getSensorDistanceLeft() > sensors.getSensorDistanceRight()) ? TURN_LEFT : TURN_RIGHT;
-        }
-
-        //4.- Izquierda FAIL && Derecha FAIL && Forward FAIL
-        if (sensors.isForwardOK() == false) return _motionMode = BACKWARD;
-
-        //5-. Fin
-        return _motionMode = _getFlipMode(sensors);
-      }
-
-      /****************************************************************
        * MotionModeEnum _setMotionModeInAlert2(Sensors sensors)
        * 
        * return:
