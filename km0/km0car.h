@@ -70,17 +70,15 @@ namespace KM0CAR {
           return _motionMode = FORWARD;
         }
 
-        //2- No se detecta superficie
-        if (sensors.isTrackingLineOK() == false) return _motionMode = ALERT;
-
-        //3.- Colission
+        //2.- Colission
         if (sensors.alertColission() == true) return _motionMode = BACKWARD;
 
-        //4.- En caso de giro se mantiene la direccion del movimiento
+        //3.- En caso de giro se mantiene la direccion del movimiento
         if      (_turnsCounter > 0) return _motionMode = TURN_RIGHT;
         else if (_turnsCounter < 0) return _motionMode = TURN_LEFT;
 
-        //5.- Eleccion del sentido de giro
+        //4.- Eleccion del sentido de giro
+        _stopCar();
         sensors.calculateLateral();
         if (sensors.isLateralOK() == true)
         {
@@ -89,7 +87,7 @@ namespace KM0CAR {
         else if (sensors.isLateralRightOK() == true) return _motionMode = TURN_RIGHT;
         else if (sensors.isLateralLeftOK()  == true) return _motionMode = TURN_LEFT;
 
-        //6.- Backward
+        //5.- Backward
         return _motionMode = BACKWARD;
       }
 
@@ -136,7 +134,7 @@ namespace KM0CAR {
         _rightEngine.forward(_forwardSpeed);
         _leftEngine.forward (_forwardSpeed);
 
-        _luces.switchOff();
+        _luces.switchOn();
       }
 
       /****************************************************************
@@ -147,7 +145,7 @@ namespace KM0CAR {
         _leftEngine.backward (_backwardSpeed);
 
         _luces.switchOn();
-        _bocina.beep(100);
+        //_bocina.beep(100);
       }
 
       /****************************************************************

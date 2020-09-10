@@ -26,13 +26,13 @@ namespace KM0CAR {
       }
 
       /****************************************************************
-       * void checkLine()
+       * void checkIRObstacle()
        ****************************************************************/
-      void checkLine() {
+      void checkIRObstacle() {
         //1.- Right
         if (millis() - _checkRightPrevTime > 50)
         {
-          _rightOK = (digitalRead(_PIN_RIGHT) == LOW) ? true : false;
+          _rightOK = (digitalRead(_PIN_RIGHT) == HIGH) ? true : false;
 
           _checkRightPrevTime = millis();
         }
@@ -40,7 +40,7 @@ namespace KM0CAR {
         //2.- Left
         if (millis() - _checkLeftPrevTime > 50)
         {
-          _leftOK = (digitalRead(_PIN_LEFT) == LOW) ? true : false;
+          _leftOK = (digitalRead(_PIN_LEFT) == HIGH) ? true : false;
         
           _checkLeftPrevTime = millis();
         }

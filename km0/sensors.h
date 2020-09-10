@@ -65,21 +65,28 @@ namespace KM0CAR {
        * boolean isForwardOK()
        ****************************************************************/
       boolean isForwardOK() const {
-        return (_sonar.getDistanceForward() > DISTANCE_MIN) ? true: false;
+        return isDistanceForwardOK() && _ir.isRightOK() && _ir.isLeftOK();
       }
 
       /****************************************************************
        * boolean isLateralRightOK()
        ****************************************************************/
       boolean isLateralRightOK() const {
-        return isDistanceLateralRightOK();
+        return isDistanceLateralRightOK() && _tl.isRightOK();
       }
 
       /****************************************************************
        * boolean isLateralOK()
        ****************************************************************/
       boolean isLateralLeftOK() const {
-        return isDistanceLateralLeftOK();
+        return isDistanceLateralLeftOK() && _tl.isLeftOK();
+      }
+
+      /****************************************************************
+       * boolean isDistanceForwardOK()
+       ****************************************************************/
+      boolean isDistanceForwardOK() const {
+        return (_sonar.getDistanceForward() > DISTANCE_MIN) ? true: false;
       }
 
       /****************************************************************
@@ -110,7 +117,7 @@ namespace KM0CAR {
         _sonar.calculate();
         
         _ir.checkIRObstacle();
-        _tl.checkLine();
+        _tl.checkIRObstacle();
       }
 
       /****************************************************************
