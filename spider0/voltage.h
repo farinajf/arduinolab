@@ -38,6 +38,10 @@ namespace SPIDER {
 
 
     public:
+      /****************************************************************
+       * boolean isVoltageHigh()
+       ****************************************************************/
+      boolean isVoltageHigh() const {return _voltageHigh;}
 
       /****************************************************************
        * void init()
@@ -64,7 +68,7 @@ namespace SPIDER {
         if (voltage < VOLTAGE_UMBRAL) _batteryLow();
         else                          _batteryOK();
 
-        Serial.print("Bateria: "); Serial.println(voltage);
+        //Serial.print("Bateria: "); Serial.println(voltage);
       }
   };
 }

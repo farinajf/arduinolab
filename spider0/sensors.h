@@ -1,7 +1,7 @@
-#include "voltage.h"
-
 #ifndef SENSORS_H
 #define SENSORS_H
+
+#include "voltage.h"
 
 /**
  * 
@@ -26,6 +26,13 @@ namespace SPIDER {
        ****************************************************************/
       void calculate() {
         _voltage.calculate();
+      }
+
+      /****************************************************************
+       * boolean isBatteryOK()
+       ****************************************************************/
+      boolean isBatteryOK() const {
+        return _voltage.isVoltageHigh();
       }
   };
 }
