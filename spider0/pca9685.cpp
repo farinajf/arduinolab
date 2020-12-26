@@ -36,15 +36,29 @@ namespace SPIDER {
 
   /****************************************************************
    * 
-   * void move(const int pataDelanteraAngles[3], const int pataMediaAngles[3], const int pataTraseraAngles[3])
+   * leg(const short leg, const short deltaCoxa, const short deltaFemur, const short deltaTibia) const
    * 
    * Establece los angulos, en grados (0º - 180º), para cada parte de
    * cada una de las patas.
    * 
    ****************************************************************/
   void PCA9685::move(const int pataDelanteraAngles[3], const int pataMediaAngles[3], const int pataTraseraAngles[3]) {
-    _pataDelantera.setServoAngles(_driver, pataDelanteraAngles);
-    _pataMedia.setServoAngles    (_driver, pataMediaAngles);
-    _pataTrasera.setServoAngles  (_driver, pataTraseraAngles);
+    _pataDelantera.setServoAngles(&_driver, pataDelanteraAngles);
+    _pataMedia.setServoAngles    (&_driver, pataMediaAngles);
+    _pataTrasera.setServoAngles  (&_driver, pataTraseraAngles);
+  }
+
+  /****************************************************************
+   * 
+   * void leg(const LEG_T leg, const short coxaDelta, const short femurDelta, const short tibiaDelta) const
+   * 
+   ****************************************************************/
+  void PCA9685::leg(const LEG_T leg, const short coxaDelta, const short femurDelta, const short tibiaDelta) const {
+    switch (leg)
+    {
+      case LEG_FRONT:  _pataDelantera.setDeltaServoAngles(&_driver, coxaDelta, femurDelta, tibiaDelta); return;
+      case LEG_MIDDLE: _pataMedia.setDeltaServoAngles    (&_driver, coxaDelta, femurDelta, tibiaDelta); return;
+      case LEG_BACK:   _pataTrasera.setDeltaServoAngles  (&_driver, coxaDelta, femurDelta, tibiaDelta); return;
+    }
   }
 }

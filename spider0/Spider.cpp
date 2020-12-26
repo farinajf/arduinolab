@@ -1,85 +1,121 @@
 #include "Spider.h"
 
-// Patas lado IZQUIERDO
-const uint8_t addrPCA9685Izquierda                 = 0X40;
-const uint8_t pataIzquierdaDelanteraAddr       [3] = {  0,   1,   2};
-const uint8_t pataIzquierdaMediaAddr           [3] = {  4,   5,   6};
-const uint8_t pataIzquierdaTraseraAddr         [3] = {  8,   9,  10};
-const int     pataIzquierdaDelanteraPosition_0 [3] = {110, 110, 110};
-const int     pataIzquierdaMediaPosition_0     [3] = {106, 106, 106};
-const int     pataIzquierdaTraseraPosition_0   [3] = {110, 110, 110};
-const int     pataIzquierdaDelanteraPosition_90[3] = {335, 335, 335};
-const int     pataIzquierdaMediaPosition_90    [3] = {324, 324, 324};
-const int     pataIzquierdaTraseraPosition_90  [3] = {332, 332, 332};
-      
-// Patas lado DERECHO
-const uint8_t addrPCA9685Derecha                 = 0x41;
-const uint8_t pataDerechaDelanteraAddr       [3] = {  0,   1,   2};
-const uint8_t pataDerechaMediaAddr           [3] = {  4,   5,   6};
-const uint8_t pataDerechaTraseraAddr         [3] = {  8,   9,  10};
-const int     pataDerechaDelanteraPosition_0 [3] = {120, 120, 120};
-const int     pataDerechaMediaPosition_0     [3] = {110, 110, 110};
-const int     pataDerechaTraseraPosition_0   [3] = {120, 120, 120};
-const int     pataDerechaDelanteraPosition_90[3] = {335, 335, 335};
-const int     pataDerechaMediaPosition_90    [3] = {338, 338, 338};
-const int     pataDerechaTraseraPosition_90  [3] = {360, 360, 360};
-
 namespace SPIDER {
+  /****************************************************************
+   * void _setDriveMode()
+   ****************************************************************/
+  void Spider0::_setDriveMode() {
+    while (true)
+    {
+      switch (_ir.receive())
+      {
+        case IR_T_1:      setDriveMode(DRIVE_MODE_LEG_MOVE_1); Serial.println("Seleccionada pata 1"); return;
+        case IR_T_2:      setDriveMode(DRIVE_MODE_LEG_MOVE_2); Serial.println("Seleccionada pata 2"); return;
+        case IR_T_3:      setDriveMode(DRIVE_MODE_LEG_MOVE_3); Serial.println("Seleccionada pata 3"); return;
+        case IR_T_4:      setDriveMode(DRIVE_MODE_LEG_MOVE_4); Serial.println("Seleccionada pata 4"); return;
+        case IR_T_5:      setDriveMode(DRIVE_MODE_LEG_MOVE_5); Serial.println("Seleccionada pata 5"); return;
+        case IR_T_6:      setDriveMode(DRIVE_MODE_LEG_MOVE_6); Serial.println("Seleccionada pata 6"); return;
+        case IR_ASTERISK: setDriveMode(DRIVE_MODE_NONE);       Serial.println("Cancelado!!");         return;
+      }
+    }
+  }
+
+  /****************************************************************
+   * void _up()
+   ****************************************************************/
+  void Spider0::_up() {
+    switch (_driveMode)
+    {
+      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  0, 5, 5); break;
+      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, 0, 5, 5); break;
+      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   0, 5, 5); break;
+      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   0, 5, 5); break;
+      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  0, 5, 5); break;
+      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    0, 5, 5); break;
+    }
+  }
+
+  /****************************************************************
+   * void _down()
+   ****************************************************************/
+  void Spider0::_down() {
+    switch (_driveMode)
+    {
+      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  0, -5, -5); break;
+      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, 0, -5, -5); break;
+      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   0, -5, -5); break;
+      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   0, -5, -5); break;
+      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  0, -5, -5); break;
+      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    0, -5, -5); break;
+    }
+  }
+
+  /****************************************************************
+   * void _left()
+   ****************************************************************/
+  void Spider0::_left() {
+    switch (_driveMode)
+    {
+      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  -5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, -5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   -5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   -5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  -5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    -5, 0, 0); break;
+    }
+  }
+
+  /****************************************************************
+   * void _right()
+   ****************************************************************/
+  void Spider0::_right() {
+    switch (_driveMode)
+    {
+      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, 5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  5, 0, 0); break;
+      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    5, 0, 0); break;
+    }
+  }
+  
   /****************************************************************
    * 
    * Constructor()
    * 
    ****************************************************************/
-  Spider0::Spider0() : _motor(addrPCA9685Izquierda,
-                              pataIzquierdaDelanteraAddr,
-                              pataIzquierdaMediaAddr,
-                              pataIzquierdaTraseraAddr,
-                              pataIzquierdaDelanteraPosition_0,
-                              pataIzquierdaMediaPosition_0,
-                              pataIzquierdaTraseraPosition_0,
-                              pataIzquierdaDelanteraPosition_90,
-                              pataIzquierdaMediaPosition_90,
-                              pataIzquierdaTraseraPosition_90,
-                              addrPCA9685Derecha,
-                              pataDerechaDelanteraAddr,
-                              pataDerechaMediaAddr,
-                              pataDerechaTraseraAddr,
-                              pataDerechaDelanteraPosition_0,
-                              pataDerechaMediaPosition_0,
-                              pataDerechaTraseraPosition_0,
-                              pataDerechaDelanteraPosition_90,
-                              pataDerechaMediaPosition_90,
-                              pataDerechaTraseraPosition_90) {}
+  Spider0::Spider0() : _motor() {}
 
   /****************************************************************
    * void init()
    ****************************************************************/
   void Spider0::init() {
+    _ir.init();
     _motor.init();
   }
 
   /****************************************************************
-   * void move() const
+   * void reposo() const
    ****************************************************************/
-  void Spider0::move() const {
-    _motor.move();
+  void Spider0::reposo() const {
+    _motor.reposo();
   }
 
   /****************************************************************
-   * void move(const int pataIzqDelanteraAngles[3],
-   *           const int pataIzqMediaAngles[3],
-   *           const int pataIzqTraseraAngles[3],
-   *           const int pataDerDelanteraAngles[3],
-   *           const int pataDerMediaAngles[3],
-   *           const int pataDerTraseraAngles[3]) const
-   *           
+   * void drive()
+   * 
    ****************************************************************/
-  void Spider0::move(const int pataIzqDelanteraAngles[3],
-                     const int pataIzqMediaAngles    [3],
-                     const int pataIzqTraseraAngles  [3],
-                     const int pataDerDelanteraAngles[3],
-                     const int pataDerMediaAngles    [3],
-                     const int pataDerTraseraAngles  [3]) const {
-    _motor.move(pataIzqDelanteraAngles, pataIzqMediaAngles, pataIzqTraseraAngles, pataDerDelanteraAngles, pataDerMediaAngles, pataDerTraseraAngles);
+  void Spider0::drive() {
+    switch (_ir.receive())
+    {
+      case IR_OK:    reposo();        break;
+      case IR_HASH:  _setDriveMode(); break;
+      case IR_UP:    _up();           break;
+      case IR_DOWN:  _down();         break;
+      case IR_LEFT:  _left();         break;
+      case IR_RIGHT: _right();        break;
+      default:    return;
+    }
   }
 }

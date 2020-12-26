@@ -20,19 +20,19 @@ namespace SPIDER {
   }
 
   /****************************************************************
-   * void setServoAngles(const Adafruit_PWMServoDriver driver, const int coxaAngle, const int femurAngle, const int tibiaAngle)
+   * void setDeltaServoAngles(const Adafruit_PWMServoDriver *driver, const short coxaDelta, const short femurDelta, const short tibiaDelta) const
    * 
-   * Establece el nuevo angulo para los servos de cada parte.
+   * Desplazamiento del angulo para los servos de cada parte.
    * 
    * coxaAngle:  valor del angulo para la coxa en grados: 0º - 180º
    * femurAngle: valor del angulo para el femur en grados: 0º - 180º
    * tibiaAngle: valor del angulo para la tibia en grados: 0º - 180º
    * 
    ****************************************************************/
-  void SpiderLeg::setServoAngles(const Adafruit_PWMServoDriver driver, const int coxaAngle, const int femurAngle, const int tibiaAngle) {
-    _coxa.setAngle (driver, coxaAngle);
-    _femur.setAngle(driver, femurAngle);
-    _tibia.setAngle(driver, tibiaAngle);
+  void SpiderLeg::setDeltaServoAngles(const Adafruit_PWMServoDriver *driver, const short coxaDelta, const short femurDelta, const short tibiaDelta) const {
+    _coxa.setDeltaAngle (driver, coxaDelta);
+    _femur.setDeltaAngle(driver, femurDelta);
+    _tibia.setDeltaAngle(driver, tibiaDelta);
   }
 
   /****************************************************************
@@ -41,7 +41,7 @@ namespace SPIDER {
    * Establece el nuevo angulo para los servos de cada parte.
    * 
    ****************************************************************/
-  void SpiderLeg::setServoAngles(const Adafruit_PWMServoDriver driver, const int angles[3]) {
+  void SpiderLeg::setServoAngles(const Adafruit_PWMServoDriver *driver, const int angles[3]) const{
     _coxa.setAngle (driver, angles[0]);
     _femur.setAngle(driver, angles[1]);
     _tibia.setAngle(driver, angles[2]);

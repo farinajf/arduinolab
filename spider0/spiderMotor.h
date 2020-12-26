@@ -4,41 +4,26 @@
 #include "pca9685.h"
 
 namespace SPIDER {
+  enum SPIDER_LEG_T {
+    RIGHT_LEG_FRONT,
+    RIGHT_LEG_MIDDLE,
+    RIGHT_LEG_BACK,
+    LEFT_LEG_FRONT,
+    LEFT_LEG_MIDDLE,
+    LEFT_LEG_BACK
+  };
+  
   class SpiderMotor {
     private:
       const PCA9685 _rightMotor;
       const PCA9685 _leftMotor;
 
     public:
-      SpiderMotor(const uint8_t addrPCA9685Izquierda,
-                  const uint8_t pataIzquierdaDelanteraAddr       [3],
-                  const uint8_t pataIzquierdaMediaAddr           [3],
-                  const uint8_t pataIzquierdaTraseraAddr         [3],
-                  const int     pataIzquierdaDelanteraPosition_0 [3],
-                  const int     pataIzquierdaMediaPosition_0     [3],
-                  const int     pataIzquierdaTraseraPosition_0   [3],
-                  const int     pataIzquierdaDelanteraPosition_90[3],
-                  const int     pataIzquierdaMediaPosition_90    [3],
-                  const int     pataIzquierdaTraseraPosition_90  [3],
-                  const uint8_t addrPCA9685Derecha,
-                  const uint8_t pataDerechaDelanteraAddr         [3],
-                  const uint8_t pataDerechaMediaAddr             [3],
-                  const uint8_t pataDerechaTraseraAddr           [3],
-                  const int     pataDerechaDelanteraPosition_0   [3],
-                  const int     pataDerechaMediaPosition_0       [3],
-                  const int     pataDerechaTraseraPosition_0     [3],
-                  const int     pataDerechaDelanteraPosition_90  [3],
-                  const int     pataDerechaMediaPosition_90      [3],
-                  const int     pataDerechaTraseraPosition_90    [3]);
+      SpiderMotor();
       void init();
 
-      void move() const;
-      void move(const int pataIzqDelanteraAngles[3],
-                const int pataIzqMediaAngles    [3],
-                const int pataIzqTraseraAngles  [3],
-                const int pataDerDelanteraAngles[3],
-                const int pataDerMediaAngles    [3],
-                const int pataDerTraseraAngles [3]) const;
+      void reposo() const;
+      void leg(const SPIDER_LEG_T leg, const short coxaDelta, const short femurDelta, const short tibiaDelta) const;
   };
 }
 

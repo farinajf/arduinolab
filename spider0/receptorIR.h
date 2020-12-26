@@ -9,31 +9,31 @@
  */
 namespace SPIDER {
   enum CodigoIR {
-    OK,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    ASTERISK,
-    HASH,
-    T_0,
-    T_1,
-    T_2,
-    T_3,
-    T_4,
-    T_5,
-    T_6,
-    T_7,
-    T_8,
-    T_9,
-    CODE_REPEAT,
-    NONE
+    IR_OK,
+    IR_UP,
+    IR_DOWN,
+    IR_LEFT,
+    IR_RIGHT,
+    IR_ASTERISK,
+    IR_HASH,
+    IR_T_0,
+    IR_T_1,
+    IR_T_2,
+    IR_T_3,
+    IR_T_4,
+    IR_T_5,
+    IR_T_6,
+    IR_T_7,
+    IR_T_8,
+    IR_T_9,
+    IR_CODE_REPEAT,
+    IR_NONE
   };
 
   class ReceptorIR {
     private:
       const IRrecv _receiver;
-      CodigoIR     _lastResult = NONE;
+      CodigoIR     _lastResult = IR_NONE;
 
       void     _encoding    (const decode_results *results) const;
       void     _ircode      (const decode_results *results) const;

@@ -26,8 +26,9 @@ namespace SPIDER {
       
       void init();
 
-      void setAngle(const Adafruit_PWMServoDriver driver, const int angle);
-      int  getAngle() const;
+      void setDeltaAngle(const Adafruit_PWMServoDriver *driver, const short angle);
+      void setAngle     (const Adafruit_PWMServoDriver *driver, const int   delta);
+      int  getAngle     () const;
   };
 }
 #endif

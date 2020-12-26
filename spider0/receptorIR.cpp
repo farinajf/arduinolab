@@ -68,29 +68,29 @@ namespace SPIDER {
    ****************************************************************/
   CodigoIR ReceptorIR::_getResultado(const decode_results *results) const {
     
-    _dumpInfo(results);
+    //_dumpInfo(results);
     
     switch (results->value)
     {
-      case 0xFD8877:   return UP;
-      case 0xFD9867:   return DOWN;
-      case 0xFD28D7:   return LEFT;
-      case 0xFD6897:   return RIGHT;
-      case 0xFDA857:   return OK;
-      case 0xFD30CF:   return ASTERISK;
-      case 0xFD708F:   return HASH;
-      case 0xFDB04F:   return T_0;
-      case 0xFD00FF:   return T_1;
-      case 0xFD807F:   return T_2;
-      case 0xFD40BF:   return T_3;
-      case 0xFD20DF:   return T_4;
-      case 0xFDA05F:   return T_5;
-      case 0xFD609F:   return T_6;
-      case 0xFD10EF:   return T_7;
-      case 0xFD906F:   return T_8;
-      case 0xFD50AF:   return T_9;
-      case 0xFFFFFFFF: return CODE_REPEAT;
-      default:         return NONE; 
+      case 0xFD8877:   return IR_UP;
+      case 0xFD9867:   return IR_DOWN;
+      case 0xFD28D7:   return IR_LEFT;
+      case 0xFD6897:   return IR_RIGHT;
+      case 0xFDA857:   return IR_OK;
+      case 0xFD30CF:   return IR_ASTERISK;
+      case 0xFD708F:   return IR_HASH;
+      case 0xFDB04F:   return IR_T_0;
+      case 0xFD00FF:   return IR_T_1;
+      case 0xFD807F:   return IR_T_2;
+      case 0xFD40BF:   return IR_T_3;
+      case 0xFD20DF:   return IR_T_4;
+      case 0xFDA05F:   return IR_T_5;
+      case 0xFD609F:   return IR_T_6;
+      case 0xFD10EF:   return IR_T_7;
+      case 0xFD906F:   return IR_T_8;
+      case 0xFD50AF:   return IR_T_9;
+      case 0xFFFFFFFF: return IR_CODE_REPEAT;
+      default:         return IR_NONE; 
     }
   }
   
@@ -107,18 +107,18 @@ namespace SPIDER {
    ****************************************************************/
   CodigoIR ReceptorIR::receive() {
     decode_results received;
-    CodigoIR       result = NONE;
+    CodigoIR       result = IR_NONE;
 
     if (_receiver.decode(&received) == true)
     {
       result = _getResultado(&received);
 
-      if (result != CODE_REPEAT) _lastResult = result;
+      if (result != IR_CODE_REPEAT) _lastResult = result;
 
       // Prepare for the next value
       _receiver.resume();
     }
 
-    return (result != CODE_REPEAT) ? result : _lastResult;
+    return (result != IR_CODE_REPEAT) ? result : _lastResult;
   }
 }

@@ -9,6 +9,13 @@
  * 
  */
 namespace SPIDER {
+
+  enum LEG_T {
+    LEG_FRONT,
+    LEG_MIDDLE,
+    LEG_BACK
+  };
+  
   class PCA9685 {
     private:
       const Adafruit_PWMServoDriver _driver;
@@ -32,6 +39,7 @@ namespace SPIDER {
       void init();
 
       void move(const int pataDelanteraAngles[3], const int pataMediaAngles[3], const int pataTraseraAngles[3]);
+      void leg (const LEG_T leg, const short coxaDelta, const short femurDelta, const short tibiaDelta) const;
   };
 }
 #endif
