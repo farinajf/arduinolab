@@ -1,6 +1,8 @@
 #ifndef PINS_H
 #define PINS_H
 
+#include <Arduino.h>
+
 /**
  * Pines usados:
  *  3, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13

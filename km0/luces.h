@@ -6,54 +6,16 @@
 namespace KM0CAR {
   class Luces {
     private:
+      const int _pinRight = PIN_LIGHT_RIGHT;
+      const int _pinLeft  = PIN_LIGHT_LEFT;
 
     public:
-      /****************************************************************
-       * void init()
-       ****************************************************************/
-      void init() {
-        pinMode(PIN_LIGHT_RIGHT, OUTPUT);
-        pinMode(PIN_LIGHT_LEFT,  OUTPUT);
-        
-        digitalWrite(PIN_LIGHT_RIGHT, LOW);
-        digitalWrite(PIN_LIGHT_LEFT,  LOW);
-      }
+      void init();
 
-      /****************************************************************
-       * void switchOff()
-       * 
-       ****************************************************************/
-      void switchOff() const {
-        digitalWrite(PIN_LIGHT_RIGHT, LOW);
-        digitalWrite(PIN_LIGHT_LEFT,  LOW);
-      }
-
-      /****************************************************************
-       * void switchOn()
-       * 
-       ****************************************************************/
-      void switchOn() const {
-        digitalWrite(PIN_LIGHT_RIGHT, HIGH);
-        digitalWrite(PIN_LIGHT_LEFT,  HIGH);
-      }
-
-      /****************************************************************
-       * void switchRight()
-       * 
-       ****************************************************************/
-      void switchRight() const {
-        digitalWrite(PIN_LIGHT_RIGHT, HIGH);
-        digitalWrite(PIN_LIGHT_LEFT,  LOW);
-      }
-
-      /****************************************************************
-       * void switchLeft()
-       * 
-       ****************************************************************/
-      void switchLeft() const {
-        digitalWrite(PIN_LIGHT_RIGHT, LOW);
-        digitalWrite(PIN_LIGHT_LEFT,  HIGH);
-      }
+      void switchOff()   const;
+      void switchOn()    const;
+      void switchRight() const;
+      void switchLeft()  const;
   };
 }
 

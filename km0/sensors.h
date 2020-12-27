@@ -6,6 +6,8 @@
 #include "ultrasonic.h"
 
 /**
+ * TODO
+ * 
  * Sensors: HC-SR04 + Infrarrojos
  */
 namespace KM0CAR {
@@ -15,118 +17,29 @@ namespace KM0CAR {
       Ultrasonic  _sonar;
       IR          _ir;
 
-      /****************************************************************
-       * boolean _alertColissionForward()
-       ****************************************************************/
-      boolean _alertColissionForward() const {
-        return (_sonar.getDistanceForward() <= DISTANCE_SUPER_MIN) ? true: false;
-      }
-
     public:
       Sensors() {}
 
-      double getSensorDistance()            const {return _sonar.getDistanceForward();}
-      double getSensorDistanceMiddleRight() const {return _sonar.getDistanceMiddleRight();}
-      double getSensorDistanceMiddleLeft()  const {return _sonar.getDistanceMiddleLeft();}
-      double getSensorDistanceRight()       const {return _sonar.getDistanceRight();}
-      double getSensorDistanceLeft()        const {return _sonar.getDistanceLeft();}
-      
-      /****************************************************************
-       * void init()
-       ****************************************************************/
-      void init() {
-        _sonar.init();
-        _ir.init();
-        _tl.init();
-      }
+      double getDistanceForward()     const {return _sonar.getDistanceForward();}
+      double getDistanceMiddleRight() const {return _sonar.getDistanceMiddleRight();}
+      double getDistanceMiddleLeft()  const {return _sonar.getDistanceMiddleLeft();}
+      double getDistanceRight()       const {return _sonar.getDistanceRight();}
+      double getDistanceLeft()        const {return _sonar.getDistanceLeft();}
 
-      /****************************************************************
-       * boolean isOK()
-       ****************************************************************/
-      boolean isOK() const {
-        return isForwardOK() && isTrackingLineOK() && _ir.isRightOK() && _ir.isLeftOK();
-      }
+      void init();
+      void checkIRObstacle();
+      void forwardDistance();
+      void lateralDistance();
 
-      /****************************************************************
-       * boolean isLateralOK()
-       ****************************************************************/
-      boolean isLateralOK() const {
-        return isLateralRightOK() && isLateralLeftOK();
-      }
-
-      /****************************************************************
-       * boolean alertColission()
-       ****************************************************************/
-      boolean alertColission() const {
-        return _alertColissionForward();
-      }
-
-      /****************************************************************
-       * boolean isForwardOK()
-       ****************************************************************/
-      boolean isForwardOK() const {
-        return isDistanceForwardOK() && _ir.isRightOK() && _ir.isLeftOK();
-      }
-
-      /****************************************************************
-       * boolean isLateralRightOK()
-       ****************************************************************/
-      boolean isLateralRightOK() const {
-        return isDistanceLateralRightOK() && _tl.isRightOK();
-      }
-
-      /****************************************************************
-       * boolean isLateralOK()
-       ****************************************************************/
-      boolean isLateralLeftOK() const {
-        return isDistanceLateralLeftOK() && _tl.isLeftOK();
-      }
-
-      /****************************************************************
-       * boolean isDistanceForwardOK()
-       ****************************************************************/
-      boolean isDistanceForwardOK() const {
-        return (_sonar.getDistanceForward() > DISTANCE_MIN) ? true: false;
-      }
-
-      /****************************************************************
-       * boolean isDistanceLateralRightOK()
-       ****************************************************************/
-      boolean isDistanceLateralRightOK() const {
-        return (_sonar.getDistanceMiddleRight() > DISTANCE_MIN_LATERAL) && (_sonar.getDistanceRight() > DISTANCE_MIN_LATERAL);
-      }
-
-      /****************************************************************
-       * boolean isDistanceLateralLeftOK()
-       ****************************************************************/
-      boolean isDistanceLateralLeftOK() const {
-        return (_sonar.getDistanceMiddleLeft() > DISTANCE_MIN_LATERAL) && (_sonar.getDistanceLeft() > DISTANCE_MIN_LATERAL);
-      }
-
-      /****************************************************************
-       * boolean isTrackingLineOK()
-       ****************************************************************/
-      boolean isTrackingLineOK() const {
-        return _tl.isRightOK() && _tl.isLeftOK();
-      }
-
-      /****************************************************************
-       * void calculate()
-       ****************************************************************/
-      void calculate() const {
-        _sonar.calculate();
-        
-        _ir.checkIRObstacle();
-        _tl.checkIRObstacle();
-      }
-
-      /****************************************************************
-       * void calculateLateral()
-       ****************************************************************/
-      void calculateLateral() const {
-        _sonar.calculateRight();
-        _sonar.calculateLeft();
-      }
+      bool isAlertColission()    const;
+      bool isDistanceRightOK()   const;
+      bool isDistanceLeftOK()    const;
+      bool isDistanceForwardOK() const;
+      bool isIROK()              const;
+      bool isIRRightOK()         const;
+      bool isIRLeftOK()          const;
+      bool isLateralOK()         const;
   };
 }
+
 #endif
