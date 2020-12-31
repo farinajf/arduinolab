@@ -18,51 +18,12 @@ namespace ATOM0 {
         _pinIN2   (pinIN2)
       {}
 
-      /**
-       * 
-       */
-      void init() {
-        pinMode(_pinEnable, 0);
-        pinMode(_pinIN1,    LOW);
-        pinMode(_pinIN2,    LOW);
-      }
-
-      /**
-       * 
-       */
-      void forward(int velocidad) const {
-        //toString(velocidad);
-        analogWrite (_pinEnable, velocidad);
-        digitalWrite(_pinIN1,    HIGH);
-        digitalWrite(_pinIN2,    LOW);
-      }
-
-      /**
-       * 
-       */
-      void backward(int velocidad) const {
-        //toString(velocidad);
-        analogWrite (_pinEnable, velocidad);
-        digitalWrite(_pinIN1,    LOW);
-        digitalWrite(_pinIN2,    HIGH);
-      }
-
-      /**
-       * Detiene el motor.
-       */
-      void stop() const {
-        analogWrite (_pinEnable, 0);
-        digitalWrite(_pinIN1,    LOW);
-        digitalWrite(_pinIN2,    LOW);
-      }
-
-      void toString(int velocidad) {
-        Serial.print("PIN enable: "); Serial.print(_pinEnable);
-        Serial.print(" PIN 1:     "); Serial.print(_pinIN1);
-        Serial.print(" PIN 2:     "); Serial.print(_pinIN2);
-        Serial.print(" velocidad: "); Serial.print(velocidad);
-        Serial.println();
-      }
+      void init();
+      void stop() const;
+      void forward (int velocidad) const;
+      void backward(int velocidad) const;
+      void toString(int velocidad);
   };
 }
+
 #endif
