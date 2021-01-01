@@ -5,12 +5,8 @@
 
 namespace ATOM0 {
   
-  extern volatile unsigned long _measurePrevTime;
-  extern volatile char          _measureFlag;
-  extern volatile double        HCSR04distance;
-  extern unsigned long          _distancePrevTime;
+  extern volatile double HCSR04distance;
 
-  void _measureDistance();
   void ultrasonicInit();
   void ultrasonicCalculate();
 }

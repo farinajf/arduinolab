@@ -78,8 +78,7 @@ namespace ATOM0 {
       return;
     }
 
-    //if (_motionMode == FORWARD) _forwardSpeed = (_sensors.getDistanceForward() > DISTANCE_MIN_FAST) ? FORWARD_SPEED_FAST : FORWARD_SPEEP_SLOW;
-    _forwardSpeed = 0;
+    if (_motionMode == FORWARD) _forwardSpeed = (_sensors.getDistance() > DISTANCE_MIN_FAST) ? FORWARD_SPEED_FAST : FORWARD_SPEEP_SLOW;
   }
 
   /****************************************************************

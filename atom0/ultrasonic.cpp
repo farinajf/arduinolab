@@ -2,6 +2,7 @@
 #include "ultrasonic.h"
 
 namespace ATOM0 {
+  volatile int           _PING_INTERVAL    =  50;
   volatile unsigned long _measurePrevTime  = 0;
   volatile char          _measureFlag      = 0;
   volatile double        HCSR04distance    = 0;
@@ -53,7 +54,7 @@ namespace ATOM0 {
    * void ultrasonicCalculate()
    ****************************************************************/
   void ultrasonicCalculate() {
-    if (millis() - _distancePrevTime < PING_INTERVAL) return;
+    if (millis() - _distancePrevTime < _PING_INTERVAL) return;
 
     _distancePrevTime = millis();
 

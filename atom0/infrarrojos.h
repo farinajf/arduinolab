@@ -23,6 +23,7 @@ namespace ATOM0 {
       
       void init();
       void checkIRObstacle();
+      void checkIRObstacle2();
   };
 }
 

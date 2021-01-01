@@ -3,18 +3,6 @@
 
 #include <Arduino.h>
 
-extern const unsigned int DISTANCE_MAX;
-extern const unsigned int DISTANCE_MIN_FAST;
-extern const unsigned int DISTANCE_MIN;
-extern const unsigned int DISTANCE_SUPER_MIN;
-extern const int          PING_INTERVAL;
-extern const int          FORWARD_SPEED_FAST;
-extern const int          FORWARD_SPEEP_SLOW;
-extern const int          BACKWARD_SPEED;
-extern const int          TURN_SPEED;
-
-extern const bool         DEBUG;
-
 /************************************************************/
 /*                  PINS                                    */
 /************************************************************/
@@ -37,5 +25,17 @@ extern const bool         DEBUG;
 #define PIN_IR_RIGHT       A5
 
 #define PIN_LED_ALERT      12
+
+extern const unsigned int DISTANCE_MAX;
+extern const unsigned int DISTANCE_MIN_FAST;
+extern const unsigned int DISTANCE_MIN;
+extern const unsigned int DISTANCE_SUPER_MIN;
+extern const int          PING_INTERVAL;
+extern const int          FORWARD_SPEED_FAST;
+extern const int          FORWARD_SPEEP_SLOW;
+extern const int          BACKWARD_SPEED;
+extern const int          TURN_SPEED;
+
+extern const bool         DEBUG;
 
 #endif
