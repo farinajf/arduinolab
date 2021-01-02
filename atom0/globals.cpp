@@ -10,4 +10,4 @@ const int          FORWARD_SPEEP_SLOW   = 150;
 const int          BACKWARD_SPEED       = 150;
 const int          TURN_SPEED           = 150;
 
-const bool         DEBUG                = true;
+const bool         DEBUG                = false;

@@ -17,8 +17,8 @@ namespace ATOM0 {
   void L298NEngine::forward(int velocidad) const {
     //toString(velocidad);
     analogWrite (_pinEnable, velocidad);
-    digitalWrite(_pinIN1,    LOW);
-    digitalWrite(_pinIN2,    HIGH);
+    digitalWrite(_pinIN1,    HIGH);
+    digitalWrite(_pinIN2,    LOW);
   }
 
   /****************************************************************
@@ -27,8 +27,8 @@ namespace ATOM0 {
   void L298NEngine::backward(int velocidad) const {
     //toString(velocidad);
     analogWrite (_pinEnable, velocidad);
-    digitalWrite(_pinIN1,    HIGH);
-    digitalWrite(_pinIN2,    LOW);
+    digitalWrite(_pinIN1,    LOW);
+    digitalWrite(_pinIN2,    HIGH);
   }
 
   /****************************************************************
