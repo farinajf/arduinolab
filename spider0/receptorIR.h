@@ -1,12 +1,9 @@
 #ifndef RECEPTOR_IR_H
 #define RECEPTOR_IR_H
 
-#include "pins.h"
-#include "IRremote.h"
+#include "globals.h"
+#include <IRremote.h>
 
-/**
- * 
- */
 namespace SPIDER {
   enum CodigoIR {
     IR_OK,
@@ -30,6 +27,9 @@ namespace SPIDER {
     IR_NONE
   };
 
+  /**
+   * 
+   */
   class ReceptorIR {
     private:
       const IRrecv _receiver;
@@ -39,19 +39,13 @@ namespace SPIDER {
       void     _ircode      (const decode_results *results) const;
       void     _dumpInfo    (const decode_results *results) const;
       CodigoIR _getResultado(const decode_results *results) const;
-      
+
     public:
       ReceptorIR() : _receiver(PIN_IR_RECEIVER) {}
 
-      /****************************************************************
-       * void init()
-       ****************************************************************/
-      void init();
-
-      /****************************************************************
-       * CodigoIR receive()
-       ****************************************************************/
+      void     init();
       CodigoIR receive();
   };
 }
+
 #endif

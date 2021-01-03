@@ -3,38 +3,18 @@
 
 #include "voltage.h"
 
-/**
- * 
- */
 namespace SPIDER {
   class Sensors {
     private:
       Voltage _voltage;
 
     public:
-      Sensors() {}
+      Sensors(): _voltage() {}
 
-      /****************************************************************
-       * void init()
-       ****************************************************************/
-      void init() {
-        _voltage.init();
-      }
+      void init();
+      void calculate();
 
-      /****************************************************************
-       * void calculate()
-       ****************************************************************/
-      void calculate() {
-        _voltage.calculate();
-      }
-
-      /****************************************************************
-       * boolean isBatteryOK()
-       ****************************************************************/
-      boolean isBatteryOK() const {
-        return _voltage.isVoltageHigh();
-      }
+      bool isBatteryOK() const;
   };
 }
-
 #endif

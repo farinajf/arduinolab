@@ -7,22 +7,22 @@ namespace SPIDER {
   void ReceptorIR::_encoding(const decode_results *results) const {
     switch (results->decode_type)
     {
-      case NEC:          Serial.print("NEC");           break ;
-      case SONY:         Serial.print("SONY");          break ;
-      case RC5:          Serial.print("RC5");           break ;
-      case RC6:          Serial.print("RC6");           break ;
-      case DISH:         Serial.print("DISH");          break ;
-      case SHARP:        Serial.print("SHARP");         break ;
-      case JVC:          Serial.print("JVC");           break ;
-      case SANYO:        Serial.print("SANYO");         break ;
-      case MITSUBISHI:   Serial.print("MITSUBISHI");    break ;
-      case SAMSUNG:      Serial.print("SAMSUNG");       break ;
-      case LG:           Serial.print("LG");            break ;
-      case WHYNTER:      Serial.print("WHYNTER");       break ;
-      case AIWA_RC_T501: Serial.print("AIWA_RC_T501");  break ;
-      case PANASONIC:    Serial.print("PANASONIC");     break ;
-      case DENON:        Serial.print("Denon");         break ;
-      case UNKNOWN:      Serial.print("UNKNOWN");       break ;
+      case NEC:          Serial.print("NEC");           break;
+      case SONY:         Serial.print("SONY");          break;
+      case RC5:          Serial.print("RC5");           break;
+      case RC6:          Serial.print("RC6");           break;
+      case DISH:         Serial.print("DISH");          break;
+      case SHARP:        Serial.print("SHARP");         break;
+      case JVC:          Serial.print("JVC");           break;
+      case SANYO:        Serial.print("SANYO");         break;
+//      case MITSUBISHI:   Serial.print("MITSUBISHI");    break;
+      case SAMSUNG:      Serial.print("SAMSUNG");       break;
+      case LG:           Serial.print("LG");            break;
+      case WHYNTER:      Serial.print("WHYNTER");       break;
+//      case AIWA_RC_T501: Serial.print("AIWA_RC_T501");  break;
+      case PANASONIC:    Serial.print("PANASONIC");     break;
+      case DENON:        Serial.print("Denon");         break;
+      case UNKNOWN:      Serial.print("UNKNOWN");       break;
     }
   }
 
@@ -40,7 +40,7 @@ namespace SPIDER {
     // Print Code
     Serial.print(results->value, HEX);
   }
-      
+
   /****************************************************************
    * void _dumpInfo(const decode_results *results) const
    ****************************************************************/
@@ -93,7 +93,7 @@ namespace SPIDER {
       default:         return IR_NONE; 
     }
   }
-  
+
   /****************************************************************
    * void init()
    ****************************************************************/

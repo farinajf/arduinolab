@@ -2,38 +2,40 @@
 #define SPIDER0_H
 
 #include "receptorIR.h"
-#include "spiderMotor.h"
+#include "sensors.h"
+#include "SpiderMotor.h"
 
 namespace SPIDER {
   enum DriveMode_t {
-    DRIVE_MODE_LEG_MOVE_1,
-    DRIVE_MODE_LEG_MOVE_2,
-    DRIVE_MODE_LEG_MOVE_3,
-    DRIVE_MODE_LEG_MOVE_4,
-    DRIVE_MODE_LEG_MOVE_5,
-    DRIVE_MODE_LEG_MOVE_6,
-    DRIVE_MODE_NONE
+    DRIVE_LEG_RIGHT_1,
+    DRIVE_LEG_RIGHT_2,
+    DRIVE_LEG_RIGHT_3,
+    DRIVE_LEG_LEFT_1,
+    DRIVE_LEG_LEFT_2,
+    DRIVE_LEG_LEFT_3,
+    DRIVE_NONE
   };
-  
+
   class Spider0 {
     private:
       const SpiderMotor _motor;
       const ReceptorIR  _ir;
-      DriveMode_t       _driveMode = DRIVE_MODE_NONE;
+      const Sensors     _sensors;
+      DriveMode_t       _driveMode = DRIVE_LEG_LEFT_1;
 
-      void _setDriveMode();
-      void _up();
-      void _down();
-      void _left();
-      void _right();
+      SpiderLeg_t _getLeg() const;
+      void        _up()     const;
+      void        _down()   const;
+      void        _left()   const;
+      void        _right()  const;
+      void        _setDriveMode();
+      void        _drive();
+      void        _reposo() const;
 
     public:
       Spider0();
 
-      void setDriveMode(DriveMode_t x) {_driveMode = x;}
-      
       void init();
-      void reposo() const;
       void drive();
   };
 }

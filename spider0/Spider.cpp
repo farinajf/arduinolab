@@ -2,6 +2,57 @@
 
 namespace SPIDER {
   /****************************************************************
+   * SpiderLeg_t _getLeg() const
+   ****************************************************************/
+  SpiderLeg_t Spider0::_getLeg() const {
+    switch(_driveMode)
+    {
+      case DRIVE_LEG_RIGHT_1: return LEG_RIGHT_1;
+      case DRIVE_LEG_RIGHT_2: return LEG_RIGHT_2;
+      case DRIVE_LEG_RIGHT_3: return LEG_RIGHT_3;
+      case DRIVE_LEG_LEFT_1:  return LEG_LEFT_1;
+      case DRIVE_LEG_LEFT_2:  return LEG_LEFT_2;
+      case DRIVE_LEG_LEFT_3:  return LEG_LEFT_3;
+    }
+  }
+
+  /****************************************************************
+   * void _up() const
+   ****************************************************************/
+  void Spider0::_up() const {
+    Serial.println("Spider0._up()");
+
+    _motor.move(_getLeg(), 0, 5, 5);
+  }
+
+  /****************************************************************
+   * void _down() const
+   ****************************************************************/
+  void Spider0::_down() const {
+    Serial.println("Spider0._down()");
+
+    _motor.move(_getLeg(), 0, -5, -5);
+  }
+
+  /****************************************************************
+   * void _left() const
+   ****************************************************************/
+  void Spider0::_left() const {
+    Serial.println("Spider0._left()");
+
+    _motor.move(_getLeg(), -5, 0, 0);
+  }
+
+  /****************************************************************
+   * void _right() const
+   ****************************************************************/
+  void Spider0::_right() const {
+    Serial.println("Spider0._right()");
+
+    _motor.move(_getLeg(),  5, 0, 0);
+  }
+
+  /****************************************************************
    * void _setDriveMode()
    ****************************************************************/
   void Spider0::_setDriveMode() {
@@ -9,83 +60,48 @@ namespace SPIDER {
     {
       switch (_ir.receive())
       {
-        case IR_T_1:      setDriveMode(DRIVE_MODE_LEG_MOVE_1); Serial.println("Seleccionada pata 1"); return;
-        case IR_T_2:      setDriveMode(DRIVE_MODE_LEG_MOVE_2); Serial.println("Seleccionada pata 2"); return;
-        case IR_T_3:      setDriveMode(DRIVE_MODE_LEG_MOVE_3); Serial.println("Seleccionada pata 3"); return;
-        case IR_T_4:      setDriveMode(DRIVE_MODE_LEG_MOVE_4); Serial.println("Seleccionada pata 4"); return;
-        case IR_T_5:      setDriveMode(DRIVE_MODE_LEG_MOVE_5); Serial.println("Seleccionada pata 5"); return;
-        case IR_T_6:      setDriveMode(DRIVE_MODE_LEG_MOVE_6); Serial.println("Seleccionada pata 6"); return;
-        case IR_ASTERISK: setDriveMode(DRIVE_MODE_NONE);       Serial.println("Cancelado!!");         return;
+        case IR_T_1:      _driveMode = DRIVE_LEG_RIGHT_1; Serial.println("Seleccionada pata R-1"); return;
+        case IR_T_2:      _driveMode = DRIVE_LEG_RIGHT_2; Serial.println("Seleccionada pata R-2"); return;
+        case IR_T_3:      _driveMode = DRIVE_LEG_RIGHT_3; Serial.println("Seleccionada pata R-3"); return;
+        case IR_T_4:      _driveMode = DRIVE_LEG_LEFT_1;  Serial.println("Seleccionada pata L-1"); return;
+        case IR_T_5:      _driveMode = DRIVE_LEG_LEFT_2;  Serial.println("Seleccionada pata L-2"); return;
+        case IR_T_6:      _driveMode = DRIVE_LEG_LEFT_3;  Serial.println("Seleccionada pata L-3"); return;
+        case IR_ASTERISK: _driveMode = DRIVE_NONE;        Serial.println("Cancelado!!");           return;
       }
     }
   }
 
   /****************************************************************
-   * void _up()
+   * void _reposo() const
    ****************************************************************/
-  void Spider0::_up() {
-    switch (_driveMode)
-    {
-      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  0, 5, 5); break;
-      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, 0, 5, 5); break;
-      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   0, 5, 5); break;
-      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   0, 5, 5); break;
-      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  0, 5, 5); break;
-      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    0, 5, 5); break;
-    }
+  void Spider0::_reposo() const {
+    Serial.println("Spider0._reposo()");
+
+    _motor.reposo();
   }
 
   /****************************************************************
-   * void _down()
+   * void _drive()
    ****************************************************************/
-  void Spider0::_down() {
-    switch (_driveMode)
+  void Spider0::_drive() {
+    switch (_ir.receive())
     {
-      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  0, -5, -5); break;
-      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, 0, -5, -5); break;
-      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   0, -5, -5); break;
-      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   0, -5, -5); break;
-      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  0, -5, -5); break;
-      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    0, -5, -5); break;
+      case IR_HASH:  _setDriveMode(); break;
+      case IR_OK:    _reposo();       break;
+      case IR_UP:    _up();           break;
+      case IR_DOWN:  _down();         break;
+      case IR_LEFT:  _left();         break;
+      case IR_RIGHT: _right();        break;
+      default:       return;
     }
   }
 
-  /****************************************************************
-   * void _left()
-   ****************************************************************/
-  void Spider0::_left() {
-    switch (_driveMode)
-    {
-      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  -5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, -5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   -5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   -5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  -5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    -5, 0, 0); break;
-    }
-  }
-
-  /****************************************************************
-   * void _right()
-   ****************************************************************/
-  void Spider0::_right() {
-    switch (_driveMode)
-    {
-      case DRIVE_MODE_LEG_MOVE_1: _motor.leg(RIGHT_LEG_FRONT,  5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_2: _motor.leg(RIGHT_LEG_MIDDLE, 5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_3: _motor.leg(RIGHT_LEG_BACK,   5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_4: _motor.leg(LEFT_LEG_FRONT,   5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_5: _motor.leg(LEFT_LEG_MIDDLE,  5, 0, 0); break;
-      case DRIVE_MODE_LEG_MOVE_6: _motor.leg(LEFT_LEG_BACK,    5, 0, 0); break;
-    }
-  }
-  
   /****************************************************************
    * 
    * Constructor()
    * 
    ****************************************************************/
-  Spider0::Spider0() : _motor() {}
+  Spider0::Spider0() : _motor(), _sensors() {}
 
   /****************************************************************
    * void init()
@@ -93,29 +109,23 @@ namespace SPIDER {
   void Spider0::init() {
     _ir.init();
     _motor.init();
-  }
+    _sensors.init();
 
-  /****************************************************************
-   * void reposo() const
-   ****************************************************************/
-  void Spider0::reposo() const {
-    _motor.reposo();
+    _reposo();
   }
 
   /****************************************************************
    * void drive()
-   * 
    ****************************************************************/
   void Spider0::drive() {
-    switch (_ir.receive())
-    {
-      case IR_OK:    reposo();        break;
-      case IR_HASH:  _setDriveMode(); break;
-      case IR_UP:    _up();           break;
-      case IR_DOWN:  _down();         break;
-      case IR_LEFT:  _left();         break;
-      case IR_RIGHT: _right();        break;
-      default:    return;
-    }
+    //1.- Get information from sensors
+    _sensors.calculate();
+
+    //2.- Check battery
+    if (_sensors.isBatteryOK() == true) _drive();
+    else delay(10000);
+
+    //3.- End
+    delay(200);
   }
 }
