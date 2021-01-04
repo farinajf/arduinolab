@@ -28,12 +28,12 @@ namespace SPIDER {
 
     if (SPIDER_DEBUG == true)
     {
-      Serial.print("setAngle(");Serial.print(_addr);Serial.print(",");Serial.print(duty);Serial.println(")");
+      Serial.print("setAngle(");Serial.print(_addr);Serial.print(", ");Serial.print(_angle);Serial.print(" -> ");Serial.print(duty);Serial.println(")");
     }
 
     driver->setPWM(_addr, 0, duty);
 
-    delay(200);
+    delay(100);
   }
 
   /****************************************************************
@@ -47,7 +47,10 @@ namespace SPIDER {
     
     const uint16_t duty = _getDuty();
 
-    Serial.print("setAngle(");Serial.print(_addr);Serial.print(",");Serial.print(duty);Serial.println(")");
+    if (SPIDER_DEBUG == true)
+    {
+      Serial.print("setAngle(");Serial.print(_addr);Serial.print(", ");Serial.print(_angle);Serial.print(" -> ");Serial.print(duty);Serial.println(")");
+    }
 
     driver->setPWM(_addr, 0, duty);
   }

@@ -7,12 +7,8 @@
 
 namespace SPIDER {
   enum DriveMode_t {
-    DRIVE_LEG_RIGHT_1,
-    DRIVE_LEG_RIGHT_2,
-    DRIVE_LEG_RIGHT_3,
-    DRIVE_LEG_LEFT_1,
-    DRIVE_LEG_LEFT_2,
-    DRIVE_LEG_LEFT_3,
+    DRIVE_GROUP_LEG_1, //R-1, L-2, R-3
+    DRIVE_GROUP_LEG_2, //L_1, R-2, L-3
     DRIVE_NONE
   };
 
@@ -21,16 +17,15 @@ namespace SPIDER {
       const SpiderMotor _motor;
       const ReceptorIR  _ir;
       const Sensors     _sensors;
-      DriveMode_t       _driveMode = DRIVE_LEG_LEFT_1;
+      DriveMode_t       _driveMode = DRIVE_GROUP_LEG_1;
 
-      SpiderLeg_t _getLeg() const;
-      void        _up()     const;
-      void        _down()   const;
-      void        _left()   const;
-      void        _right()  const;
-      void        _setDriveMode();
-      void        _drive();
-      void        _reposo() const;
+      void _up()     const;
+      void _down()   const;
+      void _left()   const;
+      void _right()  const;
+      void _setDriveMode();
+      void _drive();
+      void _reposo() const;
 
     public:
       Spider0();

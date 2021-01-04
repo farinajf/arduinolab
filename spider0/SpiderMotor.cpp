@@ -84,9 +84,9 @@ namespace SPIDER {
   void SpiderMotor::move(const SpiderLeg_t leg, const short deltaCoxa, const short deltaFemur, const short deltaTibia) const {
     switch (leg)
     {
-      case LEG_RIGHT_1: _rightMotor.move(LEG_1, deltaCoxa, deltaFemur, deltaTibia); return;
-      case LEG_RIGHT_2: _rightMotor.move(LEG_2, deltaCoxa, deltaFemur, deltaTibia); return;
-      case LEG_RIGHT_3: _rightMotor.move(LEG_3, deltaCoxa, deltaFemur, deltaTibia); return;
+      case LEG_RIGHT_1: _rightMotor.move(LEG_1, -1*deltaCoxa, -1*deltaFemur, -1*deltaTibia); return;
+      case LEG_RIGHT_2: _rightMotor.move(LEG_2, -1*deltaCoxa, -1*deltaFemur, -1*deltaTibia); return;
+      case LEG_RIGHT_3: _rightMotor.move(LEG_3, -1*deltaCoxa, -1*deltaFemur, -1*deltaTibia); return;
 
       case LEG_LEFT_1:  _leftMotor.move (LEG_1, deltaCoxa, deltaFemur, deltaTibia); return;
       case LEG_LEFT_2:  _leftMotor.move (LEG_2, deltaCoxa, deltaFemur, deltaTibia); return;

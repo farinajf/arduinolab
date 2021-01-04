@@ -2,27 +2,25 @@
 
 namespace SPIDER {
   /****************************************************************
-   * SpiderLeg_t _getLeg() const
-   ****************************************************************/
-  SpiderLeg_t Spider0::_getLeg() const {
-    switch(_driveMode)
-    {
-      case DRIVE_LEG_RIGHT_1: return LEG_RIGHT_1;
-      case DRIVE_LEG_RIGHT_2: return LEG_RIGHT_2;
-      case DRIVE_LEG_RIGHT_3: return LEG_RIGHT_3;
-      case DRIVE_LEG_LEFT_1:  return LEG_LEFT_1;
-      case DRIVE_LEG_LEFT_2:  return LEG_LEFT_2;
-      case DRIVE_LEG_LEFT_3:  return LEG_LEFT_3;
-    }
-  }
-
-  /****************************************************************
    * void _up() const
    ****************************************************************/
   void Spider0::_up() const {
     Serial.println("Spider0._up()");
 
-    _motor.move(_getLeg(), 0, 5, 5);
+    switch (_driveMode)
+    {
+      case DRIVE_GROUP_LEG_1:
+          _motor.move(LEG_RIGHT_1, 0, 5, 5);
+          _motor.move(LEG_LEFT_2,  0, 5, 5);
+          _motor.move(LEG_RIGHT_3, 0, 5, 5);
+          return;
+
+      case DRIVE_GROUP_LEG_2:
+          _motor.move(LEG_LEFT_1,  0, 5, 5);
+          _motor.move(LEG_RIGHT_2, 0, 5, 5);
+          _motor.move(LEG_LEFT_3,  0, 5, 5);
+          return;
+    }
   }
 
   /****************************************************************
@@ -31,7 +29,20 @@ namespace SPIDER {
   void Spider0::_down() const {
     Serial.println("Spider0._down()");
 
-    _motor.move(_getLeg(), 0, -5, -5);
+    switch (_driveMode)
+    {
+      case DRIVE_GROUP_LEG_1:
+          _motor.move(LEG_RIGHT_1, 0, -5, -5);
+          _motor.move(LEG_LEFT_2,  0, -5, -5);
+          _motor.move(LEG_RIGHT_3, 0, -5, -5);
+          return;
+
+      case DRIVE_GROUP_LEG_2:
+          _motor.move(LEG_LEFT_1,  0, -5, -5);
+          _motor.move(LEG_RIGHT_2, 0, -5, -5);
+          _motor.move(LEG_LEFT_3,  0, -5, -5);
+          return;
+    }
   }
 
   /****************************************************************
@@ -40,7 +51,20 @@ namespace SPIDER {
   void Spider0::_left() const {
     Serial.println("Spider0._left()");
 
-    _motor.move(_getLeg(), -5, 0, 0);
+    switch (_driveMode)
+    {
+      case DRIVE_GROUP_LEG_1:
+          _motor.move(LEG_RIGHT_1, -5, 0, 0);
+          _motor.move(LEG_LEFT_2,  -5, 0, 0);
+          _motor.move(LEG_RIGHT_3, -5, 0, 0);
+          return;
+
+      case DRIVE_GROUP_LEG_2:
+          _motor.move(LEG_LEFT_1,  -5, 0, 0);
+          _motor.move(LEG_RIGHT_2, -5, 0, 0);
+          _motor.move(LEG_LEFT_3,  -5, 0, 0);
+          return;
+    }
   }
 
   /****************************************************************
@@ -49,7 +73,20 @@ namespace SPIDER {
   void Spider0::_right() const {
     Serial.println("Spider0._right()");
 
-    _motor.move(_getLeg(),  5, 0, 0);
+    switch (_driveMode)
+    {
+      case DRIVE_GROUP_LEG_1:
+          _motor.move(LEG_RIGHT_1, 5, 0, 0);
+          _motor.move(LEG_LEFT_2,  5, 0, 0);
+          _motor.move(LEG_RIGHT_3, 5, 0, 0);
+          return;
+
+      case DRIVE_GROUP_LEG_2:
+          _motor.move(LEG_LEFT_1,  5, 0, 0);
+          _motor.move(LEG_RIGHT_2, 5, 0, 0);
+          _motor.move(LEG_LEFT_3,  5, 0, 0);
+          return;
+    }
   }
 
   /****************************************************************
@@ -60,12 +97,8 @@ namespace SPIDER {
     {
       switch (_ir.receive())
       {
-        case IR_T_1:      _driveMode = DRIVE_LEG_RIGHT_1; Serial.println("Seleccionada pata R-1"); return;
-        case IR_T_2:      _driveMode = DRIVE_LEG_RIGHT_2; Serial.println("Seleccionada pata R-2"); return;
-        case IR_T_3:      _driveMode = DRIVE_LEG_RIGHT_3; Serial.println("Seleccionada pata R-3"); return;
-        case IR_T_4:      _driveMode = DRIVE_LEG_LEFT_1;  Serial.println("Seleccionada pata L-1"); return;
-        case IR_T_5:      _driveMode = DRIVE_LEG_LEFT_2;  Serial.println("Seleccionada pata L-2"); return;
-        case IR_T_6:      _driveMode = DRIVE_LEG_LEFT_3;  Serial.println("Seleccionada pata L-3"); return;
+        case IR_T_1:      _driveMode = DRIVE_GROUP_LEG_1; Serial.println("Seleccionada G-1"); return;
+        case IR_T_2:      _driveMode = DRIVE_GROUP_LEG_2; Serial.println("Seleccionada G-2"); return;
         case IR_ASTERISK: _driveMode = DRIVE_NONE;        Serial.println("Cancelado!!");           return;
       }
     }
