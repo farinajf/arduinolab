@@ -6,10 +6,10 @@
 #include "SpiderMotor.h"
 
 namespace SPIDER {
-  enum DriveMode_t {
-    DRIVE_GROUP_LEG_1, //R-1, L-2, R-3
-    DRIVE_GROUP_LEG_2, //L_1, R-2, L-3
-    DRIVE_NONE
+  enum LegGroup_t {
+    GROUP_LEG_1, //R-1, L-2, R-3
+    GROUP_LEG_2, //L_1, R-2, L-3
+    NONE
   };
 
   class Spider0 {
@@ -17,15 +17,11 @@ namespace SPIDER {
       const SpiderMotor _motor;
       const ReceptorIR  _ir;
       const Sensors     _sensors;
-      DriveMode_t       _driveMode = DRIVE_GROUP_LEG_1;
 
-      void _up()     const;
-      void _down()   const;
-      void _left()   const;
-      void _right()  const;
-      void _setDriveMode();
+      void _up   (LegGroup_t group, const short deltaCoxa, const short deltaFemur, const short deltaTibia) const;
       void _drive();
-      void _reposo() const;
+      void _reposo()   const;
+      void _showInfo() const;
 
     public:
       Spider0();

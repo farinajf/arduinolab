@@ -2,89 +2,31 @@
 
 namespace SPIDER {
   /****************************************************************
-   * void _up() const
+   * void _showInfo()
+   * 
    ****************************************************************/
-  void Spider0::_up() const {
+  void Spider0::_showInfo() const {
+    Serial.print("Temperatura: "); Serial.print(_sensors.getMPUTemperatura()); Serial.println();
+  }
+  
+  /****************************************************************
+   * void _up(LegGroup_t group, const short deltaCoxa, const short deltaFemur, const short deltaTibia) const
+   ****************************************************************/
+  void Spider0::_up(LegGroup_t group, const short deltaCoxa, const short deltaFemur, const short deltaTibia) const {
     Serial.println("Spider0._up()");
 
-    switch (_driveMode)
+    switch (group)
     {
-      case DRIVE_GROUP_LEG_1:
-          _motor.move(LEG_RIGHT_1, 0, 5, 5);
-          _motor.move(LEG_LEFT_2,  0, 5, 5);
-          _motor.move(LEG_RIGHT_3, 0, 5, 5);
+      case GROUP_LEG_1:
+          _motor.move(LEG_RIGHT_1, deltaCoxa, deltaFemur, deltaTibia); delay(500);
+          _motor.move(LEG_LEFT_2,  deltaCoxa, deltaFemur, deltaTibia); delay(500);
+          _motor.move(LEG_RIGHT_3, deltaCoxa, deltaFemur, deltaTibia); delay(500);
           return;
 
-      case DRIVE_GROUP_LEG_2:
-          _motor.move(LEG_LEFT_1,  0, 5, 5);
-          _motor.move(LEG_RIGHT_2, 0, 5, 5);
-          _motor.move(LEG_LEFT_3,  0, 5, 5);
-          return;
-    }
-  }
-
-  /****************************************************************
-   * void _down() const
-   ****************************************************************/
-  void Spider0::_down() const {
-    Serial.println("Spider0._down()");
-
-    switch (_driveMode)
-    {
-      case DRIVE_GROUP_LEG_1:
-          _motor.move(LEG_RIGHT_1, 0, -5, -5);
-          _motor.move(LEG_LEFT_2,  0, -5, -5);
-          _motor.move(LEG_RIGHT_3, 0, -5, -5);
-          return;
-
-      case DRIVE_GROUP_LEG_2:
-          _motor.move(LEG_LEFT_1,  0, -5, -5);
-          _motor.move(LEG_RIGHT_2, 0, -5, -5);
-          _motor.move(LEG_LEFT_3,  0, -5, -5);
-          return;
-    }
-  }
-
-  /****************************************************************
-   * void _left() const
-   ****************************************************************/
-  void Spider0::_left() const {
-    Serial.println("Spider0._left()");
-
-    switch (_driveMode)
-    {
-      case DRIVE_GROUP_LEG_1:
-          _motor.move(LEG_RIGHT_1, -5, 0, 0);
-          _motor.move(LEG_LEFT_2,  -5, 0, 0);
-          _motor.move(LEG_RIGHT_3, -5, 0, 0);
-          return;
-
-      case DRIVE_GROUP_LEG_2:
-          _motor.move(LEG_LEFT_1,  -5, 0, 0);
-          _motor.move(LEG_RIGHT_2, -5, 0, 0);
-          _motor.move(LEG_LEFT_3,  -5, 0, 0);
-          return;
-    }
-  }
-
-  /****************************************************************
-   * void _right() const
-   ****************************************************************/
-  void Spider0::_right() const {
-    Serial.println("Spider0._right()");
-
-    switch (_driveMode)
-    {
-      case DRIVE_GROUP_LEG_1:
-          _motor.move(LEG_RIGHT_1, 5, 0, 0);
-          _motor.move(LEG_LEFT_2,  5, 0, 0);
-          _motor.move(LEG_RIGHT_3, 5, 0, 0);
-          return;
-
-      case DRIVE_GROUP_LEG_2:
-          _motor.move(LEG_LEFT_1,  5, 0, 0);
-          _motor.move(LEG_RIGHT_2, 5, 0, 0);
-          _motor.move(LEG_LEFT_3,  5, 0, 0);
+      case GROUP_LEG_2:
+          _motor.move(LEG_LEFT_1,  deltaCoxa, deltaFemur, deltaTibia); delay(500);
+          _motor.move(LEG_RIGHT_2, deltaCoxa, deltaFemur, deltaTibia); delay(500);
+          _motor.move(LEG_LEFT_3,  deltaCoxa, deltaFemur, deltaTibia); delay(500);
           return;
     }
   }
@@ -92,6 +34,7 @@ namespace SPIDER {
   /****************************************************************
    * void _setDriveMode()
    ****************************************************************/
+  /*
   void Spider0::_setDriveMode() {
     while (true)
     {
@@ -103,6 +46,7 @@ namespace SPIDER {
       }
     }
   }
+  */
 
   /****************************************************************
    * void _reposo() const
@@ -116,7 +60,8 @@ namespace SPIDER {
   /****************************************************************
    * void _drive()
    ****************************************************************/
-  void Spider0::_drive() {
+  /*
+  void Spider0::_driveOld() {
     switch (_ir.receive())
     {
       case IR_HASH:  _setDriveMode(); break;
@@ -127,6 +72,21 @@ namespace SPIDER {
       case IR_RIGHT: _right();        break;
       default:       return;
     }
+  }
+  */
+
+  /****************************************************************
+   * void _drive()
+   ****************************************************************/
+  void Spider0::_drive() {
+    const short coxa  = 0;
+    const short femur = 60;
+    const short tibia = 45;
+
+    //this->_up(GROUP_LEG_1, coxa, femur, tibia);
+    this->_reposo();
+    //this->_up(GROUP_LEG_2, coxa, femur, tibia);
+    this->_reposo();
   }
 
   /****************************************************************
@@ -154,11 +114,14 @@ namespace SPIDER {
     //1.- Get information from sensors
     _sensors.calculate();
 
-    //2.- Check battery
+    //2.-
+    _showInfo();
+
+    //3.- Check battery
     if (_sensors.isBatteryOK() == true) _drive();
     else delay(10000);
 
-    //3.- End
+    //4.- End
     delay(200);
   }
 }
