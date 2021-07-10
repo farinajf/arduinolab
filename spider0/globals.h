@@ -10,6 +10,7 @@
 #define RED_LED_PIN         7
 #define PIN_IR_RECEIVER     8
 
+extern const bool MPU_CALIBRATION;
 extern const bool SPIDER_DEBUG;
 extern const int  VOLTAGE_UMBRAL;
 

@@ -7,6 +7,9 @@ namespace SPIDER {
    ****************************************************************/
   void Spider0::_showInfo() const {
     Serial.print("Temperatura: "); Serial.print(_sensors.getMPUTemperatura()); Serial.println();
+
+    Serial.print("AnguloX: "); Serial.print(_sensors.getMPUAngleX()); Serial.println();
+    Serial.print("AnguloY: "); Serial.print(_sensors.getMPUAngleY()); Serial.println();
   }
   
   /****************************************************************
