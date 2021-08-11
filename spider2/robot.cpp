@@ -170,7 +170,7 @@ namespace SPIDER {
     float yDistance = leg.getPointGoal()._y - leg.getPointNow()._y;
     float zDistance = leg.getPointGoal()._z - leg.getPointNow()._z;
 
-    float factor = (distance > 0) ? ((float) leg.getStepDistance()) * ((float) _speedMultiple) / distance : 1.0;
+    float factor = (distance > ROBOT_LEG_NEGLIGIBLE_DISTANCE) ? ((float) leg.getStepDistance()) * ((float) _speedMultiple) / distance : 1.0;
 
     float xStep = xDistance * factor;
     float yStep = yDistance * factor;

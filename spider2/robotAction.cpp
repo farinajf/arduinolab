@@ -83,8 +83,6 @@ namespace SPIDER {
     RobotLegsPoints points4;
     RobotLegsPoints points5;
 
-    Serial.println("RobotAction::crawl()");
-    
     //0.- Estado inicial
     this -> _actionState();
     if (_legsState != LegsState::CRAWL_STATE) this -> initialState();

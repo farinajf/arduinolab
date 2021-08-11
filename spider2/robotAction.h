@@ -4,7 +4,7 @@
 #include "robot.h"
 
 #define ROBOT_ACTION_DEFAULT_BODY_LIFT -100
-#define ROBOT_ACTION_BODY_LIFT_SPEED      1
+#define ROBOT_ACTION_BODY_LIFT_SPEED      5
 #define ROBOT_ACTION_CRAWL_LENGTH        42
 #define ROBOT_ACTION_TURN_ANGLE          18
 #define ROBOT_ACTION_CRAWL_STEPS          6 //2, 4, 6
