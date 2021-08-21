@@ -81,6 +81,8 @@ namespace SPIDER {
   /****************************************************************
    * void updateOrder()
    * 
+   * Se llama desde: Spider0::update()
+   * 
    ****************************************************************/
   void SpiderCom::updateOrder() {
     this -> _updateBlockedOrder();
@@ -150,11 +152,11 @@ namespace SPIDER {
 
     outData[outDataCounter++] = Orders::TRANS_START;
 
-    if (data[1] == Orders::REQ_ECHO)
+    if (data[1] == Orders::REQ_ECHO)                           //  0
     {
       outData[outDataCounter++] = Orders::ECHO;
     }
-    else if (data[1] == Orders::REQ_SUPPLY_VOLTAGE)
+    else if (data[1] == Orders::REQ_SUPPLY_VOLTAGE)            // 10
     {
       float result = this -> _getSupplyVoltage();
 
@@ -162,20 +164,29 @@ namespace SPIDER {
       outData[outDataCounter++] = (int)(result * 100) / 128;
       outData[outDataCounter++] = (int)(result * 100) % 128;
     }
-    else if (data[1] == Orders::REQ_CHANGE_IO)
+    else if (data[1] == Orders::REQ_CHANGE_IO)                 // 20
     {
       digitalWrite(_PINS[data[2]], data[3]);
       outData[outDataCounter++] = Orders::ORDER_DONE;
     }
-
-
-
-
-    //TODO
+    else if (data[1] == Orders::REQ_MOVE_LEG)                  // 30
+    {
+      _robotAction.legMoveToRelativelyDirectly(data[2], Point(data[3] - 64, data[4] - 64, data[5] - 64));
+      outData[outDataCounter++] = Orders::ORDER_DONE;
+    }
+    else if (data[1] == Orders::REQ_CALIBRATE)
+    {
+      _robotAction.getRobot().calibrateServos();
+      outData[outDataCounter++] = Orders::ORDER_DONE;
+    }
     else if (data[1] >= 64 && data[1] <= 108)   // Simple action
     {
       _blockedOrder             = data[1];
       outData[outDataCounter++] = Orders::ORDER_START;
+    }
+    else if (data[1] == Orders::requestCrawl)
+    {
+      //TODO
     }
     else if (data[1] == Orders::REQ_CHANGE_BODY_HEIGHT)
     {
@@ -183,12 +194,19 @@ namespace SPIDER {
       _changeHeightParameters[0] = data[2];
       outData[outDataCounter++]  = Orders::ORDER_START;
     }
-    //TODO
+    else if (data[1] == Orders::requestMoveBody)
+    {
+      //TODO
+    }
+    else if (data[1] == Orders::requestRotateBody)
+    {
+      //TODO
+    }
+    else if (data[1] == Orders::requestTwistBody)
+    {
+      //TODO
+    }
 
-    
-    
-    
-    
     outData[outDataCounter++] = Orders::TRANS_END;
 
     if      (orderSource == OrderSource::FROM_SERIAL)  Serial.write (outData,          outDataCounter);
@@ -223,8 +241,6 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void SpiderCom::_setRobotBootState(RobotState state) {
-    //Serial.print("SpiderCom::_setRobotBootState("); Serial.print(state); Serial.println(")");
-
     if      (state == RobotState::INSTALL)   _robotAction.getRobot().installState();
     else if (state == RobotState::CALIBRATE) _robotAction.getRobot().calibrateState();
     else if (state == RobotState::BOOT)      _robotAction.getRobot().bootState();
@@ -301,7 +317,25 @@ namespace SPIDER {
   }
 
   /****************************************************************
+   * void _updateAutoSleep()
+   * 
+   ****************************************************************/
+  void SpiderCom::_updateAutoSleep() {
+    if (_lastBlockedOrderTime == 0) return;
+
+    if (millis() - _lastBlockedOrderTime <= _AUTO_SLEEP_OVERTIME) return;
+
+    if (_robotAction.getRobot().getState() == RobotState::ACTION) _robotAction.sleepMode();
+    
+    _lastBlockedOrderTime = 0;
+  }
+
+
+  /****************************************************************
    * void _updateBlockedOrder()
+   * 
+   * Se llama desde SpiderCom::updateOrder()
+   *          Se llama desde Spider0::update()
    * 
    ****************************************************************/
   void SpiderCom::_updateBlockedOrder() {
@@ -342,32 +376,42 @@ namespace SPIDER {
     else if (blockedOrder == Orders::REQ_ACTIVE_MODE)         // 92
     {
       this -> _saveRobotBootState(RobotState::BOOT);
+      
       _robotAction.activeMode();
     }
-    else if (blockedOrder == Orders::REQ_SLEEP_MODE)
+    else if (blockedOrder == Orders::REQ_SLEEP_MODE)          // 94
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.sleepMode();
     }
-    else if (blockedOrder == Orders::REQ_SWITCH_MODE)
+    else if (blockedOrder == Orders::REQ_SWITCH_MODE)         // 96
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.switchMode();
     }
     else if (blockedOrder == Orders::REQ_INSTALL_STATE)       // 64
     {
       this -> _saveRobotBootState(RobotState::INSTALL);
+      
       _robotAction.getRobot().installState();
     }
-    else if (blockedOrder == Orders::requestCalibrateState)
+    else if (blockedOrder == Orders::REQ_CALIBRATE_STATE)     // 66
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::CALIBRATE);
+      
+      _robotAction.getRobot().calibrateState();
     }
-    else if (blockedOrder == Orders::requestBootState)
+    else if (blockedOrder == Orders::REQ_BOOT_STATE)          // 68
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.getRobot().bootState();
     }
-    else if (blockedOrder == Orders::requestCalibrateVerify)
+    else if (blockedOrder == Orders::REQ_CALIBRATE_VERIFY)    // 70
     {
-      //TODO
+      _robotAction.getRobot().calibrateVerify();
     }
     else if (blockedOrder == Orders::requestCrawl)
     {
@@ -375,7 +419,11 @@ namespace SPIDER {
     }
     else if (blockedOrder == Orders::REQ_CHANGE_BODY_HEIGHT)  //112
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      float h = _changeHeightParameters[0] - 64;
+
+      _robotAction.changeBodyHeight(h);
     }
     else if (blockedOrder == Orders::requestMoveBody)
     {
@@ -393,20 +441,6 @@ namespace SPIDER {
     //.- Fin
     _blockedOrder = 0;
     _orderState   = OrderState::EXECUTE_DONE;
-  }
-  
-  /****************************************************************
-   * void _updateAutoSleep()
-   * 
-   ****************************************************************/
-  void SpiderCom::_updateAutoSleep() {
-    if (_lastBlockedOrderTime == 0) return;
-
-    if (millis() - _lastBlockedOrderTime <= _AUTO_SLEEP_OVERTIME) return;
-
-    if (_robotAction.getRobot().getState() == RobotState::ACTION) _robotAction.sleepMode();
-    
-    _lastBlockedOrderTime = 0;
   }
 
   

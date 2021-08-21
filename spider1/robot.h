@@ -46,12 +46,12 @@ namespace SPIDER {
   const RobotLegItemParam LEG6_TIBIA = RobotLegItemParam(30,    0,    0, 180, true,  EepromAddresses::servo30);
 
 
-  const RobotLegsPoints CALIBRATE_STATE_POINTS = RobotLegsPoints(Point(-133,  100, 25),
-                                                                 Point(-155,    0, 25),
-                                                                 Point(-133, -100, 25),
-                                                                 Point( 133,  100, 25),
-                                                                 Point( 155,    0, 25),
-                                                                 Point( 133, -100, 25));
+  const RobotLegsPoints CALIBRATE_STATE_POINTS = RobotLegsPoints(Point(-133,  100, -25),
+                                                                 Point(-155,    0, -25),
+                                                                 Point(-133, -100, -25),
+                                                                 Point( 133,  100, -25),
+                                                                 Point( 155,    0, -25),
+                                                                 Point( 133, -100, -25));
                                                            
   const RobotLegsPoints CALIBRATE_POINTS       = RobotLegsPoints(Point(-103,  85, 0),
                                                                  Point(-125,   0, 0),
@@ -90,25 +90,30 @@ namespace SPIDER {
       /*********************************************************
        *                Metodos privados
        *********************************************************/
+      void _calibrateLeg   (RobotLeg       &leg, Point calibratePoint);
       void _moveTo         (RobotLegsPoints p);
       void _moveToDirectly (RobotLegsPoints p);
       void _setOffsetEnable(bool            x);
       void _setStepDistance(float           x);
       void _updateAction();
-      void _waitUntilFree() const;
 
 
     public:
       Robot();
 
       void init();
+      void calibrateServos();
+      void calibrateVerify();
+      bool checkPoints (RobotLegsPoints  points);
+      void getPointsNow(RobotLegsPoints &points);
+      void moveTo      (RobotLegsPoints  points, float stepDistance);
+      void update();
+      void waitUntilFree() const;
+      
       void bootState();
       void calibrateState();
       void installState();
-      void update();
 
-      //TODO
-      void calibrateVerify() {}
 
       // INLINE
       Power&     getPower() {return _power;}

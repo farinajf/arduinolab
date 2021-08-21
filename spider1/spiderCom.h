@@ -77,8 +77,8 @@ namespace SPIDER {
       void       _startRF24();
       void       _startSerial();
       void       _startStateLED();
-      void       _updateBlockedOrder();
       void       _updateAutoSleep();
+      void       _updateBlockedOrder();
       void       _updateESP8266();
       void       _updateRF24();
       void       _updateSerial();

@@ -31,6 +31,7 @@ namespace SPIDER {
       void _calculateAngle  (float x,     float y,    float z,     float          &alpha, float      &beta, float       &gamma);
       void _calculatePoint  (float alpha, float beta, float gamma, Point          &p);
       void _calculatePoint  (float alpha, float beta, float gamma, volatile float &x, volatile float &y, volatile float &z);
+      bool _checkAngle      (float alpha, float beta, float gamma);
       void _rotateToDirectly(float alpha, float beta, float gamma);
        
 
@@ -45,6 +46,7 @@ namespace SPIDER {
       void init(const RobotLegItemParam &coxa, const RobotLegItemParam &femur, const RobotLegItemParam &tibia);
 
       void calculateAngle (Point destino, float &alpha, float &beta, float &gamma);
+      bool checkPoint     (Point point);
       void moveTo         (Point destino);
       void moveToDirectly (Point destino);
       void setOffsetEnable(bool  x);
@@ -53,9 +55,13 @@ namespace SPIDER {
 
 
 
-
       // INLINE
-      bool isBusy()                 {return _busy;}
+      RobotLegItem& getCoxa()           {return _coxa;}
+      RobotLegItem& getFemur()          {return _femur;}
+      RobotLegItem& getTibia()          {return _tibia;}
+      Point&        getPosicionActual() {return _posicionActual;}
+      bool          isBusy()            {return _busy;}
+      
       void setStepDistance(float x) {_stepDistance = x;}
   };
 }

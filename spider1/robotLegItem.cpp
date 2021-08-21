@@ -61,12 +61,24 @@ namespace SPIDER {
   }
 
   /****************************************************************
-   * float getAngulo(float anguloServo) const
+   * bool checkAngle(float angulo)
+   * 
+   ****************************************************************/
+  bool RobotLegItem::checkAngle(float angulo) {
+    while (angulo > _params._anguloMax) angulo -= 360;
+    while (angulo < _params._anguloMin) angulo += 360;
+
+    return ((angulo >= _params._anguloMin) && (angulo <= _params._anguloMax)) ? true : false;
+  }
+
+
+  /****************************************************************
+   * float getAngulo(float anguloServo)
    * 
    * Convierte un servo-angulo en un angulo
    * 
    ****************************************************************/
-  float RobotLegItem::getAngulo(float anguloServo) const {
+  float RobotLegItem::getAngulo(float anguloServo) {
     return (_params._sumaResta ? 1 : -1) * (anguloServo - _params._anguloZero);
   }
   
@@ -78,9 +90,8 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void RobotLegItem::rotateToDirectly(float angulo) {
-//Serial.print("RobotLegItem::rotateToDirectly("); Serial.print(angulo); Serial.println(")");
     
-    if (this -> _checkAngle(angulo) == false) return;
+    if (this -> checkAngle(angulo) == false) return;
 
     float anguloServo = this -> _getServoAngle(angulo);
 
@@ -88,8 +99,6 @@ namespace SPIDER {
     while (anguloServo <    0) anguloServo += 360;
 
     if (anguloServo > 180) return;
-
-//Serial.print("anguloServo(2): "); Serial.println(anguloServo);
 
     if (_firstRotate == true)
     {
@@ -107,23 +116,31 @@ namespace SPIDER {
     _anguloServo = anguloServo;
   }
 
+  /****************************************************************
+   * void setOffset(float offset)
+   * 
+   ****************************************************************/
+  void RobotLegItem::setOffset(float offset) {
+    while (offset >  180) offset -= 360;
+    while (offset < -180) offset += 360;
+
+    int offsetInt = offset * 100;
+    offsetInt = abs(offsetInt) * 2 + ((offset > 0) ? 1 : 0);
+
+    if (offsetInt < 0 || offsetInt > 65535) return;
+
+    EEPROM.write(_params._offsetAddress,     offsetInt / 256);
+    EEPROM.write(_params._offsetAddress + 1, offsetInt % 256);
+
+    _offset = offset;
+  }
+
 
 
 
   /***********************************************************************************
    *                    Metodos Privados
    **********************************************************************************/
-
-  /****************************************************************
-   * bool _checkAngle(float angulo)
-   * 
-   ****************************************************************/
-  bool RobotLegItem::_checkAngle(float angulo) {
-    while (angulo > _params._anguloMax) angulo -= 360;
-    while (angulo < _params._anguloMin) angulo += 360;
-
-    return ((angulo >= _params._anguloMin) && (angulo <= _params._anguloMax)) ? true : false;
-  }
 
   /****************************************************************
    * float _getServoAngle(float angulo)

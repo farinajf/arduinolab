@@ -11,6 +11,7 @@ namespace SPIDER {
   class RobotAction {
     private:
       const float _BODY_LIFT_STEP_DISTANCE = 1.0;
+      const float _LEG_LIFT_STEP_DISTANCE  = 7.5;
       
       Robot           _robot;
       RobotLegsPoints _initialPoints;
@@ -24,30 +25,35 @@ namespace SPIDER {
        *                Metodos privados
        *********************************************************/
       void _actionState();
-      void _getCrawlPoint (Point           &point,  Point direccion);
-      void _getCrawlPoints(RobotLegsPoints &points, Point direccion);
+      void _getCrawlPoint       (Point           &point,  Point delta);
+      void _getCrawlPoints      (RobotLegsPoints &points, Point delta);
+      void _legsMoveTo          (RobotLegsPoints  points, float stepDistance);
+      void _legsMoveToRelatively(Point            point,  float stepDistance);
+      void _twistBody           (Point            move,   Point rotateAxis, float rotateAngle);
 
-      //TODO
-      void _legsMoveToRelatively(Point point, float stepDistance) {}
 
     public:
       RobotAction();
 
       void init();
+      void changeBodyHeight           (float h);
+      void initialState();
+      void legMoveToRelativelyDirectly(int   leg,  Point p);
+      
       void activeMode();
       void sleepMode();
+      void switchMode();
 
       //TODO
-      void changeBodyHeight(float h) {}
       void crawl           (float x, float y, float angle) {}
       void crawlForward() {}
       void crawlBackward() {}
       void crawlLeft() {}
       void crawlRight() {}
-      void initialState() {}
-      void moveBody  (float x, float y, float z) {}
-      void rotateBody(float x, float y, float z) {}
-      void switchMode() {}
+      void moveBody        (float x, float y, float z) {}
+      void rotateBody      (float x, float y, float z) {}
+      void setActionGroup  (int   x) {}
+      void setSpeedMultiple(float x) {}
       void turnLeft() {}
       void turnRight() {}
       void twistBody(Point move, Point rotate) {}

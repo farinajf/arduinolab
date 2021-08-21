@@ -112,7 +112,7 @@ class RobotShape {
     static constexpr float X0                =  32;
     static constexpr float X1                =  46;
     static constexpr float Y0                =  50;
-    static constexpr float Z0                = -15.75;
+    //static constexpr float Z0                = -15.75;
     static constexpr float DEFAULT_BODY_LIFT = -15;
 
     static  constexpr float L_COXA           = 22.75;

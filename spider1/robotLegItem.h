@@ -81,7 +81,6 @@ namespace SPIDER {
       /*********************************************************
        *                Metodos privados
        *********************************************************/
-      bool  _checkAngle   (float angulo);
       float _getServoAngle(float angulo);
       
     
@@ -92,11 +91,15 @@ namespace SPIDER {
       RobotLegItem();
 
       void  init            (const RobotLegItemParam params);
-      float getAngulo       (float                   anguloServo) const;
+      bool  checkAngle      (float                   angulo);
+      float getAngulo       (float                   anguloServo);
       void  rotateToDirectly(float                   angulo);
+      void  setOffset       (float                   x);
 
       //INLINE
-      void setOffsetEnable(bool x) {_offsetEnable = x;}
+      float getAngulo() {return _angulo;}
+
+      void setOffsetEnable(bool  x) {_offsetEnable = x;}
   };
 }
 

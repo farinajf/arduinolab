@@ -30,6 +30,30 @@ namespace SPIDER {
   void RobotLeg::calculateAngle(Point destino, float &alpha, float &beta, float &gamma) {
     this -> _calculateAngle(destino._x, destino._y, destino._z, alpha, beta, gamma);
   }
+
+
+  /****************************************************************
+   * bool checkPoint(Point p)
+   * 
+   ****************************************************************/
+  bool RobotLeg::checkPoint(Point p) {
+    Point newPoint;
+    float alpha;
+    float beta;
+    float gamma;
+
+    //1.- Calcular coordenadas angulares
+    this -> calculateAngle(p, alpha, beta, gamma);
+
+    //2.- Comprobar coordenadas angulares
+    if (this -> _checkAngle(alpha, beta, gamma) == false) return false;
+
+    //3.- Calcular nueva posicion
+    this -> _calculatePoint(alpha, beta, gamma, newPoint);
+
+    //4.- Devolver resultado
+    return (Point::getDistance(p, newPoint) < NEGLIGIBLE_DISTANCE) ? true : false;
+  }
   
 
   /****************************************************************
@@ -197,6 +221,18 @@ namespace SPIDER {
     x = _x0 + u * cos(alpha);
     y = _y0 + u * sin(alpha);
     z = -1.0 * im * sin(epsilon);
+  }
+
+  /****************************************************************
+   * bool _checkAngle(float alpha, float beta, float gamma)
+   * 
+   ****************************************************************/
+  bool RobotLeg::_checkAngle(float alpha, float beta, float gamma) {
+    if (_coxa.checkAngle (alpha) == false) return false;
+    if (_femur.checkAngle(beta)  == false) return false;
+    if (_tibia.checkAngle(gamma) == false) return false;
+
+    return true;
   }
 
   /****************************************************************
