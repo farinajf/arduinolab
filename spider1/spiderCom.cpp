@@ -167,44 +167,72 @@ namespace SPIDER {
     else if (data[1] == Orders::REQ_CHANGE_IO)                 // 20
     {
       digitalWrite(_PINS[data[2]], data[3]);
+      
       outData[outDataCounter++] = Orders::ORDER_DONE;
     }
     else if (data[1] == Orders::REQ_MOVE_LEG)                  // 30
     {
       _robotAction.legMoveToRelativelyDirectly(data[2], Point(data[3] - 64, data[4] - 64, data[5] - 64));
+      
       outData[outDataCounter++] = Orders::ORDER_DONE;
     }
-    else if (data[1] == Orders::REQ_CALIBRATE)
+    else if (data[1] == Orders::REQ_CALIBRATE)                 // 32
     {
       _robotAction.getRobot().calibrateServos();
+      
       outData[outDataCounter++] = Orders::ORDER_DONE;
     }
-    else if (data[1] >= 64 && data[1] <= 108)   // Simple action
+    else if (data[1] >= 64 && data[1] <= 108)                  // Simple action
     {
       _blockedOrder             = data[1];
+      
       outData[outDataCounter++] = Orders::ORDER_START;
     }
-    else if (data[1] == Orders::requestCrawl)
+    else if (data[1] == Orders::REQ_CRAWL)                     //110
     {
-      //TODO
+      _blockedOrder             = data[1];
+      _crawlParameters[0]       = data[2];
+      _crawlParameters[1]       = data[3];
+      _crawlParameters[2]       = data[4];
+      
+      outData[outDataCounter++] = Orders::ORDER_START;
     }
-    else if (data[1] == Orders::REQ_CHANGE_BODY_HEIGHT)
+    else if (data[1] == Orders::REQ_CHANGE_BODY_HEIGHT)        //112
     {
       _blockedOrder              = data[1];
       _changeHeightParameters[0] = data[2];
+      
       outData[outDataCounter++]  = Orders::ORDER_START;
     }
-    else if (data[1] == Orders::requestMoveBody)
+    else if (data[1] == Orders::REQ_MOVE_BODY)                 //114
     {
-      //TODO
+      _blockedOrder             = data[1];
+      _moveBodyParameters[0]    = data[2];
+      _moveBodyParameters[1]    = data[3];
+      _moveBodyParameters[2]    = data[4];
+
+      outData[outDataCounter++] = Orders::ORDER_START;
     }
-    else if (data[1] == Orders::requestRotateBody)
+    else if (data[1] == Orders::REQ_ROTATE_BODY)               //116
     {
-      //TODO
+      _blockedOrder             = data[1];
+      _rotateBodyParameters[0]  = data[2];
+      _rotateBodyParameters[1]  = data[3];
+      _rotateBodyParameters[2]  = data[4];
+
+      outData[outDataCounter++] = Orders::ORDER_START;
     }
-    else if (data[1] == Orders::requestTwistBody)
+    else if (data[1] == Orders::REQ_TWIST_BODY)                //118
     {
-      //TODO
+      _blockedOrder             = data[1];
+      _twistBodyParameters[0]   = data[2];
+      _twistBodyParameters[1]   = data[3];
+      _twistBodyParameters[2]   = data[4];
+      _twistBodyParameters[3]   = data[5];
+      _twistBodyParameters[4]   = data[6];
+      _twistBodyParameters[5]   = data[7];
+      
+      outData[outDataCounter++] = Orders::ORDER_START;
     }
 
     outData[outDataCounter++] = Orders::TRANS_END;
@@ -349,29 +377,41 @@ namespace SPIDER {
     _lastBlockedOrderTime = millis();
     _orderState           = OrderState::EXECUTE_START;
 
-    if (blockedOrder == Orders::REQ_CRAWL_FORWARD)
+    if (blockedOrder == Orders::REQ_CRAWL_FORWARD)            // 80
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.crawlForward();
     }
-    else if (blockedOrder == Orders::REQ_CRAWL_BACKWARD)
+    else if (blockedOrder == Orders::REQ_CRAWL_BACKWARD)      // 82
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.crawlBackward();
     }
-    else if (blockedOrder == Orders::REQ_CRAWL_LEFT)
+    else if (blockedOrder == Orders::REQ_CRAWL_LEFT)          // 84
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.crawlLeft();
     }
-    else if (blockedOrder == Orders::REQ_CRAWL_RIGHT)
+    else if (blockedOrder == Orders::REQ_CRAWL_RIGHT)         // 86
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.crawlRight();
     }
-    else if (blockedOrder == Orders::REQ_TURN_LEFT)
+    else if (blockedOrder == Orders::REQ_TURN_LEFT)           // 88
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.turnLeft();
     }
-    else if (blockedOrder == Orders::REQ_TURN_RIGHT)
+    else if (blockedOrder == Orders::REQ_TURN_RIGHT)          // 90
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      _robotAction.turnRight();
     }
     else if (blockedOrder == Orders::REQ_ACTIVE_MODE)         // 92
     {
@@ -413,9 +453,15 @@ namespace SPIDER {
     {
       _robotAction.getRobot().calibrateVerify();
     }
-    else if (blockedOrder == Orders::requestCrawl)
+    else if (blockedOrder == Orders::REQ_CRAWL)               //110
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+      
+      float x      = _crawlParameters[0] - 64;
+      float y      = _crawlParameters[1] - 64;
+      float angulo = _crawlParameters[2] - 64;
+
+      _robotAction.crawl(x, y, angulo);
     }
     else if (blockedOrder == Orders::REQ_CHANGE_BODY_HEIGHT)  //112
     {
@@ -425,17 +471,38 @@ namespace SPIDER {
 
       _robotAction.changeBodyHeight(h);
     }
-    else if (blockedOrder == Orders::requestMoveBody)
+    else if (blockedOrder == Orders::REQ_MOVE_BODY)           //114
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+
+      float x =         _moveBodyParameters[0] - 64;
+      float y =         _moveBodyParameters[1] - 64;
+      float z = -1.0 * (_moveBodyParameters[2] - 64);
+
+      _robotAction.moveBody(x, y, z);
     }
-    else if (blockedOrder == Orders::requestRotateBody)
+    else if (blockedOrder == Orders::REQ_ROTATE_BODY)         //116
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+
+      float x = _rotateBodyParameters[0] - 64;
+      float y = _rotateBodyParameters[1] - 64;
+      float z = _rotateBodyParameters[2] - 64;
+
+      _robotAction.rotateBody(x, y, z);
     }
-    else if (blockedOrder == Orders::requestTwistBody)
+    else if (blockedOrder == Orders::REQ_TWIST_BODY)          //118
     {
-      //TODO
+      this -> _saveRobotBootState(RobotState::BOOT);
+
+      float xMove   =         _twistBodyParameters[0] - 64;
+      float yMove   =         _twistBodyParameters[1] - 64;
+      float zMove   = -1.0 * (_twistBodyParameters[2] - 64);
+      float xRotate =         _twistBodyParameters[3] - 64;
+      float yRotate =         _twistBodyParameters[4] - 64;
+      float zRotate =         _twistBodyParameters[5] - 64;
+
+      _robotAction.twistBody(Point(xMove, yMove, zMove), Point(xRotate, yRotate, zRotate));
     }
 
     //.- Fin

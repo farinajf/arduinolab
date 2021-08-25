@@ -64,11 +64,11 @@ namespace SPIDER {
       static const byte REQ_SWITCH_MODE      = 96;      // [order]
 
       // Complex action
-      static const byte requestCrawl = 110;             // [order] [64 + x] [64 + y] [64 + angle]
+      static const byte REQ_CRAWL              = 110;   // [order] [64 + x] [64 + y] [64 + angle]
       static const byte REQ_CHANGE_BODY_HEIGHT = 112;   // [order] [64 + height]
-      static const byte requestMoveBody = 114;          // [order] [64 + x] [64 + y] [64 + z]
-      static const byte requestRotateBody = 116;        // [order] [64 + x] [64 + y] [64 + z]
-      static const byte requestTwistBody = 118;         // [order] [64 + xMove] [64 + yMove] [64 + zMove] [64 + xRotate] [64 + yRotate] [64 + zRotate]
+      static const byte REQ_MOVE_BODY          = 114;   // [order] [64 + x] [64 + y] [64 + z]
+      static const byte REQ_ROTATE_BODY        = 116;   // [order] [64 + x] [64 + y] [64 + z]
+      static const byte REQ_TWIST_BODY         = 118;   // [order] [64 + xMove] [64 + yMove] [64 + zMove] [64 + xRotate] [64 + yRotate] [64 + zRotate]
 
       // Universal responded orders, range is 21 ~ 127
       // These orders are used to respond orders without proprietary response orders.

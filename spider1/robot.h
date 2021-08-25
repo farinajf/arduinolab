@@ -24,12 +24,12 @@ namespace SPIDER {
    *
    */
    
-  const RobotLegItemParam LEG1_COXA  = RobotLegItemParam(39,  -45,   90, 200, true,  EepromAddresses::servo39);
-  const RobotLegItemParam LEG2_COXA  = RobotLegItemParam(36,  -90,  135, 225, true,  EepromAddresses::servo36);
-  const RobotLegItemParam LEG3_COXA  = RobotLegItemParam(33, -135, -200, -90, true,  EepromAddresses::servo33);
-  const RobotLegItemParam LEG4_COXA  = RobotLegItemParam(22,   45,  -20,  90, true,  EepromAddresses::servo22);
-  const RobotLegItemParam LEG5_COXA  = RobotLegItemParam(25,   90,  -45,  45, true,  EepromAddresses::servo25);
-  const RobotLegItemParam LEG6_COXA  = RobotLegItemParam(28,  135,  -90,  20, true,  EepromAddresses::servo28);
+  const RobotLegItemParam LEG1_COXA  = RobotLegItemParam(39,  225,   90, 200, false, EepromAddresses::servo39);
+  const RobotLegItemParam LEG2_COXA  = RobotLegItemParam(36,  270,  135, 225, false, EepromAddresses::servo36);
+  const RobotLegItemParam LEG3_COXA  = RobotLegItemParam(33,  -45, -200, -90, false, EepromAddresses::servo33);
+  const RobotLegItemParam LEG4_COXA  = RobotLegItemParam(22,  135,  -20,  90, false, EepromAddresses::servo22);
+  const RobotLegItemParam LEG5_COXA  = RobotLegItemParam(25,   90,  -45,  45, false, EepromAddresses::servo25);
+  const RobotLegItemParam LEG6_COXA  = RobotLegItemParam(28,   45,  -90,  20, false, EepromAddresses::servo28);
 
   const RobotLegItemParam LEG1_FEMUR = RobotLegItemParam(38,   90,  -90,  90, true,  EepromAddresses::servo38);
   const RobotLegItemParam LEG2_FEMUR = RobotLegItemParam(35,   90,  -90,  90, true,  EepromAddresses::servo35);
@@ -60,12 +60,20 @@ namespace SPIDER {
                                                                  Point( 125,   0, 0),
                                                                  Point( 103, -85, 0));
                                                       
-  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -81,  99, 0),
-                                                                 Point(-115,   0, 0),
-                                                                 Point( -81, -99, 0),
-                                                                 Point(  81,  99, 0),
-                                                                 Point( 115,   0, 0),
-                                                                 Point(  81, -99, 0));
+//  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -81,  99, 0),
+//                                                                 Point(-115,   0, 0),
+//                                                                 Point( -81, -99, 0),
+//                                                                 Point(  81,  99, 0),
+//                                                                 Point( 115,   0, 0),
+//                                                                 Point(  81, -99, 0));
+  
+  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -81,  110, 0),
+                                                                 Point(-115,    0, 0),
+                                                                 Point( -81, -110, 0),
+                                                                 Point(  81,  110, 0),
+                                                                 Point( 115,    0, 0),
+                                                                 Point(  81, -110, 0));
+
 
   /**
    * 
@@ -91,7 +99,6 @@ namespace SPIDER {
        *                Metodos privados
        *********************************************************/
       void _calibrateLeg   (RobotLeg       &leg, Point calibratePoint);
-      void _moveTo         (RobotLegsPoints p);
       void _moveToDirectly (RobotLegsPoints p);
       void _setOffsetEnable(bool            x);
       void _setStepDistance(float           x);
@@ -104,9 +111,12 @@ namespace SPIDER {
       void init();
       void calibrateServos();
       void calibrateVerify();
-      bool checkPoints (RobotLegsPoints  points);
-      void getPointsNow(RobotLegsPoints &points);
-      void moveTo      (RobotLegsPoints  points, float stepDistance);
+      bool checkPoints     (RobotLegsPoints  points);
+      void getPointsNow    (RobotLegsPoints &points);
+      void moveTo          (RobotLegsPoints  points);
+      void moveTo          (RobotLegsPoints  points, float stepDistance);
+      void setSpeedMultiple(float x);
+      void setStepDistance (float x1, float x2, float x3, float x4, float x5, float x6);
       void update();
       void waitUntilFree() const;
       
@@ -116,6 +126,12 @@ namespace SPIDER {
 
 
       // INLINE
+      RobotLeg&  getLeg1()  {return _leg1;}
+      RobotLeg&  getLeg2()  {return _leg2;}
+      RobotLeg&  getLeg3()  {return _leg3;}
+      RobotLeg&  getLeg4()  {return _leg4;}
+      RobotLeg&  getLeg5()  {return _leg5;}
+      RobotLeg&  getLeg6()  {return _leg6;}
       Power&     getPower() {return _power;}
       RobotState getState() {return _state;}
       

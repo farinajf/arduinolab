@@ -45,13 +45,14 @@ namespace SPIDER {
 
       void init(const RobotLegItemParam &coxa, const RobotLegItemParam &femur, const RobotLegItemParam &tibia);
 
-      void calculateAngle (Point destino, float &alpha, float &beta, float &gamma);
-      bool checkPoint     (Point point);
-      void moveTo         (Point destino);
-      void moveToDirectly (Point destino);
-      void setOffsetEnable(bool  x);
-      void rotarServos    (float alpha, float beta, float gamma);
-      void updateLegAction(float speed);
+      void calculateAngle  (Point destino, float &alpha, float &beta, float &gamma);
+      bool checkPoint      (Point point);
+      void moveTo          (Point destino);
+      void moveToDirectly  (Point destino);
+      void moveToRelatively(Point destino);
+      void setOffsetEnable (bool  x);
+      void rotarServos     (float alpha, float beta, float gamma);
+      void updateLegAction (float speed);
 
 
 

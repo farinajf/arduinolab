@@ -52,7 +52,10 @@ namespace SPIDER {
     this -> _calculatePoint(alpha, beta, gamma, newPoint);
 
     //4.- Devolver resultado
-    return (Point::getDistance(p, newPoint) < NEGLIGIBLE_DISTANCE) ? true : false;
+    float result = Point::getDistance(p, newPoint);
+    if (result < NEGLIGIBLE_DISTANCE) return true;
+
+    return false;
   }
   
 
@@ -79,6 +82,18 @@ namespace SPIDER {
 
     //2.- Rotar los servos
     this -> _rotateToDirectly(alpha, beta, gamma);
+  }
+
+  /****************************************************************
+   * void moveToRelatively(Point destino)
+   * 
+   ****************************************************************/
+  void RobotLeg::moveToRelatively(Point destino) {
+    destino = Point(_posicionFinal._x + destino._x,
+                    _posicionFinal._y + destino._y,
+                    _posicionFinal._z + destino._z);
+    
+    this -> moveTo(destino);
   }
   
 
@@ -172,9 +187,9 @@ namespace SPIDER {
     float d       = u - RobotShape::L_COXA;
     float im2     = d*d + z*z;
     float im      = sqrt(im2);
-    float epsilon = acos(d / im);
+    float epsilon = asin(z / im);
 
-    beta = acos((im2 + RobotShape::L_FEMUR * RobotShape::L_FEMUR - RobotShape::L_TIBIA * RobotShape::L_TIBIA) / (2 * im * RobotShape::L_FEMUR)) - epsilon;
+    beta = acos((im2 + RobotShape::L_FEMUR * RobotShape::L_FEMUR - RobotShape::L_TIBIA * RobotShape::L_TIBIA) / (2 * im * RobotShape::L_FEMUR)) + epsilon;
 
     //3.- Angulo TIBIA
     gamma = acos((RobotShape::L_FEMUR * RobotShape::L_FEMUR + RobotShape::L_TIBIA * RobotShape::L_TIBIA - im2) / (2 * RobotShape::L_FEMUR * RobotShape::L_TIBIA));
@@ -211,8 +226,8 @@ namespace SPIDER {
     float im2     = RobotShape::L_FEMUR * RobotShape::L_FEMUR + RobotShape::L_TIBIA * RobotShape::L_TIBIA - 2 * RobotShape::L_FEMUR * RobotShape::L_TIBIA * cos(gamma);
     float im      = sqrt(im2);
 
-    //3.- Angulo epsilon (Th de los cosenos)
-    float epsilon = acos((RobotShape::L_FEMUR*RobotShape::L_FEMUR + im2 - RobotShape::L_TIBIA*RobotShape::L_TIBIA) / (2 * RobotShape::L_FEMUR * im)) - beta;
+    //3.- Angulo epsilon (Th de los cosenos) -> EPSILON = BETA - acos(..)
+    float epsilon = beta - acos((RobotShape::L_FEMUR*RobotShape::L_FEMUR + im2 - RobotShape::L_TIBIA*RobotShape::L_TIBIA) / (2 * RobotShape::L_FEMUR * im));
 
     //4.- u: Proyeccion de la pata sobre el plano X-Y
     float u = RobotShape::L_COXA + im * cos(epsilon);
@@ -220,7 +235,7 @@ namespace SPIDER {
     //5.- Coordenadas finales de la pata
     x = _x0 + u * cos(alpha);
     y = _y0 + u * sin(alpha);
-    z = -1.0 * im * sin(epsilon);
+    z = 1.0 * im * sin(epsilon);
   }
 
   /****************************************************************
@@ -240,8 +255,6 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void RobotLeg::_rotateToDirectly(float alpha, float beta, float gamma) {
-    //Serial.print("RobotLeg::_rotateToDirectly("); Serial.print(alpha); Serial.print(","); Serial.print(beta); Serial.print(","); Serial.print(gamma); Serial.println(")");
-    
     _tibia.rotateToDirectly(gamma);
     _femur.rotateToDirectly(beta);
     _coxa.rotateToDirectly (alpha);

@@ -17,7 +17,7 @@ namespace SPIDER {
   /****************************************************************
    * static float getDistance(Point p1, Point p2)
    ****************************************************************/
-  float Point::getDistance(Point p1, Point p2) {
+  static float Point::getDistance(Point p1, Point p2) {
     float dx = p1._x - p2._x;
     float dy = p1._y - p2._y;
     float dz = p1._z - p2._z;
@@ -25,6 +25,18 @@ namespace SPIDER {
     float d2 = dx*dx + dy*dy + dz*dz;
 
     return (d2 < FLOAT_PRECISSION) ? 0.0 : sqrt(d2);
+  }
+
+  /****************************************************************
+   * float norma2()
+   * 
+   * result = sqrt(x*x + y*y + z*z)
+   * 
+   ****************************************************************/
+  float Point::norma2() {
+    float result = _x*_x + _y*_y + _z*_z;
+
+    return sqrt(result);
   }
 
 

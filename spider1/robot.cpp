@@ -55,7 +55,7 @@ namespace SPIDER {
     this -> _setOffsetEnable(true);
     this -> _setStepDistance(RobotLeg::DEFAULT_STEP_DISTANCE);
 
-    this -> _moveTo(BOOT_POINTS);
+    this -> moveTo(BOOT_POINTS);
     this -> waitUntilFree();
   }
 
@@ -69,7 +69,7 @@ namespace SPIDER {
     this -> _setOffsetEnable(false);
     this -> _setStepDistance(RobotLeg::DEFAULT_STEP_DISTANCE);
 
-    this -> _moveTo(CALIBRATE_STATE_POINTS);
+    this -> moveTo(CALIBRATE_STATE_POINTS);
     this -> waitUntilFree();
   }
   
@@ -121,11 +121,11 @@ namespace SPIDER {
     _state = RobotState::CALIBRATE;
 
     this -> _setStepDistance(RobotLeg::DEFAULT_STEP_DISTANCE);
-    this -> _moveTo         (CALIBRATE_STATE_POINTS);
+    this -> moveTo          (CALIBRATE_STATE_POINTS);
     this -> waitUntilFree();
 
     this -> _setOffsetEnable(true);
-    this -> _moveTo         (CALIBRATE_POINTS);
+    this -> moveTo          (CALIBRATE_POINTS);
     this -> waitUntilFree();
   }
 
@@ -158,6 +158,19 @@ namespace SPIDER {
   }
 
   /****************************************************************
+   * void moveTo(RobotLegsPoints p)
+   * 
+   ****************************************************************/
+  void Robot::moveTo(RobotLegsPoints p) {
+    _leg1.moveTo(p._leg1);
+    _leg2.moveTo(p._leg2);
+    _leg3.moveTo(p._leg3);
+    _leg4.moveTo(p._leg4);
+    _leg5.moveTo(p._leg5);
+    _leg6.moveTo(p._leg6);
+  }
+
+  /****************************************************************
    * void moveTo(RobotLegsPoints p, float stepDistance)
    * 
    ****************************************************************/
@@ -166,7 +179,28 @@ namespace SPIDER {
     this -> _setStepDistance(stepDistance);
 
     //2.- Mover las patas a la nueva posicion
-    this -> _moveTo(p);
+    this -> moveTo(p);
+  }
+
+  /****************************************************************
+   * void setSpeedMultiple(float x)
+   * 
+   ****************************************************************/
+  void Robot::setSpeedMultiple(float x) {
+    _speedMultiple = constrain(x, 0.01, 1);
+  }
+
+  /****************************************************************
+   * void setStepDistance(float x1, float x2, float x3, float x4, float x5, float x6)
+   * 
+   ****************************************************************/
+  void Robot::setStepDistance(float x1, float x2, float x3, float x4, float x5, float x6) {
+    _leg1.setStepDistance(x1);
+    _leg2.setStepDistance(x2);
+    _leg3.setStepDistance(x3);
+    _leg4.setStepDistance(x4);
+    _leg5.setStepDistance(x5);
+    _leg6.setStepDistance(x6);
   }
 
   /****************************************************************
@@ -210,18 +244,6 @@ namespace SPIDER {
     leg.getTibia().setOffset(leg.getTibia().getAngulo() - gamma);
   }
 
-  /****************************************************************
-   * void _moveTo(RobotLegsPoints p)
-   * 
-   ****************************************************************/
-  void Robot::_moveTo(RobotLegsPoints p) {
-    _leg1.moveTo(p._leg1);
-    _leg2.moveTo(p._leg2);
-    _leg3.moveTo(p._leg3);
-    _leg4.moveTo(p._leg4);
-    _leg5.moveTo(p._leg5);
-    _leg6.moveTo(p._leg6);
-  }
   
   /****************************************************************
    * void _moveToDirectly(RobotLegsPoints p)

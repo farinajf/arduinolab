@@ -21,6 +21,8 @@ namespace SPIDER {
       Point(Point p, float x, float y, float z);
 
       static float getDistance(Point p1, Point p2);
+
+      float norma2();
   };
 
   /**
