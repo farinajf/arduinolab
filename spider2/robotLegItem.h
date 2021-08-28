@@ -2,7 +2,9 @@
 #define ROBOT_LEG_ITEM_H
 
 #include "globals.h"
-#include "servoDriver.h"
+#include <EEPROM.h>
+#include <Servo.h>
+#include <FlexiTimer2.h>
 
 namespace SPIDER {
   /**
@@ -16,16 +18,17 @@ namespace SPIDER {
 
       Point();
       Point(float x, float y, float z);
+      Point(Point p, float x, float y, float z);
 
       static float getDistance(Point p1, Point p2);
+
+      float norma2();
   };
 
   /**
    * 
    */
   class RobotLegsPoints {
-    private:
-
     public:
       Point _leg1;
       Point _leg2;
@@ -37,31 +40,68 @@ namespace SPIDER {
       RobotLegsPoints() {}
       RobotLegsPoints(Point leg1, Point leg2, Point leg3, Point leg4, Point leg5, Point leg6) : _leg1(leg1), _leg2(leg2), _leg3(leg3), _leg4(leg4), _leg5(leg5), _leg6(leg6) {}
   };
-  
+
+  /**
+   * 
+   */
+  class RobotLegItemParam {
+    public:
+      int   _servoPin;
+      float _anguloZero;
+      float _anguloMin;
+      float _anguloMax;
+      bool  _sumaResta;
+      int   _offsetAddress;
+
+      RobotLegItemParam() {}
+      RobotLegItemParam(int servoPin, float anguloZero, float anguloMin, float anguloMax, bool sumaResta, int offsetAddress) :
+                        _servoPin     (servoPin),
+                        _anguloZero   (anguloZero),
+                        _anguloMin    (anguloMin),
+                        _anguloMax    (anguloMax),
+                        _sumaResta    (sumaResta),
+                        _offsetAddress(offsetAddress) {}
+  };
+
+
+
+
+  /**
+   * class RobotLegItem
+   */
   class RobotLegItem {
     private:
-      const uint8_t  _addr;
-      const short    _position_0;
-      const short    _position_90;
-      const short    _minAngle;
-      const short    _maxAngle;
-      const short    _zeroAngle;
-      const bool     _jointDir;
+      RobotLegItemParam _params;
+      Servo             _servo;
 
-      volatile float _servoAngleNow;
-      volatile float _angleNow;
-      volatile bool  _firstRotate = true;
+      volatile float _angulo       = 0;
+      volatile float _anguloServo  = 0;
+      volatile float _offset       = 0;
+      volatile bool  _firstRotate  = true;
+      volatile bool  _offsetEnable = true;
 
       /*********************************************************
        *                Metodos privados
        *********************************************************/
+      float _getServoAngle(float angulo);
       
+    
+    
     public:
-      RobotLegItem(const uint8_t addr, const short position_0, const short position_90, const short minAngle, const short maxAngle, const short zeroAngle, const bool jointDir);
+      static int FIRST_ROTATE_DELAY;
+      
+      RobotLegItem();
 
-      void init();
-      bool checkJointAngle (float        jointAngle) const;
-      void rotateToDirectly(ServoDriver *driver, float jointAngle);
+      void  init      (const RobotLegItemParam params);
+      bool  checkAngle(float                   angulo);
+      float getAngle  (float                   anguloServo);
+      void  rotate    (float                   angulo);
+      void  setOffset (float                   x);
+
+      //INLINE
+      float getAngle() {return _angulo;}
+
+      void setOffsetEnable(bool  x) {_offsetEnable = x;}
   };
 }
 

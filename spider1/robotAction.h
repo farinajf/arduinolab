@@ -24,7 +24,7 @@ namespace SPIDER {
       LegsState       _legsState    = LegsState::CRAWL_STATE;
       RobotMode       _mode         = RobotMode::SLEEP;
       float           _bodyLift     = RobotShape::DEFAULT_BODY_LIFT;
-      int             _crawlSteps   = 2;
+      int             _crawlSteps   = 6;
       int             _legMoveIndex = 1;
 
 

@@ -91,7 +91,8 @@ namespace SPIDER {
    * 
    ****************************************************************/
   float RobotLegItem::getAngulo(float anguloServo) {
-    return (_params._sumaResta ? 1 : -1) * (anguloServo - _params._anguloZero);
+    return (_offsetEnable) ? (_params._sumaResta ? 1 : -1) * (anguloServo - _params._anguloZero) - _offset :
+                             (_params._sumaResta ? 1 : -1) * (anguloServo - _params._anguloZero);
   }
   
 

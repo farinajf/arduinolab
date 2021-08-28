@@ -6,78 +6,166 @@ namespace SPIDER {
    * Constructor()
    * 
    ****************************************************************/
-  RobotLeg::RobotLeg(const uint8_t addr[3],
-                     const short   position_0[3],
-                     const short   position_90[3],
-                     const float   x0,
-                     const float   y0,
-                     const short   minAngle[3],
-                     const short   maxAngle[3],
-                     const short   zeroAngle[3],
-                     const bool    jointDir[3]) : _coxa (addr[0], position_0[0], position_90[0], minAngle[0], maxAngle[0], zeroAngle[0], jointDir[0]),
-                                                  _femur(addr[1], position_0[1], position_90[1], minAngle[1], maxAngle[1], zeroAngle[1], jointDir[1]),
-                                                  _tibia(addr[2], position_0[2], position_90[2], minAngle[2], maxAngle[2], zeroAngle[2], jointDir[2]),
-                                                  _x0(x0),
-                                                  _y0(y0) {}
+  RobotLeg::RobotLeg(float x0, float y0) : _x0(x0), _y0(y0) {}
+
 
   /****************************************************************
-   * void init()
+   * void init(const RobotLegItemParam &coxa, const RobotLegItemParam &femur, const RobotLegItemParam &tibia)
+   * 
    ****************************************************************/
-  void RobotLeg::init() {
-    _coxa.init();
-    _femur.init();
-    _tibia.init();
+  void RobotLeg::init(const RobotLegItemParam &coxa,const  RobotLegItemParam &femur, const RobotLegItemParam &tibia) {
+    //1.- Coxa, femur y tibia
+    _coxa.init (coxa);
+    _femur.init(femur);
+    _tibia.init(tibia);
   }
 
   /****************************************************************
-   * void calculateAngle(Point &point, float &alpha, float &beta, float &gamma)
+   * void getAngles(Point destino, float &alpha, float &beta, float &gamma)
+   * 
+   * Cinematica inversa:
+   *      (alpha, beta, gamma) = H(destino)
    * 
    ****************************************************************/
-  void RobotLeg::calculateAngle(Point &point, float &alpha, float &beta, float &gamma) {
-    this -> _calculateAngle(point._x, point._y, point._z, alpha, beta, gamma);
+  void RobotLeg::getAngles(Point destino, float &alpha, float &beta, float &gamma) {
+    this -> _getAngles(destino._x, destino._y, destino._z, alpha, beta, gamma);
   }
 
+
   /****************************************************************
-   * void checkPoint(Point &p)
+   * bool checkPoint(Point p)
    * 
    ****************************************************************/
-  bool RobotLeg::checkPoint(Point &p) {
-    Point pointNew;
+  bool RobotLeg::checkPoint(Point p) {
+    Point newPoint;
     float alpha;
     float beta;
     float gamma;
-    
-    this -> calculateAngle(p, alpha, beta, gamma);
-    
-    if (this -> _checkAngle(alpha, beta, gamma) == true)
-    {
-      this -> _calculatePoint(alpha, beta, gamma, pointNew);
-      if (Point::getDistance(p, pointNew) < ROBOT_LEG_NEGLIGIBLE_DISTANCE) return true;
-    }
+
+    //1.- Calcular coordenadas angulares
+    this -> getAngles(p, alpha, beta, gamma);
+
+    //2.- Comprobar coordenadas angulares
+    if (this -> _checkAngles(alpha, beta, gamma) == false) return false;
+
+    //3.- Calcular nueva posicion
+    this -> _getPoint(alpha, beta, gamma, newPoint);
+
+    //4.- Devolver resultado
+    float result = Point::getDistance(p, newPoint);
+    if (result < NEGLIGIBLE_DISTANCE) return true;
 
     return false;
   }
+  
 
   /****************************************************************
-   * void moveTo(Point p)
+   * void move(Point destino)
+   * 
    ****************************************************************/
-  void RobotLeg::moveTo(Point p) {
-    _pointGoal = p;
-    _isBusy    = true;
+  void RobotLeg::move(Point destino) {
+    _posicionFinal = destino;
+    _busy          = true;
   }
 
   /****************************************************************
-   * void moveToDirectly(Point p)
+   * void moveDirectly(Point destino)
+   * 
+   * Mueve directamente la pata a esa posicion.
+   * 
    ****************************************************************/
-  void RobotLeg::moveToDirectly(Point p) {
-    float alpha;
-    float beta;
-    float gamma;
-    
-    this -> calculateAngle(p, alpha, beta, gamma);
-    
-    this -> _rotateToDirectly(alpha, beta, gamma);
+  void RobotLeg::moveDirectly(Point destino) {
+    float alpha = 0.0;
+    float beta  = 0.0;
+    float gamma = 0.0;
+
+    //1.- Calcular los angulos para las rotaciones
+    this -> getAngles(destino, alpha, beta, gamma);
+
+    //2.- Rotar los servos
+    this -> _rotate(alpha, beta, gamma);
   }
+
+  /****************************************************************
+   * void shift(Point delta)
+   * 
+   ****************************************************************/
+  void RobotLeg::shift(Point delta) {
+    delta = Point(_posicionFinal._x + delta._x,
+                  _posicionFinal._y + delta._y,
+                  _posicionFinal._z + delta._z);
+    
+    this -> move(delta);
+  }
+  
+
+  /****************************************************************
+   * void setServos(float alpha, float beta, float gamma)
+   * 
+   ****************************************************************/
+  void RobotLeg::setServos(float servoAlpha, float servoBeta, float servoGamma) {
+    //1.- Convertir el angulo del servo en coordenadas angulares
+    float alpha = _coxa.getAngle (servoAlpha);
+    float beta  = _femur.getAngle(servoBeta);
+    float gamma = _tibia.getAngle(servoGamma);
+
+    //2.- Calcular la posicion
+    Point destino;
+    this -> _getPoint(alpha, beta, gamma, destino);
+
+    //3.- Mover la pata a esa posición
+    this -> move(destino);
+  }
+  
+
+  /****************************************************************
+   * void setOffsetEnable(bool x)
+   * 
+   ****************************************************************/
+  void RobotLeg::setOffsetEnable(bool x) {
+    _coxa.setOffsetEnable (x);
+    _femur.setOffsetEnable(x);
+    _tibia.setOffsetEnable(x);
+  }
+  
+
+  /****************************************************************
+   * void update(float speedMultiple)
+   * 
+   * Actualizar posicion:
+   *         _posicionActual   ==>  _posicionFinal
+   * 
+   ****************************************************************/
+  void RobotLeg::update(float speedMultiple) {
+    float distance = Point::getDistance(_posicionFinal, _posicionActual);
+
+    float xDist = _posicionFinal._x - _posicionActual._x;
+    float yDist = _posicionFinal._y - _posicionActual._y;
+    float zDist = _posicionFinal._z - _posicionActual._z;
+
+    float factor = distance / (_stepDistance * speedMultiple);
+
+    float xStep = xDist / factor;
+    float yStep = yDist / factor;
+    float zStep = zDist / factor;
+
+    Point destino = Point(_posicionActual, xStep, yStep, zStep);
+
+    //Si hay multiples pasos
+    if ((distance >= (_stepDistance * speedMultiple)) && (distance >= NEGLIGIBLE_DISTANCE))
+    {
+      this -> moveDirectly(destino);
+      _busy = true;
+    }
+    else if (_busy == true)
+    {
+      this -> moveDirectly(_posicionFinal);
+      _busy = false;
+    }
+  }
+
+
+
 
 
   /***********************************************************************************
@@ -86,104 +174,106 @@ namespace SPIDER {
 
 
   /****************************************************************
-   * void _calculateAngle(float x, float y, float z, float &alpha, float &beta, float &gamma)
+   * void _getAngles(float x, float y, float z, float &alpha, float &beta, float &gamma)
    * 
-   * OJO: Punto(x, y, z) -> Angulos alpha, beta y gamma
+   * Cinematica inversa:
+   *      (alpha, beta, gamma) = H(x, y, z)
    * 
    ****************************************************************/
-  void RobotLeg::_calculateAngle(float x, float y, float z, float &alpha, float &beta, float &gamma) {
+  void RobotLeg::_getAngles(float x, float y, float z, float &alpha, float &beta, float &gamma) {
     float dx = x - _x0;
     float dy = y - _y0;
-    float d  = sqrt(pow(dx, 2) + pow(dy, 2));
-
+    float u  = sqrt(dx*dx + dy*dy);
+    
     //1.- Angulo COXA
     alpha = atan2(dy, dx);
 
-    //2.- Angulo Femur
-    float im2 = pow(z, 2) + pow(d - L_COXA, 2);
-    float q1  = acos((L_FEMUR*L_FEMUR + im2 - L_TIBIA*L_TIBIA) / (2 * L_FEMUR * sqrt(im2)));
-    float q2  = atan2(z, (d - L_COXA));
+    //2.- Angulo FEMUR
+    float d       = u - RobotShape::L_COXA;
+    float im2     = d*d + z*z;
+    float im      = sqrt(im2);
+    float epsilon = asin(z / im);
 
-    beta = q1 + q2;
+    beta = acos((im2 + RobotShape::L_FEMUR * RobotShape::L_FEMUR - RobotShape::L_TIBIA * RobotShape::L_TIBIA) / (2 * im * RobotShape::L_FEMUR)) + epsilon;
 
-    //3.- Angulo Tibia
-    gamma = acos((L_FEMUR*L_FEMUR + L_TIBIA*L_TIBIA - im2) / (2 * L_FEMUR * L_TIBIA));
-    
+    //3.- Angulo TIBIA
+    gamma = acos((RobotShape::L_FEMUR * RobotShape::L_FEMUR + RobotShape::L_TIBIA * RobotShape::L_TIBIA - im2) / (2 * RobotShape::L_FEMUR * RobotShape::L_TIBIA));
 
-    //4.- Radian -> Angle
+    //4.- Pasar de radianes a grados
     alpha *= 180/PI;
     beta  *= 180/PI;
     gamma *= 180/PI;
   }
 
+  
   /****************************************************************
-   * void _calculatePoint(float alpha, float beta, float gamma, Point &point)
+   * void _getPoint(float alpha, float beta, float gamma, Point &p)
    * 
    ****************************************************************/
-  void RobotLeg::_calculatePoint(float alpha, float beta, float gamma, Point &point) {
-    float x;
-    float y;
-    float z;
-    
-    this -> _calculatePoint(alpha, beta, gamma, x, y, z);
-
-    point._x = x;
-    point._y = y;
-    point._z = z;
+  void RobotLeg::_getPoint(float alpha, float beta, float gamma, Point &p) {
+    this -> _getPoint(alpha, beta, gamma, p._x, p._y, p._z);
   }
 
+
   /****************************************************************
-   * void _calculatePoint(float alpha, float beta, float gamma, float x, float y, float z)
+   * void _getPoint(float alpha, float beta, float gamma, volatile float &x, volatile float &y, volatile float &z)
    * 
-   * OJO: Angulos -> Punto (x, y, z)
+   * (x, y, z) = F(alpha, beta, gamma)
    * 
    ****************************************************************/
-  void RobotLeg::_calculatePoint(float alpha, float beta, float gamma, float &x, float &y, float &z) {
-    // grados -> radianes
+  void RobotLeg::_getPoint(float alpha, float beta, float gamma, volatile float &x, volatile float &y, volatile float &z) {
+    // 1.- Pasar a radianes
     alpha = alpha * PI / 180;
     beta  = beta  * PI / 180;
     gamma = gamma * PI / 180;
 
-    float im2     = L_TIBIA*L_TIBIA + L_FEMUR*L_FEMUR - 2*L_TIBIA*L_FEMUR*cos(gamma);
+    //2.- Calcular distancia IM2
+    float im2     = RobotShape::L_FEMUR * RobotShape::L_FEMUR + RobotShape::L_TIBIA * RobotShape::L_TIBIA - 2 * RobotShape::L_FEMUR * RobotShape::L_TIBIA * cos(gamma);
     float im      = sqrt(im2);
-    float epsilon = acos((im2 + L_FEMUR*L_FEMUR - L_TIBIA*L_TIBIA) / (2*L_FEMUR*im)) - beta;
 
-    
-    float u = im * cos(epsilon) + L_COXA;
-    float v = im * sin(epsilon);
+    //3.- Angulo epsilon (Th de los cosenos) -> EPSILON = BETA - acos(..)
+    float epsilon = beta - acos((RobotShape::L_FEMUR*RobotShape::L_FEMUR + im2 - RobotShape::L_TIBIA*RobotShape::L_TIBIA) / (2 * RobotShape::L_FEMUR * im));
 
+    //4.- u: Proyeccion de la pata sobre el plano X-Y
+    float u = RobotShape::L_COXA + im * cos(epsilon);
+
+    //5.- Coordenadas finales de la pata
     x = _x0 + u * cos(alpha);
     y = _y0 + u * sin(alpha);
-
-    z = -v;
+    z = 1.0 * im * sin(epsilon);
   }
 
   /****************************************************************
-   * bool _checkAngle(float alpha, float beta, float gamma)
+   * bool _checkAngles(float alpha, float beta, float gamma)
    * 
    ****************************************************************/
-  bool RobotLeg::_checkAngle(float alpha, float beta, float gamma) {
-    return (_coxa.checkJointAngle(alpha) && _femur.checkJointAngle(beta) &&_tibia.checkJointAngle(gamma)) ? true : false;
+  bool RobotLeg::_checkAngles(float alpha, float beta, float gamma) {
+    if (_coxa.checkAngle (alpha) == false) return false;
+    if (_femur.checkAngle(beta)  == false) return false;
+    if (_tibia.checkAngle(gamma) == false) return false;
+
+    return true;
   }
 
   /****************************************************************
-   * void _rotateToDirectly(float alpha, float beta, float gamma)
+   * void _rotate(float alpha, float beta, float gamma)
    * 
    ****************************************************************/
-  void RobotLeg::_rotateToDirectly(float alpha, float beta, float gamma) {
-    _tibia.rotateToDirectly(_driver, gamma);
-    _femur.rotateToDirectly(_driver, beta);
-    _coxa.rotateToDirectly (_driver, alpha);
+  void RobotLeg::_rotate(float alpha, float beta, float gamma) {
+    _tibia.rotate(gamma);
+    _femur.rotate(beta);
+    _coxa.rotate (alpha);
 
-    Point point;
-    this -> _calculatePoint(alpha, beta, gamma, point);
-    
+    Point p;
+
+    this -> _getPoint(alpha, beta, gamma, p);
+
+    _posicionActual = p;
+
     if (_firstMove == true)
     {
-      _firstMove = false;
-      _pointGoal = point;
+      _firstMove     = false;
+      _posicionFinal = p;
     }
-
-    _pointNow = point;
   }
 }

@@ -49,6 +49,9 @@ enum OrderState {
   EXECUTE_NONE
 };
 
+/**
+ * 
+ */
 enum OrderSource {
   FROM_SERIAL,
   FROM_RF24,

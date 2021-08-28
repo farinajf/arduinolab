@@ -521,7 +521,7 @@ namespace SPIDER {
   }
 
   /****************************************************************
-   * void ::crawl(()
+   * void activeMode(()
    * 
    * Estabelce el modo ACTIVO
    * 
