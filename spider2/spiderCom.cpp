@@ -172,7 +172,7 @@ namespace SPIDER {
     }
     else if (data[1] == Orders::REQ_MOVE_LEG)                  // 30
     {
-      //_controller.legMoveToRelativelyDirectly(data[2], Point(data[3] - 64, data[4] - 64, data[5] - 64)); //TODO
+      _controller.moveLegDirectly(data[2], Point(data[3] - 64, data[4] - 64, data[5] - 64));
       
       outData[outDataCounter++] = Orders::ORDER_DONE;
     }

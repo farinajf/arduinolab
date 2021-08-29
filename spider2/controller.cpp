@@ -67,8 +67,8 @@ namespace SPIDER {
   void RobotController::crawlLeft()     {this -> crawl(-_DISTANCIA_CICLO,  0,                 0);}
   void RobotController::crawlRight()    {this -> crawl( _DISTANCIA_CICLO,  0,                 0);}
   
-  void RobotController::turnLeft()      {this -> crawl(0,                  0,                -_ANGULO_GIRO);}
-  void RobotController::turnRight()     {this -> crawl(0,                  0,                 _ANGULO_GIRO);}
+  void RobotController::turnLeft()      {this -> crawl(0,                  0,                 _ANGULO_GIRO);}
+  void RobotController::turnRight()     {this -> crawl(0,                  0,                -_ANGULO_GIRO);}
 
   /****************************************************************
    * void crawl(float x, float y, float angle)
@@ -142,7 +142,6 @@ namespace SPIDER {
                     p3._leg3._z = p1._leg3._z;
                     p3._leg5._z = p1._leg5._z;
                   }
-                  
                   this -> _move(p2, 1, _LEG_LIFT_STEP_DISTANCE);
                   this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
                 }
@@ -167,7 +166,6 @@ namespace SPIDER {
                     p3._leg4._z = p1._leg4._z;
                     p3._leg6._z = p1._leg6._z;
                   }
-                  
                   this -> _move(p2, 2, _LEG_LIFT_STEP_DISTANCE);
                   this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
                 }
@@ -373,6 +371,83 @@ namespace SPIDER {
     }
 
     _estadoPatas = LegsState::CRAWL_STATE;
+  }
+
+
+  /****************************************************************
+   * void moveLeg(int leg, Point p)
+   * 
+   ****************************************************************/
+  void RobotController::moveLeg(int leg, Point p) {
+    //1.- ActionState
+    this -> _setActionState();
+
+    //2.- Comprobar LEGS STATE
+    if (_estadoPatas == LegsState::LEG_MOVE_STATE) this -> setCrawlLegState();
+
+    //3.- Mover pata
+    this -> moveLegDirectly(leg, p);
+    _robot.waitUntilFree();
+
+    //4.- Actualizar estado
+    _estadoPatas = LegsState::LEG_MOVE_STATE;
+  }
+
+  /****************************************************************
+   * void moveLegDirectly(int leg, Point p)
+   * 
+   ****************************************************************/
+  void RobotController::moveLegDirectly(int leg, Point p) {
+    RobotLegsPoints points;
+
+    //1.- Obtener posicion actual
+    _robot.getPointsNow(points);
+
+    //2.- Calcular nueva posicion de la pata indicada
+    switch(leg)
+    {
+      case 1:
+          points._leg1._x += p._x;
+          points._leg1._y += p._y;
+          points._leg1._z += p._z;
+          break;
+          
+      case 2:
+          points._leg2._x += p._x;
+          points._leg2._y += p._y;
+          points._leg2._z += p._z;
+          break;
+          
+      case 3:
+          points._leg3._x += p._x;
+          points._leg3._y += p._y;
+          points._leg3._z += p._z;
+          break;
+          
+      case 4:
+          points._leg4._x += p._x;
+          points._leg4._y += p._y;
+          points._leg4._z += p._z;
+          break;
+          
+      case 5:
+          points._leg5._x += p._x;
+          points._leg5._y += p._y;
+          points._leg5._z += p._z;
+          break;
+          
+      case 6:
+          points._leg6._x += p._x;
+          points._leg6._y += p._y;
+          points._leg6._z += p._z;
+          break;
+    }
+
+    //3.- Comprobar la nueva posicion
+    if (_robot.checkPoints(points) == false) return;
+
+    //4.- Mover para
+    _robot.move(points, _LEG_LIFT_STEP_DISTANCE);
   }
   
 

@@ -69,7 +69,7 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void Spider0::legMoveToRelatively(int leg, float x, float y, float z) {
-    //if (_communication.isCommunicationEnable() == false) _communication.getController().legMoveToRelatively(leg, Point(x, y, z));  //TODO
+    if (_communication.isCommunicationEnable() == false) _communication.getController().moveLeg(leg, Point(x, y, z));
   }
 
   /****************************************************************

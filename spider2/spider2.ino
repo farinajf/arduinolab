@@ -9,7 +9,7 @@
 
 
 SPIDER::Spider0 _spider;
-bool            _DEBUG = false;
+bool            _DEBUG = true;
 long            _t0    = millis();
 bool            _done  = false;
 
@@ -31,9 +31,13 @@ void loop() {
   if (_DEBUG)
   {
     _do();    
-    _print();
   }
 }
+
+
+
+
+
 
 /**
  * 
@@ -43,24 +47,7 @@ void _do() {
   if ((millis() % 5000) != 0) return;
 
   
-  if (_done == true) _changeBodyHeight(-20);
-  else               _changeBodyHeight(  0);
+  _spider.crawlLeft();
 
   _done = !_done;
-}
-
-/**
- * 
- */
-void _changeBodyHeight(float x) {
-  _spider.getRobotController().changeBodyHeight(x);
-}
-
-/**
- * 
- */
-void _print() {
-  if ((millis() - _t0) < 10000) return;
-
-  _t0 = millis();
 }
