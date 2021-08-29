@@ -479,7 +479,7 @@ namespace SPIDER {
       float y =         _moveBodyParameters[1] - 64;
       float z = -1.0 * (_moveBodyParameters[2] - 64);
 
-      //_controller.moveBody(x, y, z); //TODO
+      _controller.moveBody(x, y, z);
     }
     else if (blockedOrder == Orders::REQ_ROTATE_BODY)         //116
     {
@@ -489,7 +489,7 @@ namespace SPIDER {
       float y = _rotateBodyParameters[1] - 64;
       float z = _rotateBodyParameters[2] - 64;
 
-      //_controller.rotateBody(x, y, z); //TODO
+      _controller.rotateBody(x, y, z);
     }
     else if (blockedOrder == Orders::REQ_TWIST_BODY)          //118
     {
@@ -502,7 +502,7 @@ namespace SPIDER {
       float yRotate =         _twistBodyParameters[4] - 64;
       float zRotate =         _twistBodyParameters[5] - 64;
 
-      //_controller.twistBody(Point(xMove, yMove, zMove), Point(xRotate, yRotate, zRotate)); //TODO
+      _controller.twistBody(Point(xMove, yMove, zMove), Point(xRotate, yRotate, zRotate));
     }
 
     //.- Fin

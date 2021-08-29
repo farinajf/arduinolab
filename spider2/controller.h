@@ -22,6 +22,7 @@ namespace SPIDER {
 
 
       Robot           _robot;
+      RobotLegsPoints _posicionUltima;
       RobotLegsPoints _posicionInicial;
       float           _altura          = RobotShape::DEFAULT_BODY_LIFT;
       LegsState       _estadoPatas     = LegsState::CRAWL_STATE;
@@ -33,16 +34,18 @@ namespace SPIDER {
       /*********************************************************
        *                Metodos privados
        *********************************************************/
-      void _addDelta      (RobotLegsPoints &points, Point delta);
-      void _addDelta      (Point           &point,  Point delta);
-      void _addGiro       (RobotLegsPoints &points, float angulo);
-      void _addGiro       (Point           &point,  float angulo);
-      bool _checkPoints   (RobotLegsPoints  points);
-      void _move          (RobotLegsPoints  points, float stepDistance);
-      void _move          (RobotLegsPoints  points, int   leg,        float stepDistance);
+      void _addDelta       (RobotLegsPoints &points, Point delta);
+      void _addDelta       (Point           &point,  Point delta);
+      void _addGiro        (RobotLegsPoints &points, float angulo);
+      void _addGiro        (Point           &point,  float angulo);
+      bool _checkPoints    (RobotLegsPoints  points);
+      void _getRotatePoint (Point           &point,  Point rotateAxis, float rotateAngle);
+      void _getRotatePoints(RobotLegsPoints &points, Point rotateAxis, float rotateAngle);
+      void _move           (RobotLegsPoints  points, float stepDistance);
+      void _move           (RobotLegsPoints  points, int   leg,        float stepDistance);
       void _setActionState();
-      void _setBodyHeight (float            h);
-      void _twistBody     (Point            move,   Point rotateAxis, float rotateAngle) {} //TODO
+      void _setBodyHeight  (float            h);
+      void _twistBody      (Point            delta,  Point rotateAxis, float rotateAngle);
 
 
     public:
@@ -57,11 +60,13 @@ namespace SPIDER {
       void crawlRight();
       void moveLeg         (int   leg,  Point p);
       void moveLegDirectly (int   leg,  Point p);
+      void moveBody        (float x,    float y, float z);
+      void rotateBody      (float x,    float y, float z);
       void setPasosCiclo   (int   x);
       void setSpeed        (float x);
       void turnLeft();
       void turnRight();
-      void twistBody       (Point move, Point rotate) {} //TODO
+      void twistBody       (Point move, Point rotate);
 
       void setActiveMode();
       void setCrawlLegState();

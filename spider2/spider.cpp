@@ -93,7 +93,7 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void Spider0::moveBody(float x, float y, float z) {
-    //if (_communication.isCommunicationEnable() == false) _communication.getController().moveBody(x, y, z); //TODO
+    if (_communication.isCommunicationEnable() == false) _communication.getController().moveBody(x, y, z);
   }
 
   /****************************************************************
@@ -101,7 +101,7 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void Spider0::rotateBody(float x, float y, float z) {
-    //if (_communication.isCommunicationEnable() == false) _communication.getController().rotateBody(x, y, z); //TODO
+    if (_communication.isCommunicationEnable() == false) _communication.getController().rotateBody(x, y, z);
   }
 
   /****************************************************************

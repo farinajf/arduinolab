@@ -9,7 +9,7 @@
 
 
 SPIDER::Spider0 _spider;
-bool            _DEBUG = true;
+bool            _DEBUG = false;
 long            _t0    = millis();
 bool            _done  = false;
 

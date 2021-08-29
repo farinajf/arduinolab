@@ -449,6 +449,22 @@ namespace SPIDER {
     //4.- Mover para
     _robot.move(points, _LEG_LIFT_STEP_DISTANCE);
   }
+
+  /****************************************************************
+   * void moveBody(float x, float y, float z)
+   * 
+   ****************************************************************/
+  void RobotController::moveBody(float x, float y, float z) {
+    this -> twistBody(Point(x, y, z), Point(0, 0, 0));
+  }
+
+  /****************************************************************
+   * void rotateBody(float x, float y, float z)
+   * 
+   ****************************************************************/
+  void RobotController::rotateBody(float x, float y, float z) {
+    this -> twistBody(Point(0, 0, 0), Point(x, y, z));
+  }
   
 
   /****************************************************************
@@ -472,6 +488,23 @@ namespace SPIDER {
   void RobotController::setSpeed(float x) {
     _robot.setSpeed(x);
   }
+
+  /****************************************************************
+   * void twistBody(Point move, Point rotate)
+   * 
+   * move:   desplazamiento
+   * rotate: direccion del eje de rotacion; su magnitud es el angulo de rotacion
+   * 
+   ****************************************************************/
+  void RobotController::twistBody(Point move, Point rotate) {
+    //1.- El angulo de rotacion es la magnitud del vector de rotacion
+    float angulo = rotate.norma2();
+
+    //2.- Mover robot
+    this -> _twistBody(move, rotate, angulo);
+  }
+
+  
 
   
   /****************************************************************
@@ -519,7 +552,7 @@ namespace SPIDER {
     else if (_estadoPatas == LegsState::TWIST_BODY_STATE) this -> _twistBody    (Point(0, 0, _altura - RobotShape::DEFAULT_BODY_LIFT), Point(0, 0, 0), 0);
     else if (_estadoPatas == LegsState::LEG_MOVE_STATE)   this -> _setBodyHeight(_altura);
 
-    //_robot.getPointsNow(_lastChangeLegsStatePoints);
+    _robot.getPointsNow(_posicionUltima);
 
     _estadoPatas = LegsState::CRAWL_STATE;
   }
@@ -680,6 +713,70 @@ namespace SPIDER {
   }
 
   /****************************************************************
+   * void _getRotatePoint(Point &p, Point r, float alpha)
+   * 
+   * r:     eje de rotacion
+   * alpha: angulo de rotacion
+   * 
+   * Mtriz de transformacion:
+   * 
+   *       | r.x*r.x*(1 - cos(alpha)) + cos(alpha)         r.x*r.y*(1 - cos(alpha)) - r.z*sin(alpha)     r.x*r.z*(1 - cos(alpha)) + r.y*sin(alpha) |
+   *       |                                                                                                                                       |
+   *   T = | r.x*r.y*(1 - cos(alpha)) + r.z*sin(alpha)     r.y*r.y*(1 - cos(alpha)) + cos(alpha)         r.y*r.z*(1 - cos(alpha)) - r.x*sin(alpha) |
+   *       |                                                                                                                                       |
+   *       | r.x*r.z*(1 - cos(alpha)) - r.y*sin(alpha)     r.y*r.z*(1 - cos(alpha)) + r.x*sin(alpha)     r.z*r.z*(1 - cos(alpha)) + cos(alpha)     |
+   * 
+   ****************************************************************/
+  void RobotController::_getRotatePoint(Point &p, Point r, float alpha) {
+    //0.- Puntos actuales
+    float x = p._x;
+    float y = p._y;
+    float z = p._z;
+
+    //1.- Grados -> radianes
+    alpha *= PI/180;
+
+    //2.- Calculo de factores
+    float COS = cos(alpha);
+    float SIN = sin(alpha);
+    float AUX = 1 - COS;
+
+    //3.- Calcular nuevos puntos con la matriz T
+    p._x = x * (r._x * r._x * AUX +        COS) + y * (r._x * r._y * AUX - r._z * SIN) + z * (r._x * r._z * AUX + r._y * SIN);
+    p._y = x * (r._x * r._y * AUX + r._z * SIN) + y * (r._y * r._y * AUX +        COS) + z * (r._y * r._z * AUX - r._x * SIN);
+    p._z = x * (r._x * r._z * AUX - r._y * SIN) + y * (r._y * r._z * AUX + r._x * SIN) + z * (r._z * r._z * AUX +        COS);
+  }
+
+  /****************************************************************
+   * void _getRotatePoints(RobotLegsPoints &points, Point rotateAxis, float rotateAngle)
+   * 
+   * 
+   ****************************************************************/
+  void RobotController::_getRotatePoints(RobotLegsPoints &points, Point rotateAxis, float rotateAngle) {
+    float rotateAxisDist = rotateAxis.norma2();
+
+    if (rotateAxisDist == 0)
+    {
+      rotateAxis._x = 0;
+      rotateAxis._y = 0;
+      rotateAxis._z = 1;
+    }
+    else
+    {
+      rotateAxis._x /= rotateAxisDist;
+      rotateAxis._y /= rotateAxisDist;
+      rotateAxis._z /= rotateAxisDist;
+    }
+
+    this -> _getRotatePoint(points._leg1, rotateAxis, rotateAngle);
+    this -> _getRotatePoint(points._leg2, rotateAxis, rotateAngle);
+    this -> _getRotatePoint(points._leg3, rotateAxis, rotateAngle);
+    this -> _getRotatePoint(points._leg4, rotateAxis, rotateAngle);
+    this -> _getRotatePoint(points._leg5, rotateAxis, rotateAngle);
+    this -> _getRotatePoint(points._leg6, rotateAxis, rotateAngle);
+  }
+
+  /****************************************************************
    * void _move(RobotLegsPoints points, float stepDistance)
    * 
    * Mueve las patas a la posicion absoulta POINTS.
@@ -754,7 +851,7 @@ namespace SPIDER {
     _estadoPatas = LegsState::CRAWL_STATE;
 
     //6.- Resetea el último cambio de posicion de las patas
-    //_lastChangeLegsStatePoints = _initialPoints;
+    _posicionUltima = _posicionInicial;
   }
 
   /****************************************************************
@@ -776,6 +873,50 @@ namespace SPIDER {
 
     //2.- Mover patas a la nueva posicion
     this -> _move(posicionActual, _BODY_LIFT_STEP_DISTANCE);
+  }
+
+  /****************************************************************
+   * void twistBody(Point move, Point rotateAxis, float rotateAngle)
+   * 
+   * delta:       desplazamiento
+   * rotateAxis:  eje de rotacion
+   * rotateAngle: angulo de rotacion, entre -15 y 15.
+   * 
+   ****************************************************************/
+  void RobotController::_twistBody(Point delta, Point rotateAxis, float rotateAngle) {
+    //0.- ActionState
+    this -> _setActionState();
+
+    //1.- Check LEGS STATE
+    if (_estadoPatas != LegsState::TWIST_BODY_STATE) this -> setCrawlLegState();
+
+    //2.- Establecer la altura por defecto
+    RobotLegsPoints points = _posicionUltima;
+
+    points._leg1._z = RobotShape::DEFAULT_BODY_LIFT;
+    points._leg2._z = RobotShape::DEFAULT_BODY_LIFT;
+    points._leg3._z = RobotShape::DEFAULT_BODY_LIFT;
+    points._leg4._z = RobotShape::DEFAULT_BODY_LIFT;
+    points._leg5._z = RobotShape::DEFAULT_BODY_LIFT;
+    points._leg6._z = RobotShape::DEFAULT_BODY_LIFT;
+
+    //3.- Calcular desplazamiento
+    delta._x = constrain(delta._x, -30, 30);
+    delta._y = constrain(delta._y, -30, 30);
+    delta._z = constrain(delta._z, -45,  0);
+
+    //4.- Se resta el desplazamiento
+    this -> _addDelta(points, delta);
+
+    //4.- Calcular rotacion
+    rotateAngle = constrain(rotateAngle, -_ANGULO_GIRO, _ANGULO_GIRO);
+    this -> _getRotatePoints(points, rotateAxis, rotateAngle);
+
+    //5.- Mover robot
+    this -> _move(points, _BODY_TWIST_STEP_DISTANCE);
+
+    //6.- LEGS STATE
+    _estadoPatas = LegsState::TWIST_BODY_STATE;
   }
 
 }
