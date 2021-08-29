@@ -381,37 +381,37 @@ namespace SPIDER {
     {
       this -> _saveRobotBootState(RobotState::BOOT);
       
-      //_controller.crawlForward(); //TODO
+      _controller.crawlForward();
     }
     else if (blockedOrder == Orders::REQ_CRAWL_BACKWARD)      // 82
     {
       this -> _saveRobotBootState(RobotState::BOOT);
       
-      //_controller.crawlBackward(); //TODO
+      _controller.crawlBackward();
     }
     else if (blockedOrder == Orders::REQ_CRAWL_LEFT)          // 84
     {
       this -> _saveRobotBootState(RobotState::BOOT);
       
-      //_controller.crawlLeft(); //TODO
+      _controller.crawlLeft();
     }
     else if (blockedOrder == Orders::REQ_CRAWL_RIGHT)         // 86
     {
       this -> _saveRobotBootState(RobotState::BOOT);
       
-      //_controller.crawlRight(); //TODO
+      _controller.crawlRight();
     }
     else if (blockedOrder == Orders::REQ_TURN_LEFT)           // 88
     {
       this -> _saveRobotBootState(RobotState::BOOT);
       
-      //_controller.turnLeft(); //TODO
+      _controller.turnLeft();
     }
     else if (blockedOrder == Orders::REQ_TURN_RIGHT)          // 90
     {
       this -> _saveRobotBootState(RobotState::BOOT);
       
-      //_controller.turnRight(); //TODO
+      _controller.turnRight();
     }
     else if (blockedOrder == Orders::REQ_ACTIVE_MODE)         // 92
     {
@@ -461,7 +461,7 @@ namespace SPIDER {
       float y      = _crawlParameters[1] - 64;
       float angulo = _crawlParameters[2] - 64;
 
-      //_controller.crawl(x, y, angulo); //TODO
+      _controller.crawl(x, y, angulo);
     }
     else if (blockedOrder == Orders::REQ_CHANGE_BODY_HEIGHT)  //112
     {

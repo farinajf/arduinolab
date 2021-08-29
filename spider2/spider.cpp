@@ -28,7 +28,7 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void Spider0::crawl(float x, float y, float angulo) {
-    if (_communication.isCommunicationEnable() == false) _communication.getController().crawlForward();
+    if (_communication.isCommunicationEnable() == false) _communication.getController().crawl(x, y, angulo);
   }
 
   /****************************************************************
@@ -77,7 +77,7 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void Spider0::setActionGroup(int x) {
-    //if (_communication.isCommunicationEnable() == false) _communication.getController().setActionGroup(x); //TODO
+    if (_communication.isCommunicationEnable() == false) _communication.getController().setPasosCiclo(x);
   }
 
   /****************************************************************
@@ -85,7 +85,7 @@ namespace SPIDER {
    * 
    ****************************************************************/
   void Spider0::setActionSpeed(float x) {
-    //if (_communication.isCommunicationEnable() == false) _communication.getController().setSpeedMultiple(x / 100); //TODO
+    if (_communication.isCommunicationEnable() == false) _communication.getController().setSpeed(x / 100);
   }
 
   /****************************************************************
