@@ -91,283 +91,12 @@ namespace SPIDER {
 
     angle = constrain(angle, -_ANGULO_GIRO, _ANGULO_GIRO);
 
-    //4.- Dividir por el numero de pasos por ciclo
-    x     /= _totalPasosCiclo;
-    y     /= _totalPasosCiclo;
-    angle /= _totalPasosCiclo;
-
-    //5.- Calcular movimientos
-    RobotLegsPoints p1;
-    _robot.getPointsNow(p1);
-
-    RobotLegsPoints p2 = p1;
-    this -> _addDelta(p2, Point(-x/2, -y/2, 0));
-    this -> _addGiro (p2, -angle/2);
-
-    RobotLegsPoints p3 = p1;
-    this -> _addDelta(p3, Point(-x, -y, 0));
-    this -> _addGiro (p3, -angle);
-
-    RobotLegsPoints p4 = BOOT_POINTS;
-    this -> _addDelta(p4, Point(x * (_totalPasosCiclo - 1) / 4, y * (_totalPasosCiclo - 1) / 4, _altura + _ALTURA_SUSPENSION));
-    this -> _addGiro (p4,   angle * (_totalPasosCiclo - 1) / 4);
-
-    RobotLegsPoints p5 = BOOT_POINTS;
-    this -> _addDelta(p5, Point(x * (_totalPasosCiclo - 1) / 2, y * (_totalPasosCiclo - 1) / 2, _altura));
-    this -> _addGiro (p5,   angle * (_totalPasosCiclo - 1) / 2);
-
-    (_pasoCiclo < _totalPasosCiclo) ? _pasoCiclo++ : _pasoCiclo = 1;
-
-    switch (_totalPasosCiclo)
+    //4.- Calcular movimientos
+    switch (_crawlMode)
     {
-      case 2:
-          switch (_pasoCiclo)
-          {
-            case 1:
-                p2._leg1 = p4._leg1;  //Pata 1 suspendida
-                p2._leg3 = p4._leg3;  //Pata 3 suspendida
-                p2._leg5 = p4._leg5;  //Pata 5 suspendida
-                
-                p3._leg1 = p5._leg1;  //Para 1 adelantada
-                p3._leg3 = p5._leg3;  //Para 3 adelantada
-                p3._leg5 = p5._leg5;  //Para 5 adelantada
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg1._z = p1._leg1._z;
-                    p3._leg3._z = p1._leg3._z;
-                    p3._leg5._z = p1._leg5._z;
-                  }
-                  this -> _move(p2, 1, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 2:
-                p2._leg2 = p4._leg2;  //Pata 2 suspendida
-                p2._leg4 = p4._leg4;  //Pata 4 suspendida
-                p2._leg6 = p4._leg6;  //Pata 6 suspendida
-                
-                p3._leg2 = p5._leg2;  //Para 2 adelantada
-                p3._leg4 = p5._leg4;  //Para 4 adelantada
-                p3._leg6 = p5._leg6;  //Para 6 adelantada
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg2._z = p1._leg2._z;
-                    p3._leg4._z = p1._leg4._z;
-                    p3._leg6._z = p1._leg6._z;
-                  }
-                  this -> _move(p2, 2, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-          }
-          break;
-
-      case 4:
-          switch (_pasoCiclo)
-          {
-            case 1:
-                p2._leg1 = p4._leg1; //Pata 1 suspendida
-                p2._leg6 = p4._leg6; //Pata 6 suspendida
-                
-                p3._leg1 = p5._leg1;
-                p3._leg6 = p5._leg6;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg1._z = p1._leg1._z;
-                    p3._leg6._z = p1._leg6._z;
-                  }
-                  this -> _move(p2, 1, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 2:
-                p2._leg5 = p4._leg5; //Pata 5 suspendida
-                
-                p3._leg5 = p5._leg5;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg5._z = p1._leg5._z;
-                  }
-                  this -> _move(p2, 5, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 5, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-    
-            case 3:
-                p2._leg3 = p4._leg3; //Pata 3 suspendida
-                p2._leg4 = p4._leg4; //Pata 4 suspendida
-                
-                p3._leg3 = p5._leg3;
-                p3._leg4 = p5._leg4;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg3._z = p1._leg3._z;
-                    p3._leg4._z = p1._leg4._z;
-                  }
-                  this -> _move(p2, 3, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 3, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 4:
-                p2._leg2 = p4._leg2; //Pata 2 suspendida
-                
-                p3._leg2 = p5._leg2;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg2._z = p1._leg2._z;
-                  }
-                  this -> _move(p2, 2, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-          }
-          break;
-          
-      case 6:
-          switch (_pasoCiclo)
-          {
-            case 1:
-                p2._leg1 = p4._leg1;  //Pata 1 suspendida
-                
-                p3._leg1 = p5._leg1;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg1._z = p1._leg1._z;
-                  }
-                  this -> _move(p2, 1, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-    
-            case 2:
-                p2._leg5 = p4._leg5; //Pata 5 suspendida
-                
-                p3._leg5 = p5._leg5;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg5._z = p1._leg5._z;
-                  }
-                  this -> _move(p2, 5, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 5, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 3:
-                p2._leg3 = p4._leg3; //Pata 3 suspendida
-                
-                p3._leg3 = p5._leg3;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg3._z = p1._leg3._z;
-                  }
-                  this -> _move(p2, 3, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 3, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 4:
-                p2._leg4 = p4._leg4; //Pata 4 suspendida
-                
-                p3._leg4 = p5._leg4;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg4._z = p1._leg4._z;
-                  }
-                  this -> _move(p2, 4, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 4, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 5:
-                p2._leg2 = p4._leg2; //Pata 2 suspendida
-                
-                p3._leg2 = p5._leg2;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg2._z = p1._leg2._z;
-                  }
-                  this -> _move(p2, 2, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-                
-            case 6:
-                p2._leg6 = p4._leg6; //Pata 6 suspendida
-                
-                p3._leg6 = p5._leg6;
-                
-                if (this -> _checkPoints(p2) == true)
-                {
-                  if (this -> _checkPoints(p3) == false)
-                  {
-                    p3 = p2;
-                    
-                    p3._leg6._z = p1._leg6._z;
-                  }
-                  this -> _move(p2, 6, _LEG_LIFT_STEP_DISTANCE);
-                  this -> _move(p3, 6, _LEG_LIFT_STEP_DISTANCE);
-                }
-                break;
-          }
-          break;
+      case RobotCrawlMode::TRIPOD: _crawlTripod(x, y, angle); break;
+      case RobotCrawlMode::RIPPLE: _crawlRipple(x, y, angle); break;
+      case RobotCrawlMode::WAVE:   _crawlWave  (x, y, angle); break;
     }
 
     _estadoPatas = LegsState::CRAWL_STATE;
@@ -474,9 +203,9 @@ namespace SPIDER {
   void RobotController::setPasosCiclo(int x) {
     switch (x)
     {
-      case 2:  _totalPasosCiclo = 4; return;
-      case 3:  _totalPasosCiclo = 6; return;
-      default: _totalPasosCiclo = 2; return;
+      case 2:  _crawlMode = RobotCrawlMode::RIPPLE; return;
+      case 3:  _crawlMode = RobotCrawlMode::WAVE;   return;
+      default: _crawlMode = RobotCrawlMode::TRIPOD; return;
     }
   }
 
@@ -602,6 +331,10 @@ namespace SPIDER {
 
 
 
+
+
+
+
   /***********************************************************************************
    *                    Metodos Privados
    **********************************************************************************/
@@ -710,6 +443,322 @@ namespace SPIDER {
     if (alpha5 - alpha6 < _MIN_ALPHA_INTERVAL) return false;
 
     return true;
+  }
+
+  /****************************************************************
+   * void _crawlRipple(float x, float y, float angle)
+   * 
+   * 
+   *                 P1
+   *                / \
+   *              /     \
+   *            /         \
+   *          /             \
+   *        /                 \
+   *      /                     \
+   *     *-----*-----*-----*-----*
+   *    P6    P5     P4    P3    P2
+   * 
+   ****************************************************************/
+  void RobotController::_crawlRipple(float x, float y, float angle) {
+    x     /= 2;
+    y     /= 2;
+    angle /= 2;
+    
+     RobotLegsPoints p0;
+    _robot.getPointsNow(p0);
+
+    RobotLegsPoints p1 = BOOT_POINTS;
+    this -> _addDelta(p1, Point(0, 0, _altura + _ALTURA_SUSPENSION));
+
+    RobotLegsPoints p2 = BOOT_POINTS;
+    this -> _addDelta(p2, Point(x/2, y/2, _altura));
+    this -> _addGiro (p2, angle/2);
+
+    RobotLegsPoints p3 = p0;
+    this -> _addDelta(p3, Point(-x/4, -y/4, 0));
+    this -> _addGiro (p3, -angle/4);
+
+    _addPasoCiclo();
+
+    switch (_pasoCiclo)
+    {
+      case 1:
+          p3._leg1 = p1._leg1; //Pata 1 suspendida
+          p3._leg6 = p2._leg6;
+          
+          if (this -> _checkPoints(p3) == true) this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
+          break;
+
+      case 2:
+          p3._leg1 = p2._leg1;
+          p3._leg5 = p1._leg5; //Pata 5 suspendida
+          
+          if (this -> _checkPoints(p3) == true) this -> _move(p3, 5, _LEG_LIFT_STEP_DISTANCE);
+          break;
+
+      case 3:
+          p3._leg3 = p1._leg3; //Pata 3 suspendida
+          p3._leg5 = p2._leg5;
+          
+          if (this -> _checkPoints(p3) == true) this -> _move(p3, 3, _LEG_LIFT_STEP_DISTANCE);
+          break;
+
+      case 4:
+          p3._leg3 = p2._leg3;
+          p3._leg4 = p1._leg4; //Pata 4 suspendida
+          
+          if (this -> _checkPoints(p3) == true) this -> _move(p3, 4, _LEG_LIFT_STEP_DISTANCE);
+          break;
+
+      case 5:
+          p3._leg2 = p1._leg2; //Pata 2 suspendida
+          p3._leg4 = p2._leg4;
+          
+          if (this -> _checkPoints(p3) == true) this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
+          break;
+
+      case 6:
+          p3._leg2 = p2._leg2;
+          p3._leg6 = p1._leg6; //Pata 6 suspendida
+          
+          if (this -> _checkPoints(p3) == true) this -> _move(p3, 6, _LEG_LIFT_STEP_DISTANCE);
+          break;
+    }
+
+    return;
+  }
+
+  /****************************************************************
+   * void _crawlTripod(float x, float y, float angle)
+   * 
+   * Se mueven 2 grupos de 3 patas.
+   * 
+   *             P4
+   *            /  \
+   *          /      \
+   *        /          \
+   *      /              \
+   *     *--------*-------*
+   *    P3       P2       P5
+   *    
+   ****************************************************************/
+  void RobotController::_crawlTripod(float x, float y, float angle) {
+    x     /= 2;
+    y     /= 2;
+    angle /= 2;
+    
+    RobotLegsPoints p1;
+    _robot.getPointsNow(p1);
+
+    RobotLegsPoints p2 = p1;
+    this -> _addDelta(p2, Point(-x/2, -y/2, 0));
+    this -> _addGiro (p2, -angle/2);
+
+    RobotLegsPoints p3 = p1;
+    this -> _addDelta(p3, Point(-x, -y, 0));
+    this -> _addGiro (p3, -angle);
+
+    RobotLegsPoints p4 = BOOT_POINTS;
+    this -> _addDelta(p4, Point(0, 0, _altura + _ALTURA_SUSPENSION));
+
+    RobotLegsPoints p5 = BOOT_POINTS;
+    this -> _addDelta(p5, Point(x/2, y/ 2, _altura));
+    this -> _addGiro (p5, angle/2);
+
+    _addPasoCiclo();
+
+    switch (_pasoCiclo)
+    {
+      case 1:
+          p2._leg1 = p4._leg1;  //Pata 1 suspendida
+          p2._leg3 = p4._leg3;  //Pata 3 suspendida
+          p2._leg5 = p4._leg5;  //Pata 5 suspendida
+          
+          p3._leg1 = p5._leg1;  //Para 1 adelantada
+          p3._leg3 = p5._leg3;  //Para 3 adelantada
+          p3._leg5 = p5._leg5;  //Para 5 adelantada
+          
+          if (this -> _checkPoints(p2) == true)
+          {
+            if (this -> _checkPoints(p3) == false)
+            {
+              p3 = p2;
+              
+              p3._leg1._z = p1._leg1._z;
+              p3._leg3._z = p1._leg3._z;
+              p3._leg5._z = p1._leg5._z;
+            }
+            this -> _move(p2, 1, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+          
+      case 2:
+          p2._leg2 = p4._leg2;  //Pata 2 suspendida
+          p2._leg4 = p4._leg4;  //Pata 4 suspendida
+          p2._leg6 = p4._leg6;  //Pata 6 suspendida
+          
+          p3._leg2 = p5._leg2;  //Para 2 adelantada
+          p3._leg4 = p5._leg4;  //Para 4 adelantada
+          p3._leg6 = p5._leg6;  //Para 6 adelantada
+          
+          if (this -> _checkPoints(p2) == true)
+          {
+            if (this -> _checkPoints(p3) == false)
+            {
+              p3 = p2;
+              
+              p3._leg2._z = p1._leg2._z;
+              p3._leg4._z = p1._leg4._z;
+              p3._leg6._z = p1._leg6._z;
+            }
+            this -> _move(p2, 2, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+    }
+
+    return;
+  }
+
+  /****************************************************************
+   * void _crawlWave(float x, float y, float angle)
+   * 
+   ****************************************************************/
+  void RobotController::_crawlWave(float x, float y, float angle) {
+    x     /= 2;
+    y     /= 2;
+    angle /= 2;
+    
+    RobotLegsPoints p0;
+    _robot.getPointsNow(p0);
+
+    RobotLegsPoints p1 = BOOT_POINTS;
+    this -> _addDelta(p1, Point(0, 0, _altura + _ALTURA_SUSPENSION));
+
+    RobotLegsPoints p2 = BOOT_POINTS;
+    this -> _addDelta(p2, Point(x/2, y/ 2, _altura));
+    this -> _addGiro (p2, angle/2);
+
+    RobotLegsPoints p3 = p0;
+    this -> _addDelta(p3, Point(-x/10, -y/10, 0));
+    this -> _addGiro (p3, -angle/10);
+
+    RobotLegsPoints p4 = p0;
+    this -> _addDelta(p4, Point(-x/5, -y/5, 0));
+    this -> _addGiro (p4, -angle/5);
+
+    
+
+    _addPasoCiclo();
+
+    switch (_pasoCiclo)
+    {
+      case 1:
+          p3._leg6 = p1._leg6;  //Pata 6 suspendida
+          p4._leg6 = p2._leg6;  //Para 6 adelantada
+          
+          if (this -> _checkPoints(p3) == true)
+          {
+            if (this -> _checkPoints(p4) == false)
+            {
+              p4 = p3;
+              
+              p4._leg6._z = p3._leg6._z;
+            }
+            this -> _move(p3, 6, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p4, 6, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+          
+      case 2:
+          p3._leg5 = p1._leg5;  //Pata 5 suspendida
+          p4._leg5 = p2._leg5;  //Para 5 adelantada
+          
+          if (this -> _checkPoints(p3) == true)
+          {
+            if (this -> _checkPoints(p4) == false)
+            {
+              p4 = p3;
+              
+              p4._leg5._z = p3._leg5._z;
+            }
+            this -> _move(p3, 5, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p4, 5, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+
+      case 3:
+          p3._leg4 = p1._leg4;  //Pata 4 suspendida
+          p4._leg4 = p2._leg4;  //Para 4 adelantada
+          
+          if (this -> _checkPoints(p3) == true)
+          {
+            if (this -> _checkPoints(p4) == false)
+            {
+              p4 = p3;
+              
+              p4._leg4._z = p3._leg4._z;
+            }
+            this -> _move(p3, 4, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p4, 4, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+          
+      case 4:
+          p3._leg3 = p1._leg3;  //Pata 3 suspendida
+          p4._leg3 = p2._leg3;  //Para 3 adelantada
+          
+          if (this -> _checkPoints(p3) == true)
+          {
+            if (this -> _checkPoints(p4) == false)
+            {
+              p4 = p3;
+              
+              p4._leg3._z = p3._leg3._z;
+            }
+            this -> _move(p3, 3, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p4, 3, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+
+      case 5:
+          p3._leg2 = p1._leg2;  //Pata 2 suspendida
+          p4._leg2 = p2._leg2;  //Para 2 adelantada
+          
+          if (this -> _checkPoints(p3) == true)
+          {
+            if (this -> _checkPoints(p4) == false)
+            {
+              p4 = p3;
+              
+              p4._leg2._z = p3._leg2._z;
+            }
+            this -> _move(p3, 2, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p4, 2, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+          
+      case 6:
+          p3._leg1 = p1._leg1;  //Pata 1 suspendida
+          p4._leg1 = p2._leg1;  //Para 1 adelantada
+          
+          if (this -> _checkPoints(p3) == true)
+          {
+            if (this -> _checkPoints(p4) == false)
+            {
+              p4 = p3;
+              
+              p4._leg1._z = p3._leg1._z;
+            }
+            this -> _move(p3, 1, _LEG_LIFT_STEP_DISTANCE);
+            this -> _move(p4, 1, _LEG_LIFT_STEP_DISTANCE);
+          }
+          break;
+    }
+
+    return;
   }
 
   /****************************************************************

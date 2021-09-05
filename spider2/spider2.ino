@@ -12,6 +12,7 @@ SPIDER::Spider0 _spider;
 bool            _DEBUG = false;
 long            _t0    = millis();
 bool            _done  = false;
+int             _count = 0;
 
 /**
  * void setup()
@@ -46,8 +47,9 @@ void _do() {
 
   if ((millis() % 5000) != 0) return;
 
-  
-  _spider.crawlLeft();
+  if (_count > 0) return;
 
-  _done = !_done;
+  _count++;
+
+  _spider.crawlForward();
 }

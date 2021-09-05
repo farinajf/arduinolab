@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "robot.h"
 
+      
 namespace SPIDER {
 
   
@@ -17,18 +18,18 @@ namespace SPIDER {
       const float _LEG_LIFT_STEP_DISTANCE   =   7.5;
       const float _DISTANCIA_CICLO          =  40;
       const float _ANGULO_GIRO              =  25;
-      const float _ALTURA_SUSPENSION        =  20;
+      const float _ALTURA_SUSPENSION        =  25;
       const float _MIN_ALPHA_INTERVAL       =   0;
 
 
       Robot           _robot;
       RobotLegsPoints _posicionUltima;
       RobotLegsPoints _posicionInicial;
+      RobotCrawlMode  _crawlMode       = RobotCrawlMode::WAVE;
       float           _altura          = RobotShape::DEFAULT_BODY_LIFT;
       LegsState       _estadoPatas     = LegsState::CRAWL_STATE;
       RobotMode       _modo            = RobotMode::SLEEP;
-      int             _totalPasosCiclo = 2;
-      int             _pasoCiclo       = 1;
+      int             _pasoCiclo       = 0;
 
 
       /*********************************************************
@@ -39,6 +40,9 @@ namespace SPIDER {
       void _addGiro        (RobotLegsPoints &points, float angulo);
       void _addGiro        (Point           &point,  float angulo);
       bool _checkPoints    (RobotLegsPoints  points);
+      void _crawlRipple    (float            x,      float y,          float angulo);
+      void _crawlTripod    (float            x,      float y,          float angulo);
+      void _crawlWave      (float            x,      float y,          float angulo);
       void _getRotatePoint (Point           &point,  Point rotateAxis, float rotateAngle);
       void _getRotatePoints(RobotLegsPoints &points, Point rotateAxis, float rotateAngle);
       void _move           (RobotLegsPoints  points, float stepDistance);
@@ -46,6 +50,20 @@ namespace SPIDER {
       void _setActionState();
       void _setBodyHeight  (float            h);
       void _twistBody      (Point            delta,  Point rotateAxis, float rotateAngle);
+      
+      // INLINE
+      void _addPasoCiclo() {
+        (_pasoCiclo < _getTotalPasosCiclo()) ? _pasoCiclo++ : _pasoCiclo = 1;
+      }
+      
+      int _getTotalPasosCiclo() {
+        switch (_crawlMode)
+        {
+          case RobotCrawlMode::TRIPOD: return 2;
+          case RobotCrawlMode::RIPPLE: return 6;
+          case RobotCrawlMode::WAVE:   return 6;
+        }
+      }
 
 
     public:

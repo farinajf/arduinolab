@@ -25,6 +25,15 @@ enum LegsState {
 /**
  * 
  */
+enum RobotCrawlMode {
+  TRIPOD,
+  RIPPLE,
+  WAVE
+};
+
+/**
+ * 
+ */
 enum RobotMode {
   ACTIVE,
   SLEEP
@@ -41,7 +50,7 @@ enum RobotState {
 };
 
 /**
- * 
+ * Estado de las ordenes
  */
 enum OrderState {
   EXECUTE_START,
@@ -49,6 +58,9 @@ enum OrderState {
   EXECUTE_NONE
 };
 
+/**
+ * Origen de las ordenes
+ */
 enum OrderSource {
   FROM_SERIAL,
   FROM_RF24,
