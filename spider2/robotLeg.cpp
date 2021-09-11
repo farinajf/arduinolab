@@ -6,7 +6,7 @@ namespace SPIDER {
    * Constructor()
    * 
    ****************************************************************/
-  RobotLeg::RobotLeg(float x0, float y0) : _x0(x0), _y0(y0) {}
+  RobotLeg::RobotLeg(float x0, float y0, float z0) : _x0(x0), _y0(y0), _z0(z0) {}
 
 
   /****************************************************************
@@ -44,9 +44,7 @@ namespace SPIDER {
 
     //1.- Calcular coordenadas angulares
     this -> getAngles(p, alpha, beta, gamma);
-//Serial.print("  p.x: "); Serial.print(p._x); Serial.print(" p.y: "); Serial.print(p._y); Serial.print(" p.z: "); Serial.print(p._z);
-//Serial.print(" alpha: "); Serial.print(alpha); Serial.print(" beta: "); Serial.print(beta); Serial.print(" gamma: "); Serial.print(gamma);
-//Serial.println("  Check Angles");
+
     //2.- Comprobar coordenadas angulares
     if (this -> _checkAngles(alpha, beta, gamma) == false) return false;
 
@@ -192,7 +190,7 @@ namespace SPIDER {
 
     //2.- Angulo FEMUR
     float d       = u - RobotShape::L_COXA;
-    float w       = z - RobotShape::Z0;
+    float w       = z - _z0;
     float im2     = d*d + w*w;
     float im      = sqrt(im2);
     float epsilon = asin(w / im);
@@ -241,9 +239,9 @@ namespace SPIDER {
     float u = RobotShape::L_COXA + im * cos(epsilon);
 
     //5.- Coordenadas finales de la pata
-    x = _x0 + u * cos(alpha);
-    y = _y0 + u * sin(alpha);
-    z = RobotShape::Z0 + im * sin(epsilon);
+    x = _x0 + u  * cos(alpha);
+    y = _y0 + u  * sin(alpha);
+    z = _z0 + im * sin(epsilon);
   }
 
   /****************************************************************

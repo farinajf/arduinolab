@@ -6,12 +6,12 @@ namespace SPIDER {
    * Constructor()
    * 
    ****************************************************************/
-  Robot::Robot() : _leg1(-RobotShape::X0,  RobotShape::Y0),
-                   _leg2(-RobotShape::X1,  0.0),
-                   _leg3(-RobotShape::X0, -RobotShape::Y0),
-                   _leg4( RobotShape::X0,  RobotShape::Y0),
-                   _leg5( RobotShape::X1,  0.0),
-                   _leg6( RobotShape::X0, -RobotShape::Y0) {}
+  Robot::Robot() : _leg1(-RobotShape::X0,  RobotShape::Y0, RobotShape::Z0),
+                   _leg2(-RobotShape::X1,  0.0,            RobotShape::Z0),
+                   _leg3(-RobotShape::X0, -RobotShape::Y0, RobotShape::Z0),
+                   _leg4( RobotShape::X0,  RobotShape::Y0, RobotShape::Z0),
+                   _leg5( RobotShape::X1,  0.0,            RobotShape::Z0),
+                   _leg6( RobotShape::X0, -RobotShape::Y0, RobotShape::Z0) {}
 
 
   /****************************************************************

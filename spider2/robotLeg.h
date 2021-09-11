@@ -13,6 +13,7 @@ namespace SPIDER {
     private:
       const    float  _x0;
       const    float  _y0;
+      const    float  _z0;
 
       volatile float _stepDistance = DEFAULT_STEP_DISTANCE;
       volatile bool  _firstMove    = true;
@@ -40,7 +41,7 @@ namespace SPIDER {
       static constexpr float NEGLIGIBLE_DISTANCE   = 0.1;
 
       
-      RobotLeg(float x0, float y0);
+      RobotLeg(float x0, float y0, float z0);
 
       void init(const RobotLegItemParam &coxa, const RobotLegItemParam &femur, const RobotLegItemParam &tibia);
 
