@@ -18,14 +18,14 @@ namespace SPIDER {
       const float _LEG_LIFT_STEP_DISTANCE   =   7.5;
       const float _DISTANCIA_CICLO          =  40;
       const float _ANGULO_GIRO              =  25;
-      const float _ALTURA_SUSPENSION        =  25;
+      const float _ALTURA_SUSPENSION        =  20; //25;
       const float _MIN_ALPHA_INTERVAL       =   0;
 
 
       Robot           _robot;
       RobotLegsPoints _posicionUltima;
       RobotLegsPoints _posicionInicial;
-      RobotCrawlMode  _crawlMode       = RobotCrawlMode::WAVE;
+      RobotCrawlMode  _crawlMode       = RobotCrawlMode::TRIPOD;
       float           _altura          = RobotShape::DEFAULT_BODY_LIFT;
       LegsState       _estadoPatas     = LegsState::CRAWL_STATE;
       RobotMode       _modo            = RobotMode::SLEEP;

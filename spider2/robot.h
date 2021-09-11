@@ -60,19 +60,19 @@ namespace SPIDER {
                                                                  Point( 125,   0, 0),
                                                                  Point( 103, -85, 0));
                                                       
-//  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -81,  99, 0),
-//                                                                 Point(-115,   0, 0),
-//                                                                 Point( -81, -99, 0),
-//                                                                 Point(  81,  99, 0),
-//                                                                 Point( 115,   0, 0),
-//                                                                 Point(  81, -99, 0));
+  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -81,  99, 0),
+                                                                 Point(-115,   0, 0),
+                                                                 Point( -81, -99, 0),
+                                                                 Point(  81,  99, 0),
+                                                                 Point( 115,   0, 0),
+                                                                 Point(  81, -99, 0));
   
-  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -85,  115, 0),
-                                                                 Point(-125,    0, 0),
-                                                                 Point( -85, -115, 0),
-                                                                 Point(  85,  115, 0),
-                                                                 Point( 125,    0, 0),
-                                                                 Point(  85, -115, 0));
+//  const RobotLegsPoints BOOT_POINTS            = RobotLegsPoints(Point( -85,  115, 0),
+//                                                                 Point(-125,    0, 0),
+//                                                                 Point( -85, -115, 0),
+//                                                                 Point(  85,  115, 0),
+//                                                                 Point( 125,    0, 0),
+//                                                                 Point(  85, -115, 0));
 
 
   /**

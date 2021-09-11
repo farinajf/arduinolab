@@ -44,7 +44,9 @@ namespace SPIDER {
 
     //1.- Calcular coordenadas angulares
     this -> getAngles(p, alpha, beta, gamma);
-
+//Serial.print("  p.x: "); Serial.print(p._x); Serial.print(" p.y: "); Serial.print(p._y); Serial.print(" p.z: "); Serial.print(p._z);
+//Serial.print(" alpha: "); Serial.print(alpha); Serial.print(" beta: "); Serial.print(beta); Serial.print(" gamma: "); Serial.print(gamma);
+//Serial.println("  Check Angles");
     //2.- Comprobar coordenadas angulares
     if (this -> _checkAngles(alpha, beta, gamma) == false) return false;
 
@@ -190,9 +192,10 @@ namespace SPIDER {
 
     //2.- Angulo FEMUR
     float d       = u - RobotShape::L_COXA;
-    float im2     = d*d + z*z;
+    float w       = z - RobotShape::Z0;
+    float im2     = d*d + w*w;
     float im      = sqrt(im2);
-    float epsilon = asin(z / im);
+    float epsilon = asin(w / im);
 
     beta = acos((im2 + RobotShape::L_FEMUR * RobotShape::L_FEMUR - RobotShape::L_TIBIA * RobotShape::L_TIBIA) / (2 * im * RobotShape::L_FEMUR)) + epsilon;
 
@@ -240,7 +243,7 @@ namespace SPIDER {
     //5.- Coordenadas finales de la pata
     x = _x0 + u * cos(alpha);
     y = _y0 + u * sin(alpha);
-    z = 1.0 * im * sin(epsilon);
+    z = RobotShape::Z0 + im * sin(epsilon);
   }
 
   /****************************************************************
