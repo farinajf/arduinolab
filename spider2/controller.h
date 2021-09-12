@@ -17,7 +17,7 @@ namespace SPIDER {
       const float _BODY_TWIST_STEP_DISTANCE =   1.25;
       const float _LEG_LIFT_STEP_DISTANCE   =   7.5;
       const float _DISTANCIA_CICLO          =  42; //42
-      const float _ANGULO_GIRO              =  25; //18
+      const float _ANGULO_GIRO              =  20; //18
       const float _ALTURA_SUSPENSION        =  20;
       const float _MIN_ALPHA_INTERVAL       =   0;
 
