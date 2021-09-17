@@ -94,7 +94,11 @@ namespace SPIDER {
     public:
       SpiderCom();
 
-      void init(bool x = true);
+      void init            (bool   x = true);
+      void setWiFi         (String name, String password);
+      void setWiFiChannel  (byte   canal);
+      void setRemote       (byte   b0,   byte b1, byte b2, byte b3, byte b4);
+      void setRemoteChannel(byte   canal);
       void updateCommunication();
       void updateOrder();
 

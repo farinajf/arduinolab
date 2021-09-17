@@ -62,6 +62,52 @@ namespace SPIDER {
   }
 
   /****************************************************************
+   * void setWiFi(String name, String password)
+   * 
+   ****************************************************************/
+  void SpiderCom::setWiFi(String name, String password) {
+    _esp8266SSID = name;
+    _esp8266PWD  = password;
+  }
+
+  /****************************************************************
+   * void setWiFiChannel(byte canal)
+   * 
+   * Establece el canal WIFI: 1 - 13
+   * Por defecto: 13
+   * 
+   ****************************************************************/
+  void SpiderCom::setWiFiChannel(byte canal) {
+    _esp8266CHL = constrain(canal, 1, 13);
+  }
+
+  /****************************************************************
+   * void setRemote(byte b0, byte b1, byte b2, byte b3, byte b4)
+   * 
+   * Establece la direccion remota. Debe ser la misma que la utilizada
+   * en el control remoto.
+   * 
+   ****************************************************************/
+  void SpiderCom::setRemote(byte b0, byte b1, byte b2, byte b3, byte b4) {
+    _rf24Address[0] = b0;
+    _rf24Address[1] = b1;
+    _rf24Address[2] = b2;
+    _rf24Address[3] = b3;
+    _rf24Address[4] = b4;
+  }
+
+  /****************************************************************
+   * void setRemoteChannel(byte canal)
+   * 
+   * Establece le canal: 0 - 125
+   * Por defecto: 125
+   * 
+   ****************************************************************/
+  void SpiderCom::setRemoteChannel(byte canal) {
+    _rf24Channel = constrain(canal, 0, 125);
+  }
+
+  /****************************************************************
    * void updateCommunication()
    * 
    ****************************************************************/

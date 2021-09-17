@@ -118,8 +118,6 @@ namespace SPIDER {
 
 
 
-
-
   /****************************************************************
    * void activeMode()
    ****************************************************************/
@@ -147,6 +145,51 @@ namespace SPIDER {
    ****************************************************************/
   void Spider0::update() {
     if (_communication.isCommunicationEnable() == true) _communication.updateOrder();
+  }
+
+
+
+
+
+  /****************************************************************
+   * void setWiFi(String name, String password)
+   * 
+   ****************************************************************/
+  void Spider0::setWiFi(String name, String password) {
+    _communication.setWiFi(name, password);
+  }
+
+  /****************************************************************
+   * void setWiFiChannel(byte canal)
+   * 
+   * Establece el canal WIFI: 1 - 13
+   * Por defecto: 13
+   * 
+   ****************************************************************/
+  void Spider0::setWiFiChannel(byte canal) {
+    _communication.setWiFiChannel(canal);
+  }
+
+  /****************************************************************
+   * void setRemote(byte b0, byte b1, byte b2, byte b3, byte b4)
+   * 
+   * Establece la direccion remota. Debe ser la misma que la utilizada
+   * en el control remoto.
+   * 
+   ****************************************************************/
+  void Spider0::setRemote(byte b0, byte b1, byte b2, byte b3, byte b4) {
+    _communication.setRemote(b0, b1, b2, b3, b4);
+  }
+
+  /****************************************************************
+   * void setRemoteChannel(byte canal)
+   * 
+   * Establece le canal: 0 - 125
+   * Por defecto: 125
+   * 
+   ****************************************************************/
+  void Spider0::setRemoteChannel(byte canal) {
+    _communication.setRemoteChannel(canal);
   }
 
   /***********************************************************************************
