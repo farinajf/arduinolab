@@ -38,7 +38,7 @@ namespace SPIDER {
       void _addDelta       (RobotLegsPoints &points, Point delta);
       void _addDelta       (Point           &point,  Point delta);
       void _addGiro        (RobotLegsPoints &points, float angulo);
-      void _addGiro        (Point           &point,  float seno,       float coseno);
+      void _addGiro        (Point           &point,  float SIN,        float COS);
       bool _checkPoints    (RobotLegsPoints  points);
       void _crawlRipple    (float            x,      float y,          float angulo);
       void _crawlTripod    (float            x,      float y,          float angulo);
