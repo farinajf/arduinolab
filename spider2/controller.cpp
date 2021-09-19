@@ -73,6 +73,9 @@ namespace SPIDER {
   /****************************************************************
    * void crawl(float x, float y, float angle)
    * 
+   * Desplazamiento: (x,y)
+   * Rotacion: angulo theta
+   * 
    ****************************************************************/
   void RobotController::crawl(float x, float y, float angle) {
     //1.- ActionState
@@ -371,34 +374,45 @@ namespace SPIDER {
    *      calcula las nuevas coordenadas (X, Y) despues de girar
    *      alpha grados el vector de la pata.
    * 
+   * Matriz de rotacion: R(z,angle)
+   * 
+   * | x'| = | cos(angle)    -sin(angle)   0|   |x|
+   * | y'| = | sin(angle)     cos(angle)   0| * |y|
+   * | z'| = |     0             0         1|   |z|
+   * 
    ****************************************************************/
   void RobotController::_addGiro(RobotLegsPoints &points, float angle) {
-    this -> _addGiro(points._leg1, angle);
-    this -> _addGiro(points._leg2, angle);
-    this -> _addGiro(points._leg3, angle);
-    this -> _addGiro(points._leg4, angle);
-    this -> _addGiro(points._leg5, angle);
-    this -> _addGiro(points._leg6, angle);
-  }
-
-  /****************************************************************
-   * void _addGiro(Point &point, float angle)
-   * 
-   * Calcula las nuevas coordenadas (X, Y) despues de girar alpha grados el vector.
-   * 
-   ****************************************************************/
-  void RobotController::_addGiro(Point &point, float angle) {
     //0.- De grados a radianes
     angle *= PI / 180;
 
-    //1.- Radio de giro
-    float radio = sqrt(point._x * point._x + point._y * point._y);
+    //1.- Calcular seno y coseno
+    float COS = cos(angle);
+    float SIN = sin(angle);
 
-    //2.- Nuevas coordenadas
-    float x = radio * cos(angle + atan2(point._y, point._x));
-    float y = radio * sin(angle + atan2(point._y, point._x));
+    //2.- Rotar las patas
+    this -> _addGiro(points._leg1, SIN, COS);
+    this -> _addGiro(points._leg2, SIN, COS);
+    this -> _addGiro(points._leg3, SIN, COS);
+    this -> _addGiro(points._leg4, SIN, COS);
+    this -> _addGiro(points._leg5, SIN, COS);
+    this -> _addGiro(points._leg6, SIN, COS);
+  }
 
-    //3.- Devolvemos el resultado
+  /****************************************************************
+   * void _addGiro(Point &point, float SIN, float COS)
+   * 
+   * Calcula las nuevas coordenadas (X, Y) despues de girar alpha grados el vector.
+   * 
+   * x' = x*C - y*S
+   * y' = x*S + y*C
+   * 
+   ****************************************************************/
+  void RobotController::_addGiro(Point &point, float SIN, float COS) {
+    //1.- Nuevas coordenadas
+    float x = point._x * COS - point._y * SIN;
+    float y = point._x * SIN + point._y * COS;
+
+    //2.- Devolvemos el resultado
     point = Point(x, y, point._z);
   }
 
