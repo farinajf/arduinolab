@@ -939,7 +939,7 @@ namespace SPIDER {
   }
 
   /****************************************************************
-   * void twistBody(Point move, Point rotateAxis, float rotateAngle)
+   * void _twistBody(Point move, Point rotateAxis, float rotateAngle)
    * 
    * delta:       desplazamiento
    * rotateAxis:  eje de rotacion
