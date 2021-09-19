@@ -403,8 +403,8 @@ namespace SPIDER {
    * 
    * Calcula las nuevas coordenadas (X, Y) despues de girar alpha grados el vector.
    * 
-   * x' = x*C - y*S
-   * y' = x*S + y*C
+   * x' = x*COS - y*SIN
+   * y' = x*SIN + y*COS
    * 
    ****************************************************************/
   void RobotController::_addGiro(Point &point, float SIN, float COS) {
