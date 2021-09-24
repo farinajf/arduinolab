@@ -50,9 +50,9 @@ namespace SPIDER {
 
       // WIFI
       ESP8266 _esp8266          = ESP8266(Serial2, 115200);
-      String  _esp8266SSID      = "Freenove Hexapod Robot";
-      String  _esp8266PWD       = "Freenove";
-      byte    _esp8266CHL       = 13;
+      String  _esp8266SSID      = "FHR";
+      String  _esp8266PWD       = "hexapodo";
+      byte    _esp8266CHL       = 1;
       byte    _esp8266ClientID;
       byte    _esp8266InData[IN_DATA_SIZE];
       bool    _esp8266Available = false;
